@@ -1,0 +1,57 @@
+{
+ "mission": "MSL",
+ "sol": 528,
+ "story": "Approach to Dingo Gap",
+ "position": {
+  "lat": -4.62655059,
+  "lon": 137.4072626,
+  "elev": -4486.771,
+  "yaw": -130.96,
+  "waypointSol": 528,
+  "sourceId": "MMGIS-MSL-WAYPOINTS"
+ },
+ "images": [
+  {
+   "id": "0528ML0020820000203198C00_DXXX",
+   "camera": "MAST_LEFT",
+   "file": "/data/sols/img/msl-0528-0528ML0020820000203198C00_DXXX.jpg",
+   "credit": "NASA/JPL-Caltech/MSSS",
+   "source": "https://mars.nasa.gov/msl-raw-images/msss/00528/mcam/0528ML0020820000203198C00_DXXX.jpg"
+  },
+  {
+   "id": "0528ML0020820000203198E01_DXXX",
+   "camera": "MAST_LEFT",
+   "file": "/data/sols/img/msl-0528-0528ML0020820000203198E01_DXXX.jpg",
+   "credit": "NASA/JPL-Caltech/MSSS",
+   "source": "https://mars.nasa.gov/msl-raw-images/msss/00528/mcam/0528ML0020820000203198E01_DXXX.jpg"
+  },
+  {
+   "id": "0528ML0020820010203199E01_DXXX",
+   "camera": "MAST_LEFT",
+   "file": "/data/sols/img/msl-0528-0528ML0020820010203199E01_DXXX.jpg",
+   "credit": "NASA/JPL-Caltech/MSSS",
+   "source": "https://mars.nasa.gov/msl-raw-images/msss/00528/mcam/0528ML0020820010203199E01_DXXX.jpg"
+  },
+  {
+   "id": "0528ML0020820020203200E01_DXXX",
+   "camera": "MAST_LEFT",
+   "file": "/data/sols/img/msl-0528-0528ML0020820020203200E01_DXXX.jpg",
+   "credit": "NASA/JPL-Caltech/MSSS",
+   "source": "https://mars.nasa.gov/msl-raw-images/msss/00528/mcam/0528ML0020820020203200E01_DXXX.jpg"
+  },
+  {
+   "id": "0528ML0020830000203201C00_DXXX",
+   "camera": "MAST_LEFT",
+   "file": "/data/sols/img/msl-0528-0528ML0020830000203201C00_DXXX.jpg",
+   "credit": "NASA/JPL-Caltech/MSSS",
+   "source": "https://mars.nasa.gov/msl-raw-images/msss/00528/mcam/0528ML0020830000203201C00_DXXX.jpg"
+  },
+  {
+   "id": "0528ML0020830000203201E01_DXXX",
+   "camera": "MAST_LEFT",
+   "file": "/data/sols/img/msl-0528-0528ML0020830000203201E01_DXXX.jpg",
+   "credit": "NASA/JPL-Caltech/MSSS",
+   "source": "https://mars.nasa.gov/msl-raw-images/msss/00528/mcam/0528ML0020830000203201E01_DXXX.jpg"
+  }
+ ]
+}

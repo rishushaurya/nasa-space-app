@@ -1,0 +1,25 @@
+{
+ "zone": "boxwork",
+ "dtmId": "DTEEC_019698_1750_019988_1750_U01",
+ "dtmUrl": "https://astrogeo-ard.s3-us-west-2.amazonaws.com/mars/mro/hirise/controlled/dtm/ESP_019698_1750_ESP_019988_1750/DTEEC_019698_1750_019988_1750_U01.tif",
+ "cols": 410,
+ "rows": 351,
+ "cellM": 2.023493589159021,
+ "westLonE": 137.3739917893035,
+ "northLatC": -4.7999970767596825,
+ "dLonDeg": 3.413756077563118e-05,
+ "dLatDeg": 3.413756077563118e-05,
+ "layers": [
+  "slopeDeg",
+  "reliefM",
+  "elevM"
+ ],
+ "dtype": "float32-le",
+ "processing": [
+  "Read HiRISE DTM DTEEC_019698_1750_019988_1750_U01 (1.01 m, CC0-1.0) for box (137.374, 137.388, -4.812, -4.8)",
+  "2 x 2 posts per cell: elevation = mean, relief = maximum",
+  "Relief = max - min elevation of the 3x3 posts (about 3 m) around each post (obstacle proxy)",
+  "Slope by Horn's 3x3 method (as gdaldem slope) on the 2 m cells, so DTM noise at single posts does not inflate it",
+  "Cells with any missing post are no-data"
+ ]
+}

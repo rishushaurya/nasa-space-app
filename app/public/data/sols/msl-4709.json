@@ -1,0 +1,57 @@
+{
+ "mission": "MSL",
+ "sol": 4709,
+ "story": "Boxwork ridge on Mount Sharp",
+ "position": {
+  "lat": -4.80799931,
+  "lon": 137.3810495,
+  "elev": -3608.689,
+  "yaw": -124.16,
+  "waypointSol": 4709,
+  "sourceId": "MMGIS-MSL-WAYPOINTS"
+ },
+ "images": [
+  {
+   "id": "4709ML1085720001107599C00_DXXX",
+   "camera": "MAST_LEFT",
+   "file": "/data/sols/img/msl-4709-4709ML1085720001107599C00_DXXX.jpg",
+   "credit": "NASA/JPL-Caltech/MSSS",
+   "source": "https://mars.nasa.gov/msl-raw-images/msss/04709/mcam/4709ML1085720001107599C00_DXXX.jpg"
+  },
+  {
+   "id": "4709ML1085720011107600C00_DXXX",
+   "camera": "MAST_LEFT",
+   "file": "/data/sols/img/msl-4709-4709ML1085720011107600C00_DXXX.jpg",
+   "credit": "NASA/JPL-Caltech/MSSS",
+   "source": "https://mars.nasa.gov/msl-raw-images/msss/04709/mcam/4709ML1085720011107600C00_DXXX.jpg"
+  },
+  {
+   "id": "4709ML1085720021107601C00_DXXX",
+   "camera": "MAST_LEFT",
+   "file": "/data/sols/img/msl-4709-4709ML1085720021107601C00_DXXX.jpg",
+   "credit": "NASA/JPL-Caltech/MSSS",
+   "source": "https://mars.nasa.gov/msl-raw-images/msss/04709/mcam/4709ML1085720021107601C00_DXXX.jpg"
+  },
+  {
+   "id": "4709ML1085720031107602C00_DXXX",
+   "camera": "MAST_LEFT",
+   "file": "/data/sols/img/msl-4709-4709ML1085720031107602C00_DXXX.jpg",
+   "credit": "NASA/JPL-Caltech/MSSS",
+   "source": "https://mars.nasa.gov/msl-raw-images/msss/04709/mcam/4709ML1085720031107602C00_DXXX.jpg"
+  },
+  {
+   "id": "4709ML1085720041107603C00_DXXX",
+   "camera": "MAST_LEFT",
+   "file": "/data/sols/img/msl-4709-4709ML1085720041107603C00_DXXX.jpg",
+   "credit": "NASA/JPL-Caltech/MSSS",
+   "source": "https://mars.nasa.gov/msl-raw-images/msss/04709/mcam/4709ML1085720041107603C00_DXXX.jpg"
+  },
+  {
+   "id": "4709ML1085720051107604C00_DXXX",
+   "camera": "MAST_LEFT",
+   "file": "/data/sols/img/msl-4709-4709ML1085720051107604C00_DXXX.jpg",
+   "credit": "NASA/JPL-Caltech/MSSS",
+   "source": "https://mars.nasa.gov/msl-raw-images/msss/04709/mcam/4709ML1085720051107604C00_DXXX.jpg"
+  }
+ ]
+}

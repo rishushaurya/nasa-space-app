@@ -1,0 +1,57 @@
+{
+ "mission": "MSL",
+ "sol": 182,
+ "story": "First rock drilling, John Klein, Sheepbed mudstone, Yellowknife Bay",
+ "position": {
+  "lat": -4.58948488,
+  "lon": 137.4491296,
+  "elev": -4520.456,
+  "yaw": 165.72,
+  "waypointSol": 166,
+  "sourceId": "MMGIS-MSL-WAYPOINTS"
+ },
+ "images": [
+  {
+   "id": "0182ML0007400000105276E01_DXXX",
+   "camera": "MAST_LEFT",
+   "file": "/data/sols/img/msl-0182-0182ML0007400000105276E01_DXXX.jpg",
+   "credit": "NASA/JPL-Caltech/MSSS",
+   "source": "https://mars.jpl.nasa.gov/msl-raw-images/msss/00182/mcam/0182ML0007400000105276E01_DXXX.jpg"
+  },
+  {
+   "id": "0182ML0007410000105277E01_DXXX",
+   "camera": "MAST_LEFT",
+   "file": "/data/sols/img/msl-0182-0182ML0007410000105277E01_DXXX.jpg",
+   "credit": "NASA/JPL-Caltech/MSSS",
+   "source": "https://mars.jpl.nasa.gov/msl-raw-images/msss/00182/mcam/0182ML0007410000105277E01_DXXX.jpg"
+  },
+  {
+   "id": "0182ML0007420000105278E01_DXXX",
+   "camera": "MAST_LEFT",
+   "file": "/data/sols/img/msl-0182-0182ML0007420000105278E01_DXXX.jpg",
+   "credit": "NASA/JPL-Caltech/MSSS",
+   "source": "https://mars.jpl.nasa.gov/msl-raw-images/msss/00182/mcam/0182ML0007420000105278E01_DXXX.jpg"
+  },
+  {
+   "id": "0182ML0007450000105280E01_DXXX",
+   "camera": "MAST_LEFT",
+   "file": "/data/sols/img/msl-0182-0182ML0007450000105280E01_DXXX.jpg",
+   "credit": "NASA/JPL-Caltech/MSSS",
+   "source": "https://mars.jpl.nasa.gov/msl-raw-images/msss/00182/mcam/0182ML0007450000105280E01_DXXX.jpg"
+  },
+  {
+   "id": "0182ML0007460000105275E01_DXXX",
+   "camera": "MAST_LEFT",
+   "file": "/data/sols/img/msl-0182-0182ML0007460000105275E01_DXXX.jpg",
+   "credit": "NASA/JPL-Caltech/MSSS",
+   "source": "https://mars.jpl.nasa.gov/msl-raw-images/msss/00182/mcam/0182ML0007460000105275E01_DXXX.jpg"
+  },
+  {
+   "id": "0182ML0009890010105279E01_DXXX",
+   "camera": "MAST_LEFT",
+   "file": "/data/sols/img/msl-0182-0182ML0009890010105279E01_DXXX.jpg",
+   "credit": "NASA/JPL-Caltech/MSSS",
+   "source": "https://mars.jpl.nasa.gov/msl-raw-images/msss/00182/mcam/0182ML0009890010105279E01_DXXX.jpg"
+  }
+ ]
+}

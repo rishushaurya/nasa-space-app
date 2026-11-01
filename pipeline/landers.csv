@@ -1,0 +1,13 @@
+id,name,agency,kind,landedUtc,lat,lon,badge,sources,rover,note
+mars3,Mars 3,USSR,lander,1971-12-02,-45,-158,MEASURED,TPS-LANDING-MAP;GUINNESS-MARS3,,First landing on Mars; it transmitted for about 20 seconds. Approximate position only
+viking1,Viking 1,NASA,lander,1976-07-20,22.269,-47.951,MEASURED,PDS-ODE-LANDING;NSSDC-VIKING,,Chryse Planitia; worked until November 1982. Position from radio tracking (Folkner et al. 1997)
+viking2,Viking 2,NASA,lander,1976-09-03,47.668,134.28,MEASURED,PDS-ODE-LANDING;NSSDC-VIKING,,Utopia Planitia; contact ended in April 1980. Position from radio tracking (Folkner et al. 1997)
+pathfinder,Mars Pathfinder and Sojourner,NASA,lander and rover,1997-07-04,19.095,-33.253,MEASURED,PDS-ODE-LANDING;NASA-PATHFINDER,,Ares Vallis; Sojourner was the first rover on Mars. Position from radio tracking (Folkner et al. 1997)
+beagle2,Beagle 2,UK (ESA Mars Express),lander,2003-12-25,11.52879,90.43139,MEASURED,BRIDGES-2017;ESA-BEAGLE2,,Isidis Planitia; found partly deployed in HiRISE images in 2015
+spirit,Spirit,NASA,rover,2004-01-04,-14.5692,175.4729,MEASURED,PDS-ODE-LANDING;NASA-MER,,Gusev Crater; drove 7.7 km and ended in 2010. Cartographic triangulation (Arvidson et al. 2004)
+opportunity,Opportunity,NASA,rover,2004-01-25,-1.9462,-5.5266,MEASURED,PDS-ODE-LANDING;NASA-MER,,Meridiani Planum; drove 45.16 km and was last heard in June 2018. Cartographic triangulation (Arvidson et al. 2004)
+phoenix,Phoenix,NASA (with CSA),lander,2008-05-25,68.22,-125.75,MEASURED,PDS-ODE-LANDING;NASA-PHOENIX,,Vastitas Borealis; found ice under the soil and saw snow fall from clouds (Smith et al. 2009)
+curiosity,Curiosity,NASA,rover,2012-08-06,-4.589467,137.441633,MEASURED,MMGIS-MSL-WAYPOINTS;ESA-MSL-LANDING,msl,Bradbury Landing in Gale Crater; still driving. First MMGIS waypoint (sol 3)
+insight,InSight,NASA (with CNES and DLR),lander,2018-11-26,4.502384,135.623447,MEASURED,GOLOMBEK-2020,,Elysium Planitia; recorded 1319 marsquakes. Planetocentric east in the IAU 2000 frame
+perseverance,Perseverance and Ingenuity,NASA,rover and helicopter,2021-02-18,18.44462715,77.45088572,MEASURED,MMGIS-M20-WAYPOINTS;JPL-EDL-PRESSKIT,m20,Octavia E. Butler Landing in Jezero Crater; still driving. First MMGIS waypoint (sol 13)
+zhurong,Zhurong (Tianwen-1),CNSA,rover,2021-05-14,25.066,109.925,MEASURED,ZHURONG-2022,,Southern Utopia Planitia; drove about 2 km and has been silent since May 2022. Located in Tianwen-1 orbiter images

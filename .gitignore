@@ -1,0 +1,16 @@
+node_modules
+dist
+.env
+.env.local
+.vercel
+.venv
+__pycache__
+*.pyc
+coverage
+.DS_Store
+*.log
+app/public/cesium
+# fetched and hash-checked at build time by npm run models
+app/public/models
+app/public/ort
+pipeline/raw

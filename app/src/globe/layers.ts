@@ -1,0 +1,31 @@
+// Homeward | app/src/globe/layers.ts | v2.0.0 | 2026-11-01
+// Live imagery streamed like Google Earth: NASA Mars Trek and Esri OnMars tiles (both send CORS headers). They are
+// 2x1 geographic tiles on the Mars 2000 sphere, so latitude is planetocentric; our globe is the IAU ellipsoid with
+// geodetic latitude. Without converting tile edges they would sit 3.2 km off at Gale and about 20 km at 45 deg (D7).
+import * as Cesium from "cesium";
+import { ocToOg, ogToOc } from "../core/frames";
+import { LIVE, type LiveId } from "./live";
+
+const R2D = 180 / Math.PI;
+
+/** Geographic tiling whose rows are planetocentric: tile edges are converted to geodetic for Cesium. */
+export class OcentricTiling extends Cesium.GeographicTilingScheme {
+  constructor(ellipsoid: Cesium.Ellipsoid) { super({ ellipsoid, numberOfLevelZeroTilesX: 2, numberOfLevelZeroTilesY: 1 }); }
+  override tileXYToRectangle(x: number, y: number, level: number, result?: Cesium.Rectangle): Cesium.Rectangle {
+    const r = super.tileXYToRectangle(x, y, level, result);
+    r.south = ocToOg(r.south * R2D) / R2D; r.north = ocToOg(r.north * R2D) / R2D;
+    return r;
+  }
+  override positionToTileXY(position: Cesium.Cartographic, level: number, result?: Cesium.Cartesian2): Cesium.Cartesian2 {
+    const p = Cesium.Cartographic.clone(position);
+    p.latitude = ogToOc(p.latitude * R2D) / R2D;
+    return super.positionToTileXY(p, level, result);
+  }
+}
+
+export function liveProvider(id: LiveId, ellipsoid: Cesium.Ellipsoid, onError: () => void): Cesium.UrlTemplateImageryProvider {
+  const L = LIVE[id];
+  const p = new Cesium.UrlTemplateImageryProvider({ url: L.url, tilingScheme: new OcentricTiling(ellipsoid), tileWidth: L.size, tileHeight: L.size, maximumLevel: L.max, hasAlphaChannel: id === "hirise" });
+  p.errorEvent.addEventListener(onError); // a listener also stops Cesium logging every failed tile
+  return p;
+}

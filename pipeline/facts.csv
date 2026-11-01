@@ -1,0 +1,55 @@
+id,label,value,unit,badge,sources,note
+SITE-01,Habitat: Bradbury Landing (Curiosity sol 3 waypoint),-4.589467 N / 137.441633 E,deg,MEASURED,MMGIS-MSL-WAYPOINTS,planetocentric; elevation -4502.5 m in the HiRISE DTM
+SITE-02,Science stop: Yellowknife Bay (Curiosity site 6; sols 166-272),-4.58948488 N / 137.4491296 E,deg,MEASURED,MMGIS-MSL-WAYPOINTS,John Klein and Cumberland drill sites
+SITE-03,Habitat to Yellowknife Bay (straight line),443,m,COMPUTED,MMGIS-MSL-WAYPOINTS,haversine on the 3396.19 km sphere
+SITE-04,Height change habitat to Yellowknife Bay,+0.8,m,MEASURED,DATA-03,HiRISE DTM; MMGIS waypoint elevations after sol 50 sit 15-19 m lower (a rover-frame offset) so terrain heights come from the DTM
+SITE-05,Curiosity odometry on arrival at site 6 (sol 166),723.41,m,MEASURED,MMGIS-MSL-WAYPOINTS,
+SITE-06,First rock drilling (John Klein),sol 182 (8 Feb 2013),,MEASURED,JPL-PIA17595;NASA-RAW-IMAGES,
+SITE-07,Ocentric-to-ographic latitude offset at Bradbury,3.21,km,COMPUTED,ARCHINAL-2018,why every position goes through one conversion
+SITE-08,Curiosity at Dingo Gap (sol 528 waypoint),-4.62655059 N / 137.4072626 E,deg,MEASURED,MMGIS-MSL-WAYPOINTS,
+SITE-09,Habitat to Dingo Gap,2993,m,COMPUTED,MMGIS-MSL-WAYPOINTS,beyond the 2 km walking radius
+SITE-10,Boxwork walk start (rover drop-off; sol 4600 waypoint),-4.804189 N / 137.3796858 E,deg,MEASURED,MMGIS-MSL-WAYPOINTS,
+SITE-11,Boxwork science stop (Curiosity site 120; sols 4709-4789),-4.80799931 N / 137.3810495 E,deg,MEASURED,MMGIS-MSL-WAYPOINTS,
+SITE-12,Boxwork walk (straight line),240,m,COMPUTED,MMGIS-MSL-WAYPOINTS,13.4 km from Bradbury Landing
+PLN-01,Mean radius,3389.5,km,MEASURED,NSSDC-MARS,
+PLN-02,Surface gravity,3.73,m/s2,MEASURED,NSSDC-MARS,0.38 of Earth's
+PLN-03,Mean surface pressure,6.36,mbar,MEASURED,NSSDC-MARS,4.0 to 8.7 mbar by season
+PLN-04,Atmosphere,95.1% CO2; 2.59% N2; 1.94% Ar; 0.16% O2,,MEASURED,NSSDC-MARS,
+PLN-05,Temperature range,-153 to +20,C,MEASURED,NASA-MARS-FACTS,average about -59 C
+PLN-06,Mean top-of-atmosphere sunlight,586.2,W/m2,MEASURED,NSSDC-MARS,43% of Earth's
+PLN-07,Mars year,668.6,sols,COMPUTED,NSSDC-MARS,686.98 days of 24.6597 h; the research paper's 669.6 is an error
+PLN-09,Atmospheric scale height,11.0,km,MEASURED,NSSDC-MARS,
+PLN-10,Jump height versus Earth,2.6,x,COMPUTED,NSSDC-MARS,9.82 / 3.73
+PLN-12,Horizon distance at 1.7 m eye height,3.39,km,COMPUTED,NSSDC-MARS,4.65 km on Earth
+PLN-13,Sunlight on 14 Nov 2026 versus Earth,39,%,COMPUTED,JPL-APPROX-ELEMENTS,1 / 1.608^2
+RAD-01,Surface dose equivalent rate at Gale,0.64,mSv/day,MEASURED,HASSLER-2014,+/- 0.12
+RAD-02,Cruise dose rate,1.84,mSv/day,MEASURED,DLR-RAD,
+RAD-03,Career radiation limit,600,mSv,STANDARD,OCHMO-RADIATION,
+RAD-04,Solar particle event limit,250,mSv,STANDARD,OCHMO-RADIATION,as stated in the research paper section 4.2
+RAD-05,Largest surface event (20 May 2024),8100,microgray,MEASURED,NASA-MAY2024-STORM,absorbed dose beside Curiosity; roughly 30 chest X-rays; a different quantity from mSv
+RAD-06,Mission dose 180 d out + 500 d on Mars + 180 d back,982,mSv,COMPUTED,HASSLER-2014;DLR-RAD,Hassler et al. quote about 1.01 Sv
+RAD-07,One 8-hour Marswalk (cosmic rays),0.21,mSv,COMPUTED,HASSLER-2014,
+EVA-01,EVA duration limit,8,h,STANDARD,NTRS-20200001071,6 +/- 2 h; lunar-derived
+EVA-02,Early Artemis walking radius,2,km,STANDARD,NTRS-20200001071,lunar-derived
+EVA-03,Suited slope capability,20,deg,STANDARD,NTRS-20200001071,up down or across; lunar-derived (from search excerpts of the ConOps)
+EVA-04,Walk-back planning rate,3.3,km/h,STANDARD,APOLLO17-TRAVERSE,
+EVA-05,Suited walk-back test distance,10,km,MEASURED,WALKBACK-TEST,
+DUST-01,Crew dust exposure limit,0.1,mg/m3,STANDARD,NASA-DUST-LIMIT,particles under 10 micrometres; 24-hour average; exposures up to 30 days
+DUST-02,Fine dust on suit materials,under 2.5 micrometres and about 100 nm,,MEASURED,NASA-DUST-2026,over 1645 sols
+DUST-03,Perchlorate in soil,0.5 to 1,%,MEASURED,SPACE-PERCHLORATE;NASA-DUST-2026,thyroid hazard: never bring regolith inside
+SND-01,Speed of sound,240 below 240 Hz; 250 above,m/s,MEASURED,CNRS-SOUND,high pitches fade within about 8 m
+COM-01,Solar conjunction blackout,about 2 weeks every 2 years,,STANDARD,NASA-CONJUNCTION,
+WX-01,REMS at Gale,humidity about 70% at night near Ls 93 and under 5% from 10:00 to 18:00; pressure swings about 30% a year; daily-mean temperature swings about 20 K a year,,MEASURED,MARTINEZ-2017,
+WX-02,MEDA at Jezero (first 250 sols),afternoon winds about 7 m/s; gusts to 25 m/s; 26 K daily tide; dust devils 5-135 m across at 4-24 m/s,,MEASURED,RODRIGUEZ-2023,
+WX-04,REMS public archive end,sol 4488 (22 Mar 2025),,MEASURED,PDS-REMS,weather on Mars cannot be live in any app
+EVT-01,Dust devil filmed by Perseverance (30 Aug 2023),about 60 m wide; about 2 km tall; about 19 km/h; about 4 km away,,MEASURED,JPL-DUST-DEVIL,
+EVT-02,Planet-encircling dust storms,1971 1977 1982 1994 2001 2007 2018,,MEASURED,NASA-2018-STORM,southern spring and summer
+EVT-03,Opportunity last heard,10 Jun 2018,,MEASURED,NASA-2018-STORM,during the global dust storm
+SCI-01,Gale's ancient lake,near-neutral pH; low salinity; chemical energy microbes could have used,,MEASURED,GROTZINGER-2014,
+SCI-02,Organics in Gale mudstone,about 10 ppm or more organic carbon in the top 5 cm of 3-billion-year-old rock,,MEASURED,JPL-ORGANICS,organics can form without life
+SCI-05,Boxwork on Mount Sharp,ridges about 1-2 m tall with sandy hollows; groundwater left minerals in fractures; part of a sulfate-rich layer; four drill samples,,MEASURED,NASA-BOXWORK-2026;SPACEAPPS-CHALLENGE,the official challenge page's example science goal
+EDL-01,Perseverance entry,about 19500 km/h at entry; 21.5 m parachute at about 11 km and 1512 km/h; TRN between 4.2 and 2.2 km shifts touchdown up to 600 m,,MEASURED,JPL-EDL-PRESSKIT,
+EDL-02,Robotic landing record (2024),12 of 19,,MEASURED,NASA-EDL-2024,
+MSN-01,MMX launch to Phobos,20 Oct 2026 04:41:03 JST,,MEASURED,JAXA-MMX,
+MSN-03,Ingenuity,72 flights; 128.8 min aloft; 17.0 km,,MEASURED,NASA-INGENUITY,
+MSN-05,Phobos,about 6000 km up; three orbits a day,,MEASURED,NASA-MOONS,

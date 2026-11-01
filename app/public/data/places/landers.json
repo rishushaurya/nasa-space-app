@@ -1,0 +1,192 @@
+[
+ {
+  "id": "mars3",
+  "name": "Mars 3",
+  "agency": "USSR",
+  "kind": "lander",
+  "landedUtc": "1971-12-02",
+  "lat": -45.0,
+  "lon": -158.0,
+  "badge": "MEASURED",
+  "sourceIds": [
+   "TPS-LANDING-MAP",
+   "GUINNESS-MARS3"
+  ],
+  "rover": null,
+  "note": "First landing on Mars; it transmitted for about 20 seconds. Approximate position only"
+ },
+ {
+  "id": "viking1",
+  "name": "Viking 1",
+  "agency": "NASA",
+  "kind": "lander",
+  "landedUtc": "1976-07-20",
+  "lat": 22.269,
+  "lon": -47.951,
+  "badge": "MEASURED",
+  "sourceIds": [
+   "PDS-ODE-LANDING",
+   "NSSDC-VIKING"
+  ],
+  "rover": null,
+  "note": "Chryse Planitia; worked until November 1982. Position from radio tracking (Folkner et al. 1997)"
+ },
+ {
+  "id": "viking2",
+  "name": "Viking 2",
+  "agency": "NASA",
+  "kind": "lander",
+  "landedUtc": "1976-09-03",
+  "lat": 47.668,
+  "lon": 134.28,
+  "badge": "MEASURED",
+  "sourceIds": [
+   "PDS-ODE-LANDING",
+   "NSSDC-VIKING"
+  ],
+  "rover": null,
+  "note": "Utopia Planitia; contact ended in April 1980. Position from radio tracking (Folkner et al. 1997)"
+ },
+ {
+  "id": "pathfinder",
+  "name": "Mars Pathfinder and Sojourner",
+  "agency": "NASA",
+  "kind": "lander and rover",
+  "landedUtc": "1997-07-04",
+  "lat": 19.095,
+  "lon": -33.253,
+  "badge": "MEASURED",
+  "sourceIds": [
+   "PDS-ODE-LANDING",
+   "NASA-PATHFINDER"
+  ],
+  "rover": null,
+  "note": "Ares Vallis; Sojourner was the first rover on Mars. Position from radio tracking (Folkner et al. 1997)"
+ },
+ {
+  "id": "beagle2",
+  "name": "Beagle 2",
+  "agency": "UK (ESA Mars Express)",
+  "kind": "lander",
+  "landedUtc": "2003-12-25",
+  "lat": 11.52879,
+  "lon": 90.43139,
+  "badge": "MEASURED",
+  "sourceIds": [
+   "BRIDGES-2017",
+   "ESA-BEAGLE2"
+  ],
+  "rover": null,
+  "note": "Isidis Planitia; found partly deployed in HiRISE images in 2015"
+ },
+ {
+  "id": "spirit",
+  "name": "Spirit",
+  "agency": "NASA",
+  "kind": "rover",
+  "landedUtc": "2004-01-04",
+  "lat": -14.5692,
+  "lon": 175.4729,
+  "badge": "MEASURED",
+  "sourceIds": [
+   "PDS-ODE-LANDING",
+   "NASA-MER"
+  ],
+  "rover": null,
+  "note": "Gusev Crater; drove 7.7 km and ended in 2010. Cartographic triangulation (Arvidson et al. 2004)"
+ },
+ {
+  "id": "opportunity",
+  "name": "Opportunity",
+  "agency": "NASA",
+  "kind": "rover",
+  "landedUtc": "2004-01-25",
+  "lat": -1.9462,
+  "lon": -5.5266,
+  "badge": "MEASURED",
+  "sourceIds": [
+   "PDS-ODE-LANDING",
+   "NASA-MER"
+  ],
+  "rover": null,
+  "note": "Meridiani Planum; drove 45.16 km and was last heard in June 2018. Cartographic triangulation (Arvidson et al. 2004)"
+ },
+ {
+  "id": "phoenix",
+  "name": "Phoenix",
+  "agency": "NASA (with CSA)",
+  "kind": "lander",
+  "landedUtc": "2008-05-25",
+  "lat": 68.22,
+  "lon": -125.75,
+  "badge": "MEASURED",
+  "sourceIds": [
+   "PDS-ODE-LANDING",
+   "NASA-PHOENIX"
+  ],
+  "rover": null,
+  "note": "Vastitas Borealis; found ice under the soil and saw snow fall from clouds (Smith et al. 2009)"
+ },
+ {
+  "id": "curiosity",
+  "name": "Curiosity",
+  "agency": "NASA",
+  "kind": "rover",
+  "landedUtc": "2012-08-06",
+  "lat": -4.589467,
+  "lon": 137.441633,
+  "badge": "MEASURED",
+  "sourceIds": [
+   "MMGIS-MSL-WAYPOINTS",
+   "ESA-MSL-LANDING"
+  ],
+  "rover": "msl",
+  "note": "Bradbury Landing in Gale Crater; still driving. First MMGIS waypoint (sol 3)"
+ },
+ {
+  "id": "insight",
+  "name": "InSight",
+  "agency": "NASA (with CNES and DLR)",
+  "kind": "lander",
+  "landedUtc": "2018-11-26",
+  "lat": 4.502384,
+  "lon": 135.623447,
+  "badge": "MEASURED",
+  "sourceIds": [
+   "GOLOMBEK-2020"
+  ],
+  "rover": null,
+  "note": "Elysium Planitia; recorded 1319 marsquakes. Planetocentric east in the IAU 2000 frame"
+ },
+ {
+  "id": "perseverance",
+  "name": "Perseverance and Ingenuity",
+  "agency": "NASA",
+  "kind": "rover and helicopter",
+  "landedUtc": "2021-02-18",
+  "lat": 18.44462715,
+  "lon": 77.45088572,
+  "badge": "MEASURED",
+  "sourceIds": [
+   "MMGIS-M20-WAYPOINTS",
+   "JPL-EDL-PRESSKIT"
+  ],
+  "rover": "m20",
+  "note": "Octavia E. Butler Landing in Jezero Crater; still driving. First MMGIS waypoint (sol 13)"
+ },
+ {
+  "id": "zhurong",
+  "name": "Zhurong (Tianwen-1)",
+  "agency": "CNSA",
+  "kind": "rover",
+  "landedUtc": "2021-05-14",
+  "lat": 25.066,
+  "lon": 109.925,
+  "badge": "MEASURED",
+  "sourceIds": [
+   "ZHURONG-2022"
+  ],
+  "rover": null,
+  "note": "Southern Utopia Planitia; drove about 2 km and has been silent since May 2022. Located in Tianwen-1 orbiter images"
+ }
+]

@@ -1,0 +1,203 @@
+{
+ "terrain": [
+  {
+   "name": "t0-global",
+   "file": "/data/globe/t0-global.i16",
+   "cols": 2880,
+   "rows": 1440,
+   "west": -180,
+   "east": 180,
+   "south": -90,
+   "north": 90,
+   "scale": 1.0,
+   "offset": 0.0,
+   "sourceIds": [
+    "DATA-21"
+   ],
+   "note": "MOLA-HRSC blended DEM 200 m v2, averaged to 7.5 km"
+  },
+  {
+   "name": "t1-gale",
+   "file": "/data/globe/t1-gale.i16",
+   "cols": 889,
+   "rows": 889,
+   "west": 136.0,
+   "east": 139.0,
+   "south": -6.1,
+   "north": -3.1,
+   "scale": 1.0,
+   "offset": 0.0,
+   "sourceIds": [
+    "DATA-21"
+   ],
+   "note": "MOLA-HRSC blended DEM at full 200 m over Gale Crater"
+  },
+  {
+   "name": "t2-gale",
+   "file": "/data/globe/t2-gale.i16",
+   "cols": 878,
+   "rows": 952,
+   "west": 137.36,
+   "east": 137.48,
+   "south": -4.66,
+   "north": -4.53,
+   "scale": 0.1,
+   "offset": -4459.265298178992,
+   "sourceIds": [
+    "DATA-03",
+    "DATA-21"
+   ],
+   "note": "HiRISE DTM DTEEC_010573_1755_010639_1755_U01 at about 8 m, shifted -34.1 m to match the 200 m DEM"
+  },
+  {
+   "name": "t3-gale",
+   "file": "/data/globe/t3-gale.i16",
+   "cols": 1816,
+   "rows": 1347,
+   "west": 137.4305,
+   "east": 137.4615,
+   "south": -4.6015,
+   "north": -4.5785,
+   "scale": 0.1,
+   "offset": -4469.90917391117,
+   "sourceIds": [
+    "DATA-03"
+   ],
+   "note": "HiRISE DTM DTEEC_010573_1755_010639_1755_U01 at full 1 m, shifted -34.0 m to the 8 m layer"
+  },
+  {
+   "name": "t2-boxwork",
+   "file": "/data/globe/t2-boxwork.i16",
+   "cols": 512,
+   "rows": 512,
+   "west": 137.35,
+   "east": 137.42,
+   "south": -4.84,
+   "north": -4.77,
+   "scale": 0.1,
+   "offset": -3584.5432759747005,
+   "sourceIds": [
+    "DATA-26",
+    "DATA-21"
+   ],
+   "note": "HiRISE DTM DTEEC_019698_1750_019988_1750_U01 at about 8 m, shifted -4.7 m to match the 200 m DEM"
+  },
+  {
+   "name": "t3-boxwork",
+   "file": "/data/globe/t3-boxwork.i16",
+   "cols": 996,
+   "rows": 879,
+   "west": 137.3725,
+   "east": 137.3895,
+   "south": -4.8135,
+   "north": -4.7985,
+   "scale": 0.1,
+   "offset": -3597.5057193619277,
+   "sourceIds": [
+    "DATA-26"
+   ],
+   "note": "HiRISE DTM DTEEC_019698_1750_019988_1750_U01 at full 1 m, shifted -5.0 m to the 8 m layer"
+  }
+ ],
+ "imagery": [
+  {
+   "name": "i0-global",
+   "file": "/data/globe/i0-global.jpg",
+   "width": 8192,
+   "height": 4096,
+   "west": -180,
+   "east": 180,
+   "south": -90,
+   "north": 90,
+   "sourceIds": [
+    "DATA-22b"
+   ],
+   "note": "Viking colourised global mosaic 925 m (USGS), resampled to 2.6 km"
+  },
+  {
+   "name": "i1-gale",
+   "file": "/data/globe/i1-gale.jpg",
+   "width": 768,
+   "height": 768,
+   "west": 136.0,
+   "east": 139.0,
+   "south": -6.171892411303865,
+   "north": -3.1367449008784063,
+   "sourceIds": [
+    "DATA-22"
+   ],
+   "note": "Viking MDIM 2.1 colourised mosaic, full 232 m"
+  },
+  {
+   "name": "i2-traverse",
+   "file": "/data/globe/i2-traverse.jpg",
+   "width": 1800,
+   "height": 3800,
+   "west": 137.32672354505786,
+   "east": 137.47855898878092,
+   "south": -4.9332271503036855,
+   "north": -4.608931044598482,
+   "sourceIds": [
+    "DATA-24"
+   ],
+   "note": "MSL Gale merged HiRISE colour mosaic (Parker and Calef), about 5 m"
+  },
+  {
+   "name": "i3-gale",
+   "file": "/data/globe/i3-gale.jpg",
+   "width": 3675,
+   "height": 2726,
+   "west": 137.4305,
+   "east": 137.4615,
+   "south": -4.655912098311992,
+   "north": -4.632642493296226,
+   "sourceIds": [
+    "DATA-24"
+   ],
+   "note": "MSL Gale merged HiRISE colour mosaic, 0.50 m"
+  },
+  {
+   "name": "i4-gale",
+   "file": "/data/globe/i4-gale.jpg",
+   "width": 3319,
+   "height": 2133,
+   "west": 137.438,
+   "east": 137.452,
+   "south": -4.648324187546032,
+   "north": -4.639218689625881,
+   "sourceIds": [
+    "DATA-24"
+   ],
+   "note": "MSL Gale merged HiRISE colour mosaic, 0.25 m (full resolution near the walk)"
+  },
+  {
+   "name": "i3-boxwork",
+   "file": "/data/globe/i3-boxwork.jpg",
+   "width": 2015,
+   "height": 1778,
+   "west": 137.3725,
+   "east": 137.3895,
+   "south": -4.870395449778419,
+   "north": -4.855219843559654,
+   "sourceIds": [
+    "DATA-24"
+   ],
+   "note": "MSL Gale merged HiRISE colour mosaic, 0.50 m"
+  },
+  {
+   "name": "i4-boxwork",
+   "file": "/data/globe/i4-boxwork.jpg",
+   "width": 2133,
+   "height": 1896,
+   "west": 137.376,
+   "east": 137.385,
+   "south": -4.866854476412009,
+   "north": -4.858760819761223,
+   "sourceIds": [
+    "DATA-24"
+   ],
+   "note": "MSL Gale merged HiRISE colour mosaic, 0.25 m (full resolution near the walk)"
+  }
+ ],
+ "heights": "metres relative to the areoid (all sources share it); latitudes in grids are planetocentric"
+}

@@ -1,0 +1,66 @@
+/* Homeward | app/src/styles/tokens.css | v1.0.0 | 2026-10-29 */
+/* Contrast ratios for every text token are measured in design/DESIGN_TOKENS.md (all >= 4.5:1). */
+:root {
+  --color-bg: #060918;
+  --color-surface: #0E1430;
+  --color-surface-raised: #161E44;
+  --color-text: #E8ECF8;
+  --color-text-muted: #A3ADCC;
+  --color-accent: #E8A75D;
+  --color-on-accent: #060918;
+  --color-ok: #4ADE80;
+  --color-warn: #FBBF24;
+  --color-breach: #F87171;
+  --color-info: #60A5FA;
+  --color-border: #3A4680;
+  --color-control-border: #6B7AC0;
+  --color-focus: #FFD166;
+  --color-skeleton-highlight: #222C5C;
+  --color-scrim: rgb(6 9 24 / 0.72);
+  --color-route: #E8A75D;
+  --color-route-casing: #060918;
+  --color-track-msl: #22D3EE;
+  --color-track-m20: #6EE7B7;
+  --color-track-heli: #C4B5FD;
+  --color-measure: #FFD166;
+
+  --badge-live: #22D3EE;
+  --badge-measured: #6EE7B7;
+  --badge-modelled: #C4B5FD;
+  --badge-computed: #93C5FD;
+  --badge-standard: #FDBA74;
+  --badge-assumption: #FCD34D;
+  --badge-generated: #F9A8D4;
+
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+  --text-xs: 12px; --text-sm: 14px; --text-base: 16px; --text-lg: 18px;
+  --text-xl: 20px; --text-2xl: 24px; --text-3xl: 32px; --text-4xl: 48px;
+  --weight-regular: 400; --weight-medium: 500; --weight-bold: 700;
+  --leading-tight: 1.2; --leading-normal: 1.5;
+
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+  --space-6: 24px; --space-8: 32px; --space-12: 48px; --space-16: 64px;
+
+  --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px; --radius-xl: 16px; --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.45);
+  --shadow-lg: 0 12px 32px rgb(0 0 0 / 0.5);
+  --shadow-xl: 0 24px 48px rgb(0 0 0 / 0.55);
+
+  --motion-fast: 150ms; --motion-normal: 300ms; --motion-slow: 500ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --z-hud: 50; --z-dropdown: 100; --z-modal: 200; --z-toast: 300; --z-tooltip: 400;
+
+  --panel-bg: rgb(14 20 48 / 0.88);
+  --panel-blur: 10px;
+  --panel-width: 400px;
+  --topbar-height: 56px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --motion-fast: 0ms; --motion-normal: 0ms; --motion-slow: 0ms; }
+}
