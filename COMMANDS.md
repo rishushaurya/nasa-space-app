@@ -15,6 +15,8 @@
 | Production build and preview | `npm run build` then `npm run preview` (http://localhost:4173); the preview sends the same headers as `vercel.json`, CSP included, so a CSP problem shows here before deploy |
 | Regenerate data | from `pipeline/`: `../.venv/Scripts/python snapshot.py`, then `make_grid.py`, `make_rasters.py`, `make_moons.py`, `fetch_audio.py`, `rovers.py` (rover stops, tracks, Ingenuity, place names, offline stops), `build_facts.py` (facts, sources and landers), `build_corpus.py`, `manifest.py` |
 | After deploy | `node scripts/diagnostics.mjs --base https://your-app.vercel.app` |
+| Get the code | `git clone https://github.com/rishushaurya/nasa-space-app.git` (branch `main`), then Install and `npm run models` |
+| Save and share work (only when the team agrees) | `git add -A`, `git commit -m "..."` (no Claude co-author line), `git push`; `HEALTHSYNC_AI_Humanized.pdf` stays out |
 
 Full record of the build session: `BUILD_LOG.md`.
 

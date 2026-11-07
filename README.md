@@ -38,6 +38,7 @@ All values verified or computed on 28 Oct 2026; sources in `docs/DATA_SPEC.md` (
 ## 3. Session protocol (every AI, every session)
 
 On start:
+0. `CLAUDE.md` (loaded automatically by Claude Code) has a short "Where to begin" section with the current state and open items.
 1. Read this file.
 2. Read the last 3 entries of `CHANGELOG.md`, especially "NEXT AI SHOULD"; `BUILD_LOG.md` has the full detail of the build.
 3. Read `build/MANIFEST.md`. Check for IN-PROGRESS chunks (a previous session may have crashed; verify its work before continuing).
@@ -264,4 +265,4 @@ npm run typecheck
 node scripts/diagnostics.mjs
 ```
 
-Deploy on Vercel (Hobby, free): import the repository, keep the settings from `vercel.json` (build command `npm run models && npm run build`, output `dist`), add the variables from `.env.example` in Project Settings, deploy, then run `node scripts/diagnostics.mjs --base https://your-app.vercel.app`. The data pipeline in `pipeline/` only needs re-running to regenerate data; its outputs are committed.
+Source: https://github.com/rishushaurya/nasa-space-app (branch `main`). Deploy on Vercel (Hobby, free): import that repository, keep the settings from `vercel.json` (build command `npm run models && npm run build`, output `dist`), add the variables from `.env.example` in Project Settings, deploy, then run `node scripts/diagnostics.mjs --base https://your-app.vercel.app`. The data pipeline in `pipeline/` only needs re-running to regenerate data; its outputs are committed.

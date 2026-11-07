@@ -43,6 +43,8 @@ Rules:
 | 2026-10-29 | 00-09 | Built and verified in the browser; diagnostics 19 PASS, 0 FAIL, 1 SKIP (live health needs the deployed URL) | Claude Opus 5.5 |
 | 2026-10-29 | all | Every chunk file given an Outcome section; all documents updated to as-built; full record in `BUILD_LOG.md` | Claude Opus 5.5 |
 | 2026-11-01 | 10-16 | Research pass and `build/PLAN-2.md`; Explore, Rover view, walking yourself, live layers built; checked in the browser at desktop and 375 px; diagnostics 19 PASS, 0 FAIL, 1 SKIP; 52 tests | Claude Opus 5.5 |
+| 2026-11-06 | 16 | Every document and both skills at 2.0; CTX licence recorded; pushed to https://github.com/rishushaurya/nasa-space-app (`main`) | Claude Opus 5.5 |
+| 2026-11-07 | - | Handoff: "Where to begin" in `CLAUDE.md`; memory updated. Next: team's choice, else deploy, Esri terms, 200 m terrain | Claude Opus 5.5 |
 
 ## Cut from chunk 08 and 09 (not built)
 
@@ -50,4 +52,5 @@ Rules:
 - From PLAN-2 section 5: street view for missions without public pointing data (Spirit, Opportunity, InSight, Phoenix, Pathfinder, Vikings, Zhurong); 200 m terrain at landing sites other than Gale; lens distortion in Rover view.
 - T30 per-band acoustics and suit-interior loop (the real SuperCam wind recording is in); T40 comfort settings; light scaled to 39% (PLN-13); star sphere rotated for Mars; labelled orbiters.
 - MCD conditions and DONKI events; Kannada and Hindi (P2); all P2 items; browser end-to-end tests.
-- Team steps: Vercel deploy with keys, demo video or slides from real screenshots, submission form.
+- Team steps: Vercel deploy with keys (import https://github.com/rishushaurya/nasa-space-app), demo video or slides from real screenshots, submission form.
+- Open checks: Esri's terms for the OnMars CTX and HiRISE tiles (`legal/COMPLIANCE.md` section 4).

@@ -1,6 +1,19 @@
 # Changelog: Homeward
 
-> Version 2.0.1 | 2026-11-06 | Newest entry first. Every session adds one entry before it ends.
+> Version 2.0.2 | 2026-11-07 | Newest entry first. Every session adds one entry before it ends.
+
+## 2026-11-07 | Claude Opus 5.5 | Session 3c (handoff)
+
+**Description**: Made the starting point obvious for the next session. No code changed.
+
+**Changes**:
+- Modified: `CLAUDE.md` (new "Where to begin" section: what is done, what is open, first move), `README.md` (section 3 points to it; section 14 names the GitHub repository), `build/MANIFEST.md` (progress rows for 6 and 7 Nov; open checks), `AI_RECOVERY.md`, `COMMANDS.md` (clone and push lines), `BUILD_LOG.md` (12.5); Claude memory for this project (where to begin, repository, no co-author rule).
+
+**Diagnostics**: 17 PASS, 0 FAIL, 3 SKIP (`--quick`). Tests: 52 passed.
+
+**NEXT AI SHOULD**: Read `CLAUDE.md` "Where to begin", run `npm test` and `npm run diag`, then ask the team what they want next. If they give no direction: deploy on Vercel from GitHub and run `node scripts/diagnostics.mjs --base <url>`; confirm Esri's tile terms; then 200 m terrain at the other landing sites.
+
+---
 
 ## 2026-11-06 | Claude Opus 5.5 | Session 3b (documents to 2.0, licences, GitHub)
 

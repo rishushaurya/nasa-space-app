@@ -4,7 +4,7 @@
 
 ## 0. Current state (1 Nov 2026)
 
-The app is built and verified (version 2.0: Explore, Rover view and walking yourself added). Before changing anything, read `CLAUDE.md`, `README.md` (sections 9, 13 and 14), the newest `CHANGELOG.md` entry, `build/MANIFEST.md`, `build/PLAN-2.md` and `BUILD_LOG.md` (section 12 for 2.0), then run `npm test` and `npm run diag`. The project is a git repository on `main`; commit only when the team asks.
+The app is built and verified (version 2.0: Explore, Rover view and walking yourself added). Before changing anything, read `CLAUDE.md`, `README.md` (sections 9, 13 and 14), the newest `CHANGELOG.md` entry, `build/MANIFEST.md`, `build/PLAN-2.md` and `BUILD_LOG.md` (section 12 for 2.0), then run `npm test` and `npm run diag`. The project is a git repository on `main`, pushed to https://github.com/rishushaurya/nasa-space-app; commit or push only when the team asks, and never add a Claude `Co-Authored-By` line. `CLAUDE.md` section "Where to begin" lists what is done and what is open.
 
 Known traps:
 - A hidden browser pane pauses animation frames: camera flights finish on a timer fallback, and frame-rate numbers from a hidden pane mean nothing.

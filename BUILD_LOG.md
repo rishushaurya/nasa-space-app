@@ -267,3 +267,10 @@ The team asked for a Google-Earth experience, walking themselves instead of auto
 - `crossOriginIsolated` stays true with COEP `credentialless` in Chrome.
 - Production build under the production headers (`npm run preview`): no CSP violations across Mars now, Explore, Rover view (NASA records and photos load) and the assistant (answer and voice worker).
 
+### 12.5 After the build (6-7 Nov 2026)
+
+- Every document and both `.claude` skills brought to the 2.0 as-built state; plan-era claims removed (Dingo Gap 3D ground, an ice layer, data from every agency).
+- Licences: the OnMars CTX service states that the Caltech Murray Lab grants free use of beta01 for all purposes; Esri's hosting terms are still unconfirmed.
+- Git: the repository was created and pushed to https://github.com/rishushaurya/nasa-space-app (`main`, one commit, no Claude co-author line at the team's request). `.gitattributes` keeps `app/public/data/` byte-exact so the manifest hashes survive Windows checkouts.
+- Handoff: `CLAUDE.md` now opens with "Where to begin"; the Claude memory for this project records the repository, the no-co-author rule, the deferred Dingo Gap scene and that the team sets priorities.
+

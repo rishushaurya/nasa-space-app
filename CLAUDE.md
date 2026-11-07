@@ -2,6 +2,12 @@
 
 A browser app for exploring Mars and planning and walking a real Marswalk at Gale Crater. Version 1.0 was built on 29 Oct 2026; version 2.0 (1 Nov 2026) added Explore (a Google-Earth style globe), Rover view (street view from Curiosity's and Perseverance's own photos) and walking yourself. Every number comes from real, cited data.
 
+## Where to begin (state on 7 Nov 2026)
+
+- Done: version 1.0 and 2.0 are built, every document and both skills are at the 2.0 as-built state, all checks pass (52 tests; diagnostics 19 PASS, 0 FAIL, 1 SKIP), and everything is pushed to GitHub `main` (one commit, `eae7574`, plus any later ones).
+- Not done (team steps or open items): deploy on Vercel from the GitHub repository and run `node scripts/diagnostics.mjs --base <url>`; confirm Esri's terms for the CTX and HiRISE tiles (`legal/COMPLIANCE.md` section 4; fallback: make Viking the default layer); 200 m terrain at landing sites other than Gale (`build/PLAN-2.md` section 5); the cut list in `build/MANIFEST.md`; demo film or slides and the submission (events open 14 Nov 2026, 09:00 local; read `legal/COMPLIANCE.md` 1.1 first).
+- First move in a new session: run the start steps below, then ask the team what they want next. The team sets priorities; if they give none, follow "NEXT AI SHOULD" in the newest `CHANGELOG.md` entry. Dingo Gap 3D (T41) stays deferred until they ask.
+
 ## Start of every session
 
 1. Read `README.md` (rules, decisions D1-D20, section 13 for what is built and what is not, section 14 for run and deploy).
