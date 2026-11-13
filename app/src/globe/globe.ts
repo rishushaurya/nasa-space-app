@@ -4,10 +4,11 @@ import * as Cesium from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { directionFromMars } from "../core/ephemeris";
 import { ocToOg, ogToOc, type LatLon } from "../core/frames";
-import { moonPosition, type Moon, type MoonTable } from "../core/moons";
+import { moonPosition, orbiterPosition, type Moon, type MoonTable, type OrbiterTable } from "../core/moons";
 import type { Layers, TerrainLayer } from "../data/load";
-import { liveProvider } from "./layers";
-import type { LiveId } from "./live";
+import { liveProvider, tileProvider } from "./layers";
+import { createDem, DEM_MAX_LEVEL } from "./dem";
+import { OVERLAYS, type LiveId, type OverlayId } from "./live";
 
 Cesium.Ellipsoid.default = Cesium.Ellipsoid.MARS;
 const ELL = Cesium.Ellipsoid.MARS;
@@ -29,10 +30,14 @@ export type MarsGlobe = {
   setPins: (pins: { id: string; p: LatLon; label: string; kind: "home" | "stop" | "rover" | "site" }[]) => void;
   setHeat: (canvas: HTMLCanvasElement | null, box?: { west: number; east: number; south: number; north: number }) => void;
   setDustDevil: (p: LatLon | null) => void;
+  /** Orbiters at their JPL Horizons positions, moved by setSun like the moons; null removes them. */
+  setOrbiters: (t: OrbiterTable | null) => void;
   onPick: (fn: (p: LatLon) => void) => void;
   /** Live imagery: one base (or none for our own offline rasters) plus the HiRISE overlay. */
   setImagery: (base: Exclude<LiveId, "hirise"> | null, hirise: boolean) => void;
   liveErrors: () => number;
+  /** Overlays above all ground imagery (geology, thermal inertia, dust, shaded relief, HiRISE site mosaics). */
+  setOverlays: (ids: OverlayId[], alpha: number) => void;
   setLabels: (places: { name: string; p: LatLon; km: number }[] | null) => void;
   setTracks: (tracks: { id: string; lines: number[][]; color: string; width?: number }[]) => void;
   setStops: (id: string, pts: LatLon[] | null, color: string) => void;
@@ -63,6 +68,9 @@ export async function createGlobe(el: HTMLElement, layers: Layers, moons: MoonTa
     return { lay, data, cell: (lay.east - lay.west) / lay.cols };
   }));
   loaded.sort((a, b) => a.cell - b.cell);
+  // PLAN-3 D21: our metre-scale rasters first, then live 200 m relief everywhere, then our coarse rasters (offline).
+  const fine = loaded.filter((L) => L.cell < 0.001), coarse = loaded.filter((L) => L.cell >= 0.001);
+  const dem = createDem();
 
   const sample = (L: Loaded, latC: number, lon: number): number | undefined => {
     const { west, east, south, north, cols, rows, scale, offset } = L.lay;
@@ -73,8 +81,11 @@ export async function createGlobe(el: HTMLElement, layers: Layers, moons: MoonTa
     const v = d[i]! * (1 - fx) * (1 - fy) + d[i + 1]! * fx * (1 - fy) + d[i + cols]! * (1 - fx) * fy + d[i + cols + 1]! * fx * fy;
     return v * scale + offset;
   };
-  const heightAt = (p: LatLon) => {
-    for (const L of loaded) { const h = sample(L, p.lat, p.lon); if (h !== undefined) return h; }
+  const heightAt = (p: LatLon, z = DEM_MAX_LEVEL) => {
+    for (const L of fine) { const h = sample(L, p.lat, p.lon); if (h !== undefined) return h; }
+    const d = dem.sample(p.lat, p.lon, z);
+    if (d !== undefined) return d;
+    for (const L of coarse) { const h = sample(L, p.lat, p.lon); if (h !== undefined) return h; }
     return 0;
   };
 
@@ -85,12 +96,18 @@ export async function createGlobe(el: HTMLElement, layers: Layers, moons: MoonTa
     callback: (x: number, y: number, level: number) => {
       const r = tiling.tileXYToRectangle(x, y, level);
       const w = Cesium.Math.toDegrees(r.west), e = Cesium.Math.toDegrees(r.east), s = Cesium.Math.toDegrees(r.south), n = Cesium.Math.toDegrees(r.north);
-      const out = new Float32Array(N * N);
-      for (let row = 0; row < N; row++) {
-        const latC = ogToOc(n - (row / (N - 1)) * (n - s));
-        for (let col = 0; col < N; col++) out[row * N + col] = heightAt({ lat: latC, lon: w + (col / (N - 1)) * (e - w) });
-      }
-      return out;
+      // 64 cells per tile match the DEM's 512 per tile three levels down; the DEM tops out at level 7.
+      const z = Math.min(Math.max(level - 3, 0), DEM_MAX_LEVEL), sC = ogToOc(s), nC = ogToOc(n);
+      const fill = () => {
+        const out = new Float32Array(N * N);
+        for (let row = 0; row < N; row++) {
+          const latC = ogToOc(n - (row / (N - 1)) * (n - s));
+          for (let col = 0; col < N; col++) out[row * N + col] = heightAt({ lat: latC, lon: w + (col / (N - 1)) * (e - w) }, z);
+        }
+        return out;
+      };
+      // Cached tiles fill at once; otherwise wait for the worker (offline, the coarse rasters fill in).
+      return dem.has(z, sC, nC, w, e) ? fill() : dem.ensure(z, sC, nC, w, e).then(fill);
     },
   });
 
@@ -98,8 +115,12 @@ export async function createGlobe(el: HTMLElement, layers: Layers, moons: MoonTa
   // (script-src 'self', no 'unsafe-eval') blocks, so the globe never started on the deployed site.
   const viewer = new Cesium.CesiumWidget(el, {
     baseLayer: false, terrainProvider, skyBox: Cesium.SkyBox.createEarthSkyBox(), skyAtmosphere: new Cesium.SkyAtmosphere(ELL), msaaSamples: 4,
+    // PLAN-3 D22: draw a frame only when something changed (camera, tiles, or a globe method below), not 60 times a second.
+    requestRenderMode: true, maximumRenderTimeChange: Infinity,
   });
   const scene = viewer.scene, globe = scene.globe;
+  const R = () => scene.requestRender();
+  globe.tileCacheSize = 300; // keep more tiles when flying back and forth
   if (scene.sun) scene.sun.show = false;
   if (scene.moon) scene.moon.show = false;
   globe.enableLighting = true;
@@ -145,8 +166,19 @@ export async function createGlobe(el: HTMLElement, layers: Layers, moons: MoonTa
     label: { text: m === "phobos" ? "Phobos" : "Deimos", font: "12px sans-serif", pixelOffset: new Cesium.Cartesian2(0, -12), fillColor: cssColor("--color-text-muted"), showBackground: true, backgroundColor: cssColor("--color-bg", 0.6) } })] as const);
   // Scene cleanups can run after the viewer is gone (unmount order, hot reload): every method is then a no-op.
   const gone = () => viewer.isDestroyed();
+  let orb: { t: OrbiterTable; ents: [OrbiterTable["orbiters"][number], Cesium.Entity][] } | null = null;
+  const placeOrbiters = (utcMs: number) => {
+    for (const [o, ent] of orb?.ents ?? []) {
+      const p = orbiterPosition(orb!.t, o, utcMs);
+      ent.show = !!p;
+      if (p) ent.position = new Cesium.ConstantPositionProperty(new Cesium.Cartesian3(p[0] * 1000, p[1] * 1000, p[2] * 1000));
+    }
+  };
+  let lastSun = Date.now();
   const setSun = (utcMs: number) => {
     if (gone()) return;
+    lastSun = utcMs;
+    placeOrbiters(utcMs);
     const s = directionFromMars("sun", utcMs).unit, e = directionFromMars("earth", utcMs).unit;
     sunLight.direction = Cesium.Cartesian3.normalize(new Cesium.Cartesian3(-s[0], -s[1], -s[2]), new Cesium.Cartesian3());
     earth.position = new Cesium.ConstantPositionProperty(new Cesium.Cartesian3(e[0] * 3e8, e[1] * 3e8, e[2] * 3e8));
@@ -155,6 +187,7 @@ export async function createGlobe(el: HTMLElement, layers: Layers, moons: MoonTa
       ent.show = !!p;
       if (p) ent.position = new Cesium.ConstantPositionProperty(new Cesium.Cartesian3(p[0] * 1000, p[1] * 1000, p[2] * 1000));
     }
+    R();
   };
   setSun(Date.now());
 
@@ -187,6 +220,7 @@ export async function createGlobe(el: HTMLElement, layers: Layers, moons: MoonTa
     if (gone()) return;
     ent.show = !!pts && pts.length > 1;
     if (pts && pts.length > 1) ent.polyline!.positions = new Cesium.ConstantProperty(pts.map((p) => pos(p)));
+    R();
   };
 
   // Pins skip the depth test only near the ground (so terrain never hides them); from orbit Mars hides far-side pins.
@@ -201,27 +235,40 @@ export async function createGlobe(el: HTMLElement, layers: Layers, moons: MoonTa
         label: { text: pin.label, font: "600 13px sans-serif", fillColor: cssColor("--color-text"), showBackground: true, backgroundColor: cssColor("--color-bg", 0.7), pixelOffset: new Cesium.Cartesian2(0, -18), heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, disableDepthTestDistance: PIN_NO_DEPTH_M, distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 4.0e6) } });
       return `pin-${pin.id}`;
     });
+    R();
   };
 
   let heat: Cesium.ImageryLayer | null = null;
   const setHeat: MarsGlobe["setHeat"] = async (canvas, box) => {
     if (gone()) return;
     if (heat) { viewer.imageryLayers.remove(heat, true); heat = null; }
-    if (!canvas || !box) return;
+    if (!canvas || !box) return R();
     const provider = await Cesium.SingleTileImageryProvider.fromUrl(canvas.toDataURL("image/png"), { rectangle: Cesium.Rectangle.fromDegrees(box.west, ocToOg(box.south), box.east, ocToOg(box.north)), ellipsoid: ELL });
     if (gone()) return;
     if (heat) viewer.imageryLayers.remove(heat, true);
     heat = viewer.imageryLayers.addImageryProvider(provider);
     heat.alpha = 0.38;
+    R();
   };
 
   // GENERATED visual: a translucent dust column sized from EVT-01 (60 m wide, about 2 km tall).
   const devil = viewer.entities.add({ id: "dust-devil", show: false, position: Cesium.Cartesian3.ZERO,
     cylinder: { length: 2000, topRadius: 90, bottomRadius: 30, material: cssColor("--color-accent", 0.28), outline: false } });
+  const setOrbiters: MarsGlobe["setOrbiters"] = (t) => {
+    if (gone()) return;
+    orb?.ents.forEach(([, e]) => viewer.entities.remove(e));
+    orb = t && { t, ents: t.orbiters.map((o) => [o, viewer.entities.add({ id: `orbiter-${o.id}`, show: false, position: Cesium.Cartesian3.ZERO,
+      point: { pixelSize: 5, color: cssColor("--color-orbiter") },
+      label: { text: o.name, font: "12px sans-serif", pixelOffset: new Cesium.Cartesian2(0, -12), fillColor: cssColor("--color-orbiter"), showBackground: true, backgroundColor: cssColor("--color-bg", 0.6),
+        distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 1.2e8) } })]) };
+    placeOrbiters(lastSun);
+    R();
+  };
   const setDustDevil = (p: LatLon | null) => {
     if (gone()) return;
     devil.show = !!p;
     if (p) devil.position = new Cesium.ConstantPositionProperty(pos(p, heightAt(p) + 1000));
+    R();
   };
 
   // Live layers go above our coarse global rasters (i0, i1) and below our own fine Gale mosaics (i2 and up).
@@ -241,6 +288,17 @@ export async function createGlobe(el: HTMLElement, layers: Layers, moons: MoonTa
     // CTX is greyscale: laid over the Viking colour at 0.7 so the ground keeps a hint of its real colour.
     if (base) add(base, base === "ctx" ? 0.7 : 1);
     if (hirise) add("hirise");
+    R();
+  };
+
+  const overlays = new Map<OverlayId, Cesium.ImageryLayer[]>();
+  const setOverlays: MarsGlobe["setOverlays"] = (ids, alpha) => {
+    if (gone()) return;
+    for (const [id, ls] of overlays) if (!ids.includes(id)) { ls.forEach((l) => viewer.imageryLayers.remove(l, true)); overlays.delete(id); }
+    for (const id of ids) if (!overlays.has(id)) overlays.set(id, OVERLAYS[id].parts.map((t) => viewer.imageryLayers.addImageryProvider(tileProvider(t, ELL, true, () => errors++))));
+    for (const ls of overlays.values()) for (const l of ls) l.alpha = alpha;
+    if (heat) viewer.imageryLayers.raiseToTop(heat); // the walk-back heat map stays on top
+    R();
   };
 
   const labels = scene.primitives.add(new Cesium.LabelCollection()) as Cesium.LabelCollection;
@@ -251,6 +309,7 @@ export async function createGlobe(el: HTMLElement, layers: Layers, moons: MoonTa
     for (const pl of places ?? []) labels.add({ position: pos(pl.p, heightAt(pl.p) + 300), text: pl.name, font: "12px sans-serif", fillColor: cssColor("--color-text-muted"),
       outlineColor: cssColor("--color-bg"), outlineWidth: 3, style: Cesium.LabelStyle.FILL_AND_OUTLINE, horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
       distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, Math.min(Math.max(pl.km * 8000, 40000), 9e6)) });
+    R();
   };
 
   let trackEnts: Cesium.Entity[] = [];
@@ -261,6 +320,7 @@ export async function createGlobe(el: HTMLElement, layers: Layers, moons: MoonTa
       // Drive segments follow on from each other, so one line per rover is drawn.
       positions: t.lines.flatMap((ln) => Array.from({ length: ln.length / 2 }, (_, i) => pos({ lon: ln[2 * i]!, lat: ln[2 * i + 1]! }))),
       clampToGround: true, width: t.width ?? 3, material: cssColor(t.color, 0.9) } }));
+    R();
   };
 
   const stopSets = new Map<string, Cesium.PointPrimitiveCollection>();
@@ -268,12 +328,13 @@ export async function createGlobe(el: HTMLElement, layers: Layers, moons: MoonTa
     if (gone()) return;
     const old = stopSets.get(id);
     if (old) { scene.primitives.remove(old); stopSets.delete(id); }
-    if (!pts) return;
+    if (!pts) return R();
     const c = scene.primitives.add(new Cesium.PointPrimitiveCollection()) as Cesium.PointPrimitiveCollection;
     pts.forEach((p, i) => c.add({ id: `stop-${id}-${i}`, position: pos(p, heightAt(p) + 1), pixelSize: 7, color: cssColor(color), outlineColor: cssColor("--color-bg"), outlineWidth: 1.5,
       // Points are not draped, so they only show close up, where the rendered terrain matches heightAt (no parallax).
       distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 25000), disableDepthTestDistance: 25000 }));
     stopSets.set(id, c);
+    R();
   };
 
   const measure = line("measure", cssColor("--color-measure"), 3);
@@ -311,11 +372,12 @@ export async function createGlobe(el: HTMLElement, layers: Layers, moons: MoonTa
   const setFov = (deg: number) => {
     if (gone()) return;
     (viewer.camera.frustum as Cesium.PerspectiveFrustum).fov = Cesium.Math.toRadians(deg);
+    R();
   };
 
   return {
-    viewer, heightAt, setSun, flyTo, eye, setRoute: (p) => setLine(route, p), setTraverse: (p) => setLine(traverse, p), setPins, setHeat, setDustDevil, onPick,
-    setImagery, liveErrors: () => errors, setLabels, setTracks, setStops, setMeasure: (p) => setLine(measure, p), onSelect, onHover, setFov,
+    viewer, heightAt, setSun, flyTo, eye, setRoute: (p) => setLine(route, p), setTraverse: (p) => setLine(traverse, p), setPins, setHeat, setDustDevil, setOrbiters, onPick,
+    setImagery, liveErrors: () => errors, setOverlays, setLabels, setTracks, setStops, setMeasure: (p) => setLine(measure, p), onSelect, onHover, setFov,
     cam: {
       state: () => {
         const c = viewer.camera, g = c.positionCartographic;
@@ -333,7 +395,7 @@ export async function createGlobe(el: HTMLElement, layers: Layers, moons: MoonTa
       zoom: (m) => viewer.camera.zoomIn(m),
       pan: (r, u) => { if (r) viewer.camera.rotateRight(r); if (u) viewer.camera.rotateUp(u); },
     },
-    destroy: () => { if (gone()) return; handler.destroy(); viewer.destroy(); },
+    destroy: () => { if (gone()) return; handler.destroy(); viewer.destroy(); dem.destroy(); },
   };
 }
 

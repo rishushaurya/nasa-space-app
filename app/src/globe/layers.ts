@@ -1,4 +1,4 @@
-// Homeward | app/src/globe/layers.ts | v2.0.0 | 2026-11-01
+// Homeward | app/src/globe/layers.ts | v3.0.0 | 2026-11-13
 // Live imagery streamed like Google Earth: NASA Mars Trek and Esri OnMars tiles (both send CORS headers). They are
 // 2x1 geographic tiles on the Mars 2000 sphere, so latitude is planetocentric; our globe is the IAU ellipsoid with
 // geodetic latitude. Without converting tile edges they would sit 3.2 km off at Gale and about 20 km at 45 deg (D7).
@@ -23,9 +23,12 @@ export class OcentricTiling extends Cesium.GeographicTilingScheme {
   }
 }
 
-export function liveProvider(id: LiveId, ellipsoid: Cesium.Ellipsoid, onError: () => void): Cesium.UrlTemplateImageryProvider {
-  const L = LIVE[id];
-  const p = new Cesium.UrlTemplateImageryProvider({ url: L.url, tilingScheme: new OcentricTiling(ellipsoid), tileWidth: L.size, tileHeight: L.size, maximumLevel: L.max, hasAlphaChannel: id === "hirise" });
+/** A tile provider; `rect` (planetocentric degrees) keeps a local mosaic from requesting tiles it does not have. */
+export function tileProvider(t: { url: string; size: number; max: number; rect?: [number, number, number, number] }, ellipsoid: Cesium.Ellipsoid, alpha: boolean, onError: () => void) {
+  const p = new Cesium.UrlTemplateImageryProvider({ url: t.url, tilingScheme: new OcentricTiling(ellipsoid), tileWidth: t.size, tileHeight: t.size, maximumLevel: t.max, hasAlphaChannel: alpha,
+    ...(t.rect ? { rectangle: Cesium.Rectangle.fromDegrees(t.rect[0], ocToOg(t.rect[1]), t.rect[2], ocToOg(t.rect[3])) } : {}) });
   p.errorEvent.addEventListener(onError); // a listener also stops Cesium logging every failed tile
   return p;
 }
+
+export const liveProvider = (id: LiveId, ellipsoid: Cesium.Ellipsoid, onError: () => void) => tileProvider(LIVE[id], ellipsoid, id === "hirise", onError);

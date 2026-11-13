@@ -84,6 +84,13 @@ Voice rules: stock voices only; never clone a real astronaut, NASA engineer or a
 | NASA raw rover images and records (Rover view; Curiosity and Perseverance) | NASA media guidelines; raw images are public | Credit per image (NASA/JPL-Caltech, /MSSS for Mastcam, /ASU for Mastcam-Z), shown on each photo; no endorsement; offline copies of four stops are 512 px derivatives with the same credit |
 | NASA MMGIS waypoints, drive paths, Ingenuity flights | NASA media guidelines | Credit NASA/JPL-Caltech |
 | USGS Gazetteer of Planetary Nomenclature | Public domain (USGS); names approved by the IAU | Credit "IAU/USGS Gazetteer of Planetary Nomenclature" |
+| MOLA-HRSC 200 m heights via Esri OnMars MDEM200M (live terrain since 13 Nov 2026) | MOLA CC0; HRSC CC BY-SA 3.0 IGO; Esri hosting terms not stated (UNVERIFIED, same check as CTX) | Credit as for the 200 m DEM; heights are only displayed, not redistributed |
+| Mars Trek overlays: USGS SIM 3292 geology, MGS TES thermal inertia and dust, MOLA-HRSC colour shaded relief, HiRISE site mosaics | Public domain (USGS) or NASA media guidelines; HRSC parts CC BY-SA 3.0 IGO | Credit per layer (Credits scene, `sources.csv`) |
+| PDS Geosciences Node MER traverse tables | NASA PDS | Credit NASA/JPL-Caltech, the MER science team (T. Parker) and the PDS Geosciences Node |
+| NASA Image and Video Library photos | NASA media guidelines | Credit per image (shown in the viewer) with a link to its NASA page; no endorsement |
+| Curiosity REMS weather feed; DONKI; JPL Horizons orbiters | Public (NASA); REMS is NASA/JPL-Caltech/CAB (CSIC-INTA) | Credit as listed in `sources.csv` |
+| HiRISE ESP_048041_1780 (Schiaparelli) | NASA media guidelines | Credit NASA/JPL-Caltech/University of Arizona |
+| lerc 2.0.0 (LERC decoder) | Apache-2.0 | Notice in the bundle |
 | Other teams' public repositories | Their own licences | Context only; never copy code or assets |
 
 Version 2.0 (1 Nov 2026) added the rows for CTX, HiRISE, Trek, rover images, MMGIS and the Gazetteer above; every one also appears in `data/sources.json` and the Credits scene.

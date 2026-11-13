@@ -5,7 +5,7 @@ description: Build, run, test and extend the Homeward Mars app (NASA Space Apps 
 
 # Homeward development
 
-Read `README.md` first (rules, decisions D1-D20, section 13 for what is built), then the last `CHANGELOG.md` entry, `build/MANIFEST.md`, `build/PLAN-2.md` (research and decisions behind Explore, Rover view and walking yourself) and, for detail, `BUILD_LOG.md` (section 12 for version 2.0).
+Read `README.md` first (rules, decisions D1-D27, section 13 for what is built), then `docs/PROJECT_GRAPH.md` (how the parts connect), the last `CHANGELOG.md` entry, `build/MANIFEST.md`, `build/PLAN-2.md` and `build/PLAN-3.md` (research and decisions behind 2.0 and 3.0) and, for detail, `BUILD_LOG.md` (section 12 for 2.0, section 13 for 3.0).
 
 ## Commands
 
@@ -14,11 +14,12 @@ Read `README.md` first (rules, decisions D1-D20, section 13 for what is built), 
 | Install | `npm ci` |
 | Voice and speech models (once; pinned and hash-checked) | `npm run models` |
 | Run (app + API relay in one dev server) | `npm run dev`, open http://localhost:5173 |
-| Unit tests, golden values, 40-question assistant eval (52 tests in 9 files) | `npm test` |
+| Unit tests, golden values, 40-question assistant eval (73 tests in 15 files) | `npm test` |
+| Knowledge graph (after code changes; free, seconds) | `graphify update .`; ask it with `graphify query "..."`, `graphify path "A" "B"`, `graphify explain "X"` |
 | Type check | `npm run typecheck` |
 | Diagnostics (20 checks, PASS/FAIL with fix hints) | `npm run diag`; `node scripts/diagnostics.mjs --quick` skips build and audit; `--base <url>` checks a deployment |
 | Production build and preview (sends the `vercel.json` headers, CSP included) | `npm run build`, then `npm run preview` (http://localhost:4173) |
-| Data pipeline (from `pipeline/`, Windows) | `../.venv/Scripts/python snapshot.py`, then `make_grid.py`, `make_rasters.py`, `make_moons.py`, `fetch_audio.py`, `rovers.py` (stops, tracks, Ingenuity, Gazetteer, offline featured stops), `build_facts.py` (also builds `data/places/landers.json`), `build_corpus.py`, and last `manifest.py` |
+| Data pipeline (from `pipeline/`, Windows) | `../.venv/Scripts/python snapshot.py`, then `make_grid.py`, `make_rasters.py`, `make_moons.py`, `fetch_audio.py`, `rovers.py` (stops, tracks, Ingenuity, Gazetteer, MER traverses, offline featured stops; one step by name, e.g. `rovers.py mer`), `make_orbiters.py` (re-run before 30 Nov 2026: MRO's ephemeris ends then), `build_facts.py` (also builds `data/places/landers.json`), `build_corpus.py`, and last `manifest.py` |
 
 ## Non-negotiable rules
 
@@ -33,6 +34,7 @@ Read `README.md` first (rules, decisions D1-D20, section 13 for what is built), 
 
 - `app/src/core/` pure logic: `mars-time.ts` (Mars24), `ephemeris.ts` (JPL elements, Mars-fixed rotation), `moons.ts` (JPL Horizons), `frames.ts`, `planner.ts` (+ worker), `dose.ts`
 - `app/src/globe/` Cesium viewer on our own terrain and imagery rasters; `layers.ts` live Trek and OnMars tiles on a planetocentric tiling scheme; `live.ts` the layer list (no Cesium import, so scenes can use it); the camera API (`globe.cam`) keeps Cesium out of scene code and out of the startup bundle
+- `app/src/globe/dem.ts` + `dem.worker.ts` live 200 m relief (Esri MDEM200M, LERC, LRU cache; `heightAt` takes metre rasters first, then the DEM, then our coarse grid); `app/src/core/los.ts` radio line of sight; `app/src/core/conditions.ts` REMS feed and space weather; `app/src/rovers/library.ts` NASA image library per lander; `api/v1/spaceweather.ts` DONKI relay
 - `app/src/core/camera.ts` CAHV camera model and attitude maths for Rover view; `app/src/core/places.ts` place search; `app/src/rovers/raw.ts` rover stops and NASA raw-image client (zod at the boundary)
 - `app/src/assistant/` tools, brain (relay client), offline rules, Kokoro voice (+ worker), wind, speech in, Mission Control (`Dock.tsx`), eval
 - `app/src/scenes/` one file per scene: `Clock` (Mars now), `Explore` (Google-Earth globe: search, landers, tracks, layers, map controls, ruler; also exports `stopsFor`), `Flight` (Orbit, Descent), `Briefing`, `Plan`, `Walk` (walk yourself by default, Follow the plan), `Relive` (Rover view; the scene id stays `relive` so old links work), `Credits`; `app/src/ui/` shared components (`fmtLatLon` prints planetocentric, 0-360 E)
@@ -63,3 +65,12 @@ Read `README.md` first (rules, decisions D1-D20, section 13 for what is built), 
 - With Vite `root: "app"`, `ssrLoadModule("/api/...")` resolves under `app/`; the dev relay uses an absolute path.
 
 End every session with a `CHANGELOG.md` entry, a `build/MANIFEST.md` update and, for large sessions, an entry in `BUILD_LOG.md`.
+
+## Version 3.0 notes (13 Nov 2026; `build/PLAN-3.md`)
+
+- The globe renders on demand (D22). A new globe method that changes the scene must end with `R()` (`scene.requestRender()`), or the change shows only on the next camera move.
+- Live layers: base imagery in `LIVE`, overlays in `OVERLAYS` (`app/src/globe/live.ts`); a local mosaic gets a `rect` so it never requests tiles outside its footprint. Trek and OnMars tiles are planetocentric: always through `tileProvider` (OcentricTiling).
+- NASA's image library links previews at several sizes (`~thumb`, `~small`, `~medium`); some photos have no `~medium`, so the viewer falls back to `~orig`.
+- Horizons refuses requests past a spacecraft's published ephemeris end; `make_orbiters.py` reads the end from the error. MAVEN's ends 1 Mar 2026.
+- `npm run preview` has no API routes: `/api/v1/*` panels show their error state there; test them in `npm run dev`.
+- Write edit scripts as files (Write tool) and run them with python: heredocs break on apostrophes here.

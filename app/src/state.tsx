@@ -1,8 +1,9 @@
-// Homeward | app/src/state.tsx | v1.0.0 | 2026-10-29
+// Homeward | app/src/state.tsx | v3.0.0 | 2026-11-13
 // App state lives in the URL hash (shareable, reproducible) and is mirrored to localStorage on every change.
 import { createContext, useContext, useEffect, useReducer, type ReactNode } from "react";
 import { z } from "zod";
 import { DEFAULTS, type Settings } from "./core/planner";
+import { OVERLAY_IDS } from "./globe/live";
 
 export const SCENES = ["clock", "explore", "orbit", "descent", "briefing", "plan", "walk", "relive", "credits"] as const;
 export const IMAGERY = ["ctx", "viking", "themis-day", "themis-night", "offline"] as const;
@@ -26,6 +27,7 @@ const StateSchema = z.object({
   }),
   samples: z.array(z.object({ t: z.number(), lat: z.number(), lon: z.number(), note: z.string().max(200) })).max(50),
   imagery: z.enum(IMAGERY), hirise: z.boolean(), labels: z.boolean(), tracks: z.boolean(),
+  overlays: z.array(z.enum(OVERLAY_IDS)).max(OVERLAY_IDS.length), overlayAlpha: z.number().min(0.1).max(1),
   // Rover view: a stop is named by its rover motion counter (site, drive), which never changes as NASA adds stops.
   rover: z.object({ m: z.enum(["msl", "m20"]), site: z.number().int().min(0), drive: z.number().int().min(0) }),
   place: z.string().max(40).nullable(), // selected lander or feature in Explore
@@ -34,7 +36,7 @@ export type AppState = z.infer<typeof StateSchema>;
 
 const INITIAL: AppState = {
   scene: "clock", zone: "gale", stopMin: 60, startLtst: 10, compression: 60, sol: 182, heat: true, voice: true, online: true, lang: "en",
-  settings: DEFAULTS, samples: [], imagery: "ctx", hirise: false, labels: true, tracks: true, rover: { m: "msl", site: 6, drive: 0 }, place: null,
+  settings: DEFAULTS, samples: [], imagery: "ctx", hirise: false, labels: true, tracks: true, overlays: [], overlayAlpha: 0.6, rover: { m: "msl", site: 6, drive: 0 }, place: null,
 };
 export const KEY = "homeward:plan:v1";
 
@@ -43,7 +45,7 @@ function reducer(s: AppState, a: Action): AppState {
   if (a.type === "set") return { ...s, ...a.patch };
   if (a.type === "settings") return { ...s, settings: { ...s.settings, ...a.patch } };
   // Clears the plan; keeps the person's sound, privacy and map choices.
-  return { ...INITIAL, scene: s.scene, voice: s.voice, online: s.online, imagery: s.imagery, hirise: s.hirise, labels: s.labels, tracks: s.tracks };
+  return { ...INITIAL, scene: s.scene, voice: s.voice, online: s.online, imagery: s.imagery, hirise: s.hirise, labels: s.labels, tracks: s.tracks, overlays: s.overlays, overlayAlpha: s.overlayAlpha };
 }
 
 function readInitial(): { state: AppState; warning?: string } {

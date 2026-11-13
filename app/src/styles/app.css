@@ -218,3 +218,5 @@ select, input[type="text"], input[type="time"], input[type="number"], textarea {
 @media (max-width: 479px) {
   .brand-name { display: none; }
 }
+.btn-plain { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; border-radius: var(--radius-md); }
+.btn-plain:focus-visible img, .btn-plain:hover img { outline: 2px solid var(--color-accent); }

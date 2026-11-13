@@ -1,13 +1,15 @@
-// Homeward | app/src/scenes/Flight.tsx | v1.0.0 | 2026-10-29
+// Homeward | app/src/scenes/Flight.tsx | v3.0.0 | 2026-11-13
 // Scene 1 (orbit) and scene 3 (descent). The descent HUD shows Perseverance's real entry profile (EDL-01) over Gale.
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, FastForward, Globe, Plane, SkipForward } from "lucide-react";
+import { ArrowRight, FastForward, Globe, Plane, SatelliteDish, SkipForward } from "lucide-react";
 import { earthElongation } from "../core/ephemeris";
 import { useApp } from "../state";
 import { useRuntime } from "../runtime";
 import { ZONES } from "../sites";
 import { useNow } from "./Clock";
-import { Badge, FactRow, SourceLink } from "../ui/ui";
+import { Badge, FactRow, Panel, SourceLink, type PanelState } from "../ui/ui";
+import { incidentId, loadOrbiters } from "../data/load";
+import { orbiterPosition, type OrbiterTable } from "../core/moons";
 import { setAmbient } from "../assistant/ambient";
 
 export function OrbitScene() {
@@ -30,6 +32,15 @@ export function OrbitScene() {
     const id = setInterval(() => { const n = performance.now(); t += (n - last) * 3600; last = n; globe.setSun(t); setSimT(t); }, 50);
     return () => { clearInterval(id); globe.setSun(Date.now()); };
   }, [globe, lapse]);
+  // Orbiters overhead at their JPL Horizons positions (PLAN-3 chunk 25): NASA, ESA, ESA with Roscosmos, and the UAE.
+  const [orb, setOrb] = useState<PanelState<OrbiterTable>>({ kind: "loading" });
+  useEffect(() => {
+    if (!globe) return;
+    let alive = true;
+    loadOrbiters().then((t) => { if (!alive) return; globe.setOrbiters(t); setOrb({ kind: "ok", data: t }); })
+      .catch((e) => alive && setOrb({ kind: "error", message: `Orbiter positions could not load: ${e.message}`, incident: incidentId() }));
+    return () => { alive = false; globe.setOrbiters(null); };
+  }, [globe]);
   const el = earthElongation(now);
   return (
     <aside className="side">
@@ -48,6 +59,23 @@ export function OrbitScene() {
         <p className="muted" style={{ fontSize: "var(--text-xs)" }}>Star background: Cesium's Tycho-2 sky, not yet rotated for Mars (approximation).</p>
         <div className="row"><button className="btn primary" onClick={() => set({ scene: "descent" })}>Descend to Gale <ArrowRight size={16} aria-hidden /></button></div>
       </section>
+      <Panel title="Orbiters overhead" icon={<SatelliteDish size={18} aria-hidden />} state={orb} lines={5}>
+        {(t) => {
+          const at = lapse ? simT : now;
+          return (
+            <>
+              <div className="facts">
+                {t.orbiters.flatMap((o) => {
+                  const p = orbiterPosition(t, o, at);
+                  return [<span key={`l${o.id}`} className="fact-label">{o.name} <small className="muted">({o.agency})</small></span>,
+                    <span key={`v${o.id}`} className="fact-value"><span className="mono">{p ? `${Math.round(Math.hypot(...p) - 3396.19).toLocaleString("en-US")} km up` : `no ephemeris after ${o.endUtc.slice(0, 10)}`}</span>{p && <Badge b="COMPUTED" />}</span>];
+                })}
+              </div>
+              <p className="muted" style={{ fontSize: "var(--text-xs)", marginBottom: 0 }}>Positions from JPL Horizons every 10 minutes, interpolated <SourceLink id="JPL-HORIZONS-ORBITERS" data={data} />; height above the 3,396 km equatorial radius. MAVEN is not shown: its Horizons ephemeris ends on 1 March 2026.</p>
+            </>
+          );
+        }}
+      </Panel>
     </aside>
   );
 }

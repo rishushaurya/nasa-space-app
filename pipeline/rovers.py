@@ -1,5 +1,5 @@
-# Homeward | pipeline/rovers.py | v2.0.0 | 2026-11-01
-"""Rover stops, drive paths, Ingenuity flights, Mars place names and offline copies of featured stops.
+# Homeward | pipeline/rovers.py | v3.0.0 | 2026-11-13
+"""Rover stops, drive paths (Curiosity, Perseverance, Spirit, Opportunity), Ingenuity flights, Mars place names and offline copies of featured stops.
 
 Stops are NASA MMGIS waypoints in drive order. The app asks NASA's raw-image APIs for a stop's photos at run time;
 the featured stops below are also saved here (raw API records and 512 px copies) so they work offline.
@@ -10,7 +10,7 @@ import re
 
 from PIL import Image
 
-from common import DATA, get, write_json
+from common import DATA, R_SPHERE, get, write_json
 
 MMGIS = "https://mars.nasa.gov/mmgis-maps"
 OUT = DATA / "rovers"
@@ -96,6 +96,37 @@ def gazetteer():
     print("gazetteer", len(rows), "features")
 
 
+AN = "https://an.rsl.wustl.edu/mera/AN/meri/MER/traverse"
+
+
+def mer():
+    """Spirit and Opportunity drive paths from the PDS Geosciences Node (Analyst's Notebook), corrected and interpolated
+    by the PDS. Spirit: equirectangular metres centred on 175.5 E, 0 N (MERA_traverse.lbl). Opportunity: metres east and
+    north of the landing site; its label names no frame, so the conversion is checked against Victoria crater below."""
+    import csv
+    import math
+    land_b = (-1.9462, -5.5266)  # PDS ODE landing site, as in landers.csv
+    for name, f in (("mer-a", "MERA_traverse.csv"), ("mer-b", "MERB_traverse_5130.csv")):
+        rows = list(csv.DictReader(io.StringIO(get(f"{AN}/{f}").text)))
+        pts, sols = [], []
+        for r in rows:
+            x, y = float(r["CORRECTED_X"]), float(r["CORRECTED_Y"])
+            if name == "mer-a":
+                lat, lon = math.degrees(y / R_SPHERE), 175.5 + math.degrees(x / R_SPHERE)
+            else:
+                lat = land_b[0] + math.degrees(y / R_SPHERE)
+                lon = land_b[1] + math.degrees(x / (R_SPHERE * math.cos(math.radians(land_b[0]))))
+            pts.append([lon, lat])
+            sols.append(int(r["END_SOL"]))
+        if name == "mer-b":  # Victoria crater (Gazetteer centre 2.05 S, 5.50 W): Opportunity circled it on sols 951-1634
+            v = [p for p, s in zip(pts, sols) if 951 <= s <= 1634]
+            assert abs(sum(p[1] for p in v) / len(v) + 2.05) < 0.01 and abs(sum(p[0] for p in v) / len(v) + 5.50) < 0.01
+        line = [round(v, 7) for p in rdp(pts, 1.5e-5) for v in p]
+        km = sum(math.hypot((pts[i][0] - pts[i - 1][0]) * math.cos(math.radians(pts[i][1])), pts[i][1] - pts[i - 1][1]) for i in range(1, len(pts))) * math.pi / 180 * R_SPHERE / 1000
+        write_json(OUT / f"{name}-track.json", {"sourceId": "PDS-AN-MER-TRAVERSE", "lastSol": max(sols), "km": round(km, 2), "lines": [line]})
+        print(name, len(rows), "drives,", len(line) // 2, "track points,", round(km, 2), "km, last sol", max(sols))
+
+
 def featured():
     stops_by = {m: json.loads((OUT / f"{m}-stops.json").read_text())["rows"] for m in FEATURED}
     for m, keys in FEATURED.items():
@@ -132,7 +163,7 @@ def featured():
 
 
 if __name__ == "__main__":
-    stops()
-    ingenuity()
-    gazetteer()
-    featured()
+    import sys
+    steps = {"stops": stops, "ingenuity": ingenuity, "gazetteer": gazetteer, "mer": mer, "featured": featured}
+    for step in sys.argv[1:] or steps:  # one step by name, or all of them
+        steps[step]()

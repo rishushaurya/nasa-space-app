@@ -1,6 +1,28 @@
 # Changelog: Homeward
 
-> Version 2.0.2 | 2026-11-07 | Newest entry first. Every session adds one entry before it ends.
+> Version 3.0.0 | 2026-11-13 | Newest entry first. Every session adds one entry before it ends.
+
+## 2026-11-13 | Claude Fable 5.2, Claude Opus 5.5 | Session 4 (version 3.0: whole-Mars 3D, every visited place, live conditions)
+
+**Description**: The team asked for a project graph, a check of the build against the official statement, real data everywhere, better controls and less lag, every visited place as a Google-Maps-style ride, and whole-planet Google Earth. Research pass (every endpoint opened and its headers checked), then `build/PLAN-3.md` (statement-by-statement comparison, findings, decisions D21-D27, chunks 17-26), then the build, checked in the dev server and under the production headers.
+
+**Changes**:
+- Created: `build/PLAN-3.md`, `docs/PROJECT_GRAPH.md`, `.graphifyignore`, `graphify-out/` (graph.json, graph.html, GRAPH_REPORT.md), `app/src/globe/dem.ts` and `dem.worker.ts` (+test, `lerc.d.ts`), `app/src/rovers/library.ts` (+test), `app/src/core/conditions.ts` (+test), `app/src/core/los.ts` (+test), `app/src/core/orbiters.test.ts`, `api/v1/spaceweather.ts` (+test), `pipeline/make_orbiters.py`, data `rovers/mer-a-track.json`, `rovers/mer-b-track.json`, `sky/orbiters.json`
+- Modified: `globe.ts` (live 200 m relief behind our fine rasters; render on demand; overlays; orbiters), `live.ts` and `layers.ts` (overlay definitions, bounded providers), `Explore.tsx` (overlays and opacity, MER tracks, landing-site tour, lander photos and viewer, drive-path facts, live terrain line), `Relive.tsx` (ride), `Briefing.tsx` (latest measured weather, space weather), `Walk.tsx` (radio line of sight), `Flight.tsx` (orbiters overhead), `moons.ts` (shared state interpolation), `load.ts` (orbiters), `state.tsx` (overlays), `App.tsx`, `ui.tsx` (MODELLED help), `tokens.css` (MER and orbiter colours), `rovers/raw.ts` (track metadata), `pipeline/rovers.py` (`mer` step, steps by name), `sources.csv` (+14 sources), `landers.csv` (Schiaparelli), `vercel.json` and `diagnostics.mjs` (CSP D24), `.env.example` (`NASA_API_KEY`), `package.json` (`lerc` 2.0.0 pinned; already a Cesium dependency)
+- Documents: README (header, file map, D21-D27, keys, diagnostics, section 13), CLAUDE.md, MANIFEST, PLAN-3, BUILD_LOG section 13, DATA_SPEC 0.2, SECURITY_ACCESS, PRIVACY_POLICY, COMPLIANCE, the homeward-dev skill
+- Found and fixed while testing: NASA's image library links previews at different sizes (Spirit's are `~small`), so the first filter dropped every Spirit photo; some older photos have no `~medium` size (viewer falls back to `~orig`); Horizons' predicted ephemerides end on different dates (MRO 30 Nov 2026), so the pipeline stops each orbiter at its published end; heredoc edits broke on apostrophes again (edit scripts are written as files)
+
+**Diagnostics**: 19 PASS, 0 FAIL, 1 SKIP (17, needs the deployed URL). Tests: 73 passed in 15 files. Startup JS 146 KB gzip. Production preview: no CSP violations in Explore (overlays, tracks, photos, live relief), Briefing and Orbit.
+
+**Known Issues**:
+- `/api/v1/spaceweather` needs the dev server or Vercel; `npm run preview` has no API, so the space-weather panel shows its error state there.
+- Some library "photos" are maps or charts NASA filed under the mission (for example a Spirit elevation map); they are real NASA products with credits.
+- MRO disappears from the orbit view after 30 Nov 2026 (end of its published ephemeris); re-run `pipeline/make_orbiters.py` to extend.
+- The live terrain and the overlays need the network; offline the globe uses our own rasters as before.
+
+**NEXT AI SHOULD**: Read `CLAUDE.md` and `docs/PROJECT_GRAPH.md`, run `npm test` and `npm run diag`, then ask the team what is next. Open items: deploy on Vercel (add `NASA_API_KEY`) and run `node scripts/diagnostics.mjs --base <url>`; confirm Esri's terms for OnMars CTX, HiRISE and MDEM200M; re-run `make_orbiters.py` before 30 Nov 2026; InSight raw images by sol if wanted; Dingo Gap 3D stays deferred.
+
+---
 
 ## 2026-11-07 | Claude Opus 5.5 | Session 3c (handoff)
 

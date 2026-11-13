@@ -1,6 +1,6 @@
 # Privacy Notice: Homeward
 
-> Version 0.4.0 | 2026-11-01 | Matches the built app (1 Nov 2026: live map tiles and rover photos). Add the contact line before submission.
+> Version 0.5.0 | 2026-11-13 | Matches the built app (13 Nov 2026: live terrain, NASA photo library, weather and space weather). Add the contact line before submission.
 
 Homeward is a non-commercial student project made for NASA Space Apps 2026. It is not a NASA product.
 
@@ -25,6 +25,9 @@ Nothing that identifies you. There are no accounts, no analytics, no advertising
 | Any request to our server | The request, with your IP address used briefly for rate limiting | Our host (Vercel) | Security; our logs keep only a short one-way hash of the IP, never the address, and never the text of your questions |
 | You look at the globe while online (any imagery except "Offline: our own copy") | Requests for map tiles, which carry your IP address and the area you are looking at | NASA Mars Trek (trek.nasa.gov) and Esri (astro.arcgis.com) | To show sharp orbiter imagery; choose "Offline: our own copy" in Explore, Layers to stop these requests |
 | You open Rover view while online | Requests for rover photo records and photos, which carry your IP address | NASA (mars.nasa.gov) | To show the rover's own photos; sent without cookies, and the page sends no referrer with photo requests |
+| You fly over Mars while online | Requests for elevation tiles, which carry your IP address and the area you are looking at | Esri (astro.arcgis.com) | To show real relief; offline, the app uses its own coarser copy |
+| You select a landing site while online | A search for that mission's photos, then the photos, with your IP address | NASA's image library (images-api.nasa.gov, images-assets.nasa.gov) | To show the mission's own photos; sent without cookies or referrer |
+| You open the Briefing while online | A request for Curiosity's weather feed (your IP, to NASA), and a request to our relay for space weather; the relay asks NASA, so your IP is not sent to NASA for that | NASA (mars.nasa.gov); our relay, then NASA (api.nasa.gov) | To show the latest measured weather and predicted solar storms at Mars |
 
 Important: we use free tiers. Google states that content sent to free-tier Gemini models is used to improve its products. Groq and OpenRouter apply their own policies, and OpenRouter's free models are served by third-party providers with their own terms. Do not say anything to the assistant that you would not want a company to read.
 

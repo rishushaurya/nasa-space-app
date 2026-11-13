@@ -49,6 +49,7 @@ function Shell({ data }: { data: Data }) {
   useEffect(() => { if (warning) toast(warning); }, [warning]);
   // Live NASA and Esri tiles online; our own rasters only when offline or chosen (PLAN-2 D17).
   useEffect(() => { globe?.setImagery(offline || s.imagery === "offline" ? null : s.imagery, !offline && s.hirise); }, [globe, offline, s.imagery, s.hirise]);
+  useEffect(() => { globe?.setOverlays(offline ? [] : s.overlays, s.overlayAlpha); }, [globe, offline, s.overlays, s.overlayAlpha]);
   useEffect(() => { setPosition(ZONES[s.zone].home); setElapsedMin(0); setEvent(null); }, [s.zone]);
   useEffect(() => {
     const on = () => setOffline(false), off = () => setOffline(true);

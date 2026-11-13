@@ -1,6 +1,6 @@
 # Data Spec (replaces DATABASE_SPEC)
 
-> Version 2.0.0 | 2026-11-01 | Owner: data engineer + science lead | Status: implemented (section 0; 0.1 added 1 Nov 2026)
+> Version 3.0.0 | 2026-11-13 | Owner: data engineer + science lead | Status: implemented (section 0; 0.1 added 1 Nov 2026; 0.2 added 13 Nov 2026)
 
 Homeward has no database (README D2). All data are static, versioned files under `data/`, produced by scripts in `pipeline/` during the event, checked by hash, and served from the same origin as the app. This file defines those files, the facts registry every on-screen number comes from, the dataset catalogue, and the pipeline.
 
@@ -24,6 +24,14 @@ Homeward has no database (README D2). All data are static, versioned files under
 - `data/places/gazetteer.json`: 2,051 IAU-approved Mars names from the USGS Gazetteer (planetocentric, east), with diameter, type and feature ID.
 - Live, not cached: Trek and OnMars tiles (CTX beta01 5 m, HiRISE, THEMIS day and night IR 100 m, Viking 232 m) and NASA raw-image records and photos. Curiosity Navcam records carry camera models and attitude from sol 13; Curiosity Mastcam records do not, so those photos appear only in the film strip.
 - Conventions checked on real records: the attitude quaternion `(s, x, y, z)` rotates the rover frame to local level (north, east, down); Curiosity site 85 gives 28.68 deg, equal to MMGIS yaw; Perseverance site 4 drive 218 gives 221.38 deg (MMGIS -138.62). Camera models are already adjusted to each delivered image's pixel grid (downsampled and subframed alike). Perseverance's drive counter also ticks without wheel motion, so a frame belongs to the latest stop at or before its counter.
+
+### 0.2 Added on 13 Nov 2026 (build/PLAN-3.md)
+
+- Files: 225 in `data/manifest.json`, 222.7 MB; 54 facts, 88 sources, 13 landers.
+- `data/rovers/mer-a-track.json`, `mer-b-track.json`: Spirit and Opportunity drive paths from the PDS Geosciences Node interpolated traverse tables (`pipeline/rovers.py mer`), same format as the other tracks plus `km` and `lastSol`. Spirit: equirectangular metres centred on 175.5 E (the label); Opportunity: metres east and north of the landing site (checked against Victoria crater). Source PDS-AN-MER-TRAVERSE.
+- `data/sky/orbiters.json`: MRO, Mars Odyssey, Mars Express, TGO and Hope state vectors from JPL Horizons every 10 minutes from 10 Nov 2026 to each spacecraft's published ephemeris end (`pipeline/make_orbiters.py`); same row format as `moons.json`. Source JPL-HORIZONS-ORBITERS.
+- `landers.csv`: Schiaparelli at the HiRISE ESP_048041_1780 image centre (2.093 S, 353.780 E).
+- Live, not cached: MOLA-HRSC 200 m heights (Esri OnMars MDEM200M, LERC), Trek overlays (USGS SIM 3292 geology, MGS TES thermal inertia and dust, MOLA-HRSC colour shaded relief, HiRISE site mosaics of Jezero, Spirit, Opportunity, Phoenix and InSight), the NASA Image and Video Library, Curiosity's REMS feed, DONKI through `/api/v1/spaceweather`.
 
 ## 1. Labels
 

@@ -1,20 +1,25 @@
-// Homeward | app/src/scenes/Explore.tsx | v2.0.0 | 2026-11-01
+// Homeward | app/src/scenes/Explore.tsx | v3.0.0 | 2026-11-13
 // Scene 2 of the research plan (12.7): choose where to go. A Google-Earth style globe: search every IAU-named place,
 // every landing site with cited coordinates, rover tracks and stops, orbiter layers, a ruler with an elevation profile.
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
-import { Camera, Compass, Crosshair, Footprints, House, Layers, Minus, Mountain, Plus, Rotate3d, Ruler, Search, Trash2 } from "lucide-react";
-import { LIVE } from "../globe/live";
+import { Camera, ChevronLeft, ChevronRight, Compass, Crosshair, Footprints, House, Images, Layers, Minus, Mountain, Play, Plus, Rotate3d, Ruler, Search, Square, Trash2, X } from "lucide-react";
+import { LIVE, OVERLAYS, OVERLAY_IDS } from "../globe/live";
 import { haversineM, MARS_SPHERE_M, type LatLon } from "../core/frames";
 import { searchPlaces, type Place } from "../core/places";
 import { IMAGERY, useApp } from "../state";
 import { useRuntime } from "../runtime";
-import { loadStops, loadTrack, ROVER } from "../rovers/raw";
+import { loadStops, loadTrack, ROVER, type Track, type TrackName } from "../rovers/raw";
+import { hasLibrary, loadLibrary, type LibraryPhoto } from "../rovers/library";
+import { Panel, type PanelState } from "../ui/ui";
+import { incidentId } from "../data/load";
 import { Badge, SourceLink, Tip, fmtLatLon, useToast } from "../ui/ui";
 import type { Lander } from "../data/load";
 
 const HOME = { lat: -4.589467, lon: 137.441633 };
-const tracks = { msl: loadTrackOnce("msl"), m20: loadTrackOnce("m20"), heli: loadTrackOnce("ingenuity") };
-function loadTrackOnce(n: "msl" | "m20" | "ingenuity") { let p: Promise<number[][]> | null = null; return () => (p ??= loadTrack(n).catch((e) => { p = null; throw e; })); }
+const tracks = { msl: loadTrackOnce("msl"), m20: loadTrackOnce("m20"), heli: loadTrackOnce("ingenuity"), merA: loadTrackOnce("mer-a"), merB: loadTrackOnce("mer-b") };
+function loadTrackOnce(n: TrackName) { let p: Promise<Track> | null = null; return () => (p ??= loadTrack(n).catch((e) => { p = null; throw e; })); }
+// Spirit and Opportunity drive paths (PDS Geosciences Node), shown on their lander cards.
+const MER_TRACK: Record<string, (() => Promise<Track>) | undefined> = { spirit: tracks.merA, opportunity: tracks.merB };
 const stopsOnce = { msl: null as ReturnType<typeof loadStops> | null, m20: null as ReturnType<typeof loadStops> | null };
 export const stopsFor = (m: "msl" | "m20") => (stopsOnce[m] ??= loadStops(m).catch((e) => { stopsOnce[m] = null; throw e; }));
 
@@ -68,9 +73,10 @@ export function ExploreScene() {
     if (!globe || !s.tracks) return;
     let alive = true;
     setTrackState("loading");
-    Promise.all([tracks.msl(), tracks.m20(), tracks.heli(), stopsFor("msl"), stopsFor("m20")]).then(([msl, m20, heli, sm, s2]) => {
+    Promise.all([tracks.msl(), tracks.m20(), tracks.heli(), stopsFor("msl"), stopsFor("m20"), tracks.merA(), tracks.merB()]).then(([msl, m20, heli, sm, s2, ma, mb]) => {
       if (!alive) return;
-      globe.setTracks([{ id: "msl", lines: msl, color: "--color-track-msl" }, { id: "m20", lines: m20, color: "--color-track-m20" }, { id: "heli", lines: heli, color: "--color-track-heli", width: 2 }]);
+      globe.setTracks([{ id: "msl", lines: msl.lines, color: "--color-track-msl" }, { id: "m20", lines: m20.lines, color: "--color-track-m20" }, { id: "heli", lines: heli.lines, color: "--color-track-heli", width: 2 },
+        { id: "mer-a", lines: ma.lines, color: "--color-track-mer-a" }, { id: "mer-b", lines: mb.lines, color: "--color-track-mer-b" }]);
       globe.setStops("msl", sm.map((x) => ({ lat: x.lat, lon: x.lon })), "--color-track-msl");
       globe.setStops("m20", s2.map((x) => ({ lat: x.lat, lon: x.lon })), "--color-track-m20");
       setTrackState("ok");
@@ -105,6 +111,23 @@ export function ExploreScene() {
     const id = setInterval(() => setLiveFail(globe.liveErrors()), 3000);
     return () => { off(); clearInterval(id); };
   }, [globe]);
+
+  // Landing-site tour: every lander in landing order, a few seconds each (PLAN-3 D26). Stop ends it.
+  const [touring, setTouring] = useState(false);
+  useEffect(() => {
+    if (!globe || !touring) return;
+    let stop = false;
+    (async () => {
+      for (const l of [...data.landers].sort((a, b) => a.landedUtc.localeCompare(b.landedUtc))) {
+        if (stop) return;
+        set({ place: l.id });
+        await globe.flyTo({ lat: l.lat, lon: l.lon }, 45000, { pitchDeg: -45, headingDeg: 0, seconds: 4 });
+        await new Promise((r) => setTimeout(r, 5000));
+      }
+      if (!stop) setTouring(false);
+    })();
+    return () => { stop = true; };
+  }, [globe, touring]);
 
   const zoom = (k: number) => globe?.cam.zoom(Math.max(view.aboveGround, 50) * k);
   const northUp = () => globe?.cam.orbit(0, globe.cam.state().pitch);
@@ -179,8 +202,13 @@ export function ExploreScene() {
           </section>
         ))}
 
+        {lander && hasLibrary(lander.id) && <LanderPhotos l={lander} />}
+
         <section className="panel">
           <h2><Footprints size={18} aria-hidden />Where we have landed</h2>
+          <div className="row" style={{ marginBottom: "var(--space-2)" }}>
+            <button className="btn" aria-pressed={touring} onClick={() => setTouring(!touring)}>{touring ? <><Square size={16} aria-hidden />Stop the tour</> : <><Play size={16} aria-hidden />Tour every landing site</>}</button>
+          </div>
           <ul className="list">
             {[...data.landers].sort((a, b) => (b.rover ? 1 : 0) - (a.rover ? 1 : 0) || a.landedUtc.localeCompare(b.landedUtc)).map((l) => (
               <li key={l.id}><button aria-pressed={s.place === l.id} onClick={() => { const p = data.places.find((x) => x.id === l.id)!; set({ place: l.id }); flyToPlace(p); }}>
@@ -205,11 +233,24 @@ export function ExploreScene() {
               <span><i className="sw" style={{ background: "var(--color-track-msl)" }} />Curiosity <SourceLink id="MMGIS-MSL-TRAVERSE" data={data} /></span>
               <span><i className="sw" style={{ background: "var(--color-track-m20)" }} />Perseverance <SourceLink id="MMGIS-M20-TRAVERSE" data={data} /></span>
               <span><i className="sw" style={{ background: "var(--color-track-heli)" }} />Ingenuity <SourceLink id="MMGIS-M20-HELI" data={data} /></span>
+              <span><i className="sw" style={{ background: "var(--color-track-mer-a)" }} />Spirit</span>
+              <span><i className="sw" style={{ background: "var(--color-track-mer-b)" }} />Opportunity <SourceLink id="PDS-AN-MER-TRAVERSE" data={data} /></span>
               {trackState === "loading" && <span className="muted">loading tracks</span>}
               {trackState === "error" && <span role="alert">Tracks could not load</span>}
             </div>
           )}
-          {s.tracks && <p className="muted" style={{ fontSize: "var(--text-xs)" }}>Zoom in on a track: each dot is a rover stop. Click one to stand there in Rover view.</p>}
+          {s.tracks && <p className="muted" style={{ fontSize: "var(--text-xs)" }}>Zoom in on a Curiosity or Perseverance track: each dot is a rover stop. Click one to stand there in Rover view.</p>}
+          <h3>Science overlays</h3>
+          <div className="radios">
+            {OVERLAY_IDS.map((id) => (
+              <label key={id}><input type="checkbox" checked={s.overlays.includes(id)} onChange={(e) => set({ overlays: e.target.checked ? [...s.overlays, id] : s.overlays.filter((x) => x !== id) })} />
+                <span><b>{OVERLAYS[id].label}</b> <small className="muted">({OVERLAYS[id].kind})</small> <SourceLink id={OVERLAYS[id].sourceId} data={data} /><br /><small className="muted">{OVERLAYS[id].note}</small></span></label>
+            ))}
+          </div>
+          {s.overlays.length > 0 && (
+            <label style={{ display: "block", marginTop: "var(--space-2)", fontSize: "var(--text-sm)" }}>Overlay opacity <span className="mono">{Math.round(s.overlayAlpha * 100)}%</span>
+              <input type="range" min={0.1} max={1} step={0.05} value={s.overlayAlpha} onChange={(e) => set({ overlayAlpha: Number(e.target.value) })} /></label>
+          )}
           {s.imagery !== "offline" && liveFail > 20 && <p role="status" style={{ fontSize: "var(--text-xs)" }}>Some live tiles did not load ({liveFail}); the globe falls back to our offline imagery there.</p>}
         </section>
 
@@ -227,12 +268,15 @@ function GroundDetail({ p }: { p: LatLon }) {
   const lay = data.layers.terrain.filter((l) => p.lon >= l.west && p.lon <= l.east && p.lat >= l.south && p.lat <= l.north)
     .sort((a, b) => (a.east - a.west) / a.cols - (b.east - b.west) / b.cols)[0];
   if (!lay) return null;
-  const cellM = ((lay.east - lay.west) / lay.cols) * Math.PI / 180 * MARS_SPHERE_M * Math.cos(p.lat * Math.PI / 180);
-  const level = cellM < 3 ? "Walk: metre-scale terrain" : cellM < 300 ? "Hike: terrain at tens to hundreds of metres" : "Fly over: planet-scale terrain";
+  const ownM = ((lay.east - lay.west) / lay.cols) * Math.PI / 180 * MARS_SPHERE_M * Math.cos(p.lat * Math.PI / 180);
+  // Online, the globe streams the 200 m MOLA-HRSC relief everywhere our own rasters are coarser (PLAN-3 D21).
+  const live = navigator.onLine && ownM > 200;
+  const cellM = live ? 200 : ownM, sourceIds = live ? ["ONMARS-MDEM200M"] : lay.sourceIds;
+  const level = cellM < 3 ? "Walk: metre-scale terrain" : cellM <= 300 ? "Hike: terrain at tens to hundreds of metres" : "Fly over: planet-scale terrain";
   return (
     <>
       <span className="fact-label">Terrain here</span>
-      <span className="fact-value"><span>{level} ({fmtDistance(cellM)} cells)</span><Badge b="COMPUTED" />{lay.sourceIds.map((id) => <SourceLink key={id} id={id} data={data} />)}</span>
+      <span className="fact-value"><span>{level} ({fmtDistance(cellM)} cells{live ? ", streamed live" : ""})</span><Badge b="COMPUTED" />{sourceIds.map((id) => <SourceLink key={id} id={id} data={data} />)}</span>
     </>
   );
 }
@@ -240,6 +284,9 @@ function GroundDetail({ p }: { p: LatLon }) {
 function LanderCard({ l }: { l: Lander }) {
   const { set } = useApp();
   const { data } = useRuntime();
+  const [track, setTrack] = useState<Track | null>(null);
+  useEffect(() => { setTrack(null); MER_TRACK[l.id]?.().then(setTrack).catch(() => {}); }, [l.id]);
+  const first = track?.lines[0] ? { lon: track.lines[0][0]!, lat: track.lines[0][1]! } : null;
   return (
     <section className="panel">
       <h2><Mountain size={18} aria-hidden />{l.name}</h2>
@@ -248,13 +295,74 @@ function LanderCard({ l }: { l: Lander }) {
         <span className="fact-label">Landed (UTC)</span><span className="fact-value"><span className="mono">{l.landedUtc}</span><Badge b="MEASURED" />{l.sourceIds.slice(-1).map((id) => <SourceLink key={id} id={id} data={data} />)}</span>
         <span className="fact-label">Position (planetocentric)</span><span className="fact-value"><span className="mono">{fmtLatLon({ lat: l.lat, lon: l.lon })}</span><Badge b={l.badge} />{l.sourceIds.map((id) => <SourceLink key={id} id={id} data={data} />)}</span>
         <GroundDetail p={{ lat: l.lat, lon: l.lon }} />
+        {track && first && (
+          <>
+            <span className="fact-label">Drive path</span><span className="fact-value"><span className="mono">{track.km?.toLocaleString("en-US")} km, sols 1 to {track.lastSol?.toLocaleString("en-US")}</span><Badge b="MEASURED" /><SourceLink id="PDS-AN-MER-TRAVERSE" data={data} /></span>
+            <span className="fact-label">Track start from pin</span><span className="fact-value"><span className="mono">{Math.round(haversineM(first, l))} m</span><Badge b="COMPUTED" /><Tip text="The traverse sits on HiRISE base maps; the pin is the PDS landing-site value. The two control networks differ by this much."><span className="muted" tabIndex={0}>(i)</span></Tip></span>
+          </>
+        )}
       </div>
       <div className="row" style={{ marginTop: "var(--space-3)" }}>
         {l.rover && <button className="btn primary" onClick={() => set({ rover: { m: l.rover!, site: 0, drive: 0 }, scene: "relive" })}><Camera size={16} aria-hidden />{ROVER[l.rover].name} street view</button>}
         {l.id === "curiosity" && <button className="btn" onClick={() => set({ zone: "gale", scene: "plan" })}><Footprints size={16} aria-hidden />Plan a Marswalk here</button>}
       </div>
-      {!l.rover && <p className="muted" style={{ fontSize: "var(--text-xs)" }}>No public record gives this mission's camera pointing, so there is no street view here; its photos are in the mission archive linked above.</p>}
+      {!l.rover && <p className="muted" style={{ fontSize: "var(--text-xs)" }}>No public record gives this mission's camera pointing, so there is no 360 street view here; its own photos are below, one by one.</p>}
     </section>
+  );
+}
+
+/** The lander's photos from NASA's image library, one by one (PLAN-3 chunk 23). */
+function LanderPhotos({ l }: { l: Lander }) {
+  const [st, setSt] = useState<PanelState<LibraryPhoto[]>>({ kind: "loading" });
+  const [open, setOpen] = useState<number | null>(null);
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    const ac = new AbortController();
+    setSt({ kind: "loading" }); setOpen(null);
+    loadLibrary(l.id, ac.signal).then((ph) => setSt(ph.length ? { kind: "ok", data: ph } : { kind: "empty", message: "NASA's image library has no photos of this mission's site that pass our filter." }))
+      .catch((e) => { if (e.name !== "AbortError") setSt({ kind: "error", message: `NASA's image library did not answer (${e.message}).`, incident: incidentId(), retry: () => setN((k) => k + 1) }); });
+    return () => ac.abort();
+  }, [l.id, n]);
+  return (
+    <Panel title={`Photos: ${l.name}`} icon={<Images size={18} aria-hidden />} state={st} lines={3}>
+      {(ph) => (
+        <>
+          <div className="photos">{ph.map((p, k) => (
+            <figure key={p.id}><button className="btn-plain" onClick={() => setOpen(k)} aria-label={`Open ${p.title}`}><img src={p.thumb} alt="" loading="lazy" referrerPolicy="no-referrer" /></button>
+              <figcaption>{p.title}</figcaption></figure>
+          ))}</div>
+          <p className="muted" style={{ fontSize: "var(--text-xs)" }}>{ph.length} photos from the NASA Image and Video Library, live, each with its credit and NASA page.</p>
+          {open !== null && ph[open] && <PhotoBox ph={ph} k={open} setK={setOpen} />}
+        </>
+      )}
+    </Panel>
+  );
+}
+
+function PhotoBox({ ph, k, setK }: { ph: LibraryPhoto[]; k: number; setK: (k: number | null) => void }) {
+  const p = ph[k]!;
+  useEffect(() => {
+    const onKey = (e: globalThis.KeyboardEvent) => {
+      if (e.key === "Escape") setK(null); else if (e.key === "ArrowRight") setK(Math.min(k + 1, ph.length - 1)); else if (e.key === "ArrowLeft") setK(Math.max(k - 1, 0)); else return;
+      e.preventDefault(); e.stopPropagation();
+    };
+    addEventListener("keydown", onKey, true);
+    return () => removeEventListener("keydown", onKey, true);
+  }, [k, ph.length]);
+  return (
+    <div className="lightbox" role="dialog" aria-modal="true" aria-label={p.title}>
+      <img key={p.id} src={p.medium} alt={p.title} referrerPolicy="no-referrer" onError={(e) => { const i = e.currentTarget; if (i.src !== p.orig) i.src = p.orig; }} />
+      <section className="panel">
+        <div className="row">
+          <b className="grow">{p.title}</b>
+          <button className="btn icon" onClick={() => setK(Math.max(k - 1, 0))} disabled={k === 0} aria-label="Previous photo"><ChevronLeft size={16} /></button>
+          <span className="mono muted">{k + 1} / {ph.length}</span>
+          <button className="btn icon" onClick={() => setK(Math.min(k + 1, ph.length - 1))} disabled={k === ph.length - 1} aria-label="Next photo"><ChevronRight size={16} /></button>
+          <button className="btn icon" autoFocus onClick={() => setK(null)} aria-label="Close"><X size={16} /></button>
+        </div>
+        <p className="muted mono" style={{ fontSize: "var(--text-xs)", marginBottom: 0 }}>{p.id} | {p.date} | {p.credit} | <a className="src" href={p.link} target="_blank" rel="noreferrer noopener">NASA page</a></p>
+      </section>
+    </div>
   );
 }
 

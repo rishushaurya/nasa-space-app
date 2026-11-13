@@ -14,14 +14,16 @@ export type Frame = {
 };
 
 const StopsFile = z.object({ mission: z.enum(["msl", "m20"]), sourceId: z.string(), rows: z.array(z.tuple([z.number(), z.number(), z.number(), z.number(), z.number(), z.number(), z.number(), z.number()])) });
-const TrackFile = z.object({ sourceId: z.string(), lines: z.array(z.array(z.number())) });
+const TrackFile = z.object({ sourceId: z.string(), lines: z.array(z.array(z.number())), km: z.number().optional(), lastSol: z.number().optional() });
+export type Track = z.infer<typeof TrackFile>;
+export type TrackName = "msl" | "m20" | "ingenuity" | "mer-a" | "mer-b";
 
 export async function loadStops(m: Mission): Promise<Stop[]> {
   const f = StopsFile.parse(await (await fetch(`/data/rovers/${m}-stops.json`)).json());
   return f.rows.map(([site, drive, sol, lat, lon, elev, yaw, distM], i) => ({ i, site, drive, sol, lat, lon, elev, yaw, distM }));
 }
-export async function loadTrack(name: "msl" | "m20" | "ingenuity"): Promise<number[][]> {
-  return TrackFile.parse(await (await fetch(`/data/rovers/${name === "ingenuity" ? "ingenuity" : `${name}-track`}.json`)).json()).lines;
+export async function loadTrack(name: TrackName): Promise<Track> {
+  return TrackFile.parse(await (await fetch(`/data/rovers/${name === "ingenuity" ? "ingenuity" : `${name}-track`}.json`)).json());
 }
 
 // Only NASA's own image host is accepted (CSP img-src allows it too).

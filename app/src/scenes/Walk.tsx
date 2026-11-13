@@ -1,11 +1,12 @@
-// Homeward | app/src/scenes/Walk.tsx | v2.0.0 | 2026-11-01
+// Homeward | app/src/scenes/Walk.tsx | v3.0.0 | 2026-11-13
 // Scene 6-9: you walk the plan yourself (D20); "Follow the plan" replays the planner's route. HUD values come from
 // the planner and tested core functions.
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
-import { ArrowUp, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Download, Eye, FlaskConical, House, Pause, Play, Radiation, RadioTower, Share2, Sun, TriangleAlert, Wind } from "lucide-react";
+import { Antenna, ArrowUp, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Download, Eye, FlaskConical, House, Pause, Play, Radiation, RadioTower, Share2, Sun, TriangleAlert, Wind } from "lucide-react";
 import { lightTimeMin } from "../core/ephemeris";
 import { bearingDeg as bearing, haversineM, offsetM as offset } from "../core/frames";
 import { gcrDoseMSv } from "../core/dose";
+import { lineOfSight } from "../core/los";
 import { cellCenter, cellIndex, passable, walkSpeedKmh } from "../core/planner";
 import { useApp } from "../state";
 import { planOk, useRuntime } from "../runtime";
@@ -155,6 +156,7 @@ export function WalkScene() {
   const cls = margin < 0 ? "breach" : margin < lim * 0.1 ? "breach" : margin < lim * 0.25 ? "warn" : "";
   const delay = lightTimeMin(Date.now());
   const sol = data.sols.get(z.photoSol);
+  const sight = lineOfSight(p.grid, position, z.home); // radio path to the shelter over the HiRISE terrain (PLAN-3 D27)
 
   const exportGeo = () => download(`homeward-${s.zone}-plan.geojson`, JSON.stringify({
     type: "FeatureCollection",
@@ -181,6 +183,7 @@ export function WalkScene() {
         <div className="cell"><span className="k"><Radiation size={12} aria-hidden />Dose</span><span className="v">{gcrDoseMSv(elapsedMin / 60).toFixed(3)} mSv</span></div>
         <div className={`cell ${daylight < 60 ? "warn" : ""}`}><span className="k"><Sun size={12} aria-hidden />Daylight</span><span className="v">{fmtHM(daylight)}</span></div>
         <div className="cell secondary"><span className="k">Distance home</span><span className="v">{Math.round(haversineM(position, z.home))} m</span></div>
+        <div className={`cell ${sight.clear ? "secondary" : "warn"}`}><span className="k"><Antenna size={12} aria-hidden />Radio to {s.zone === "gale" ? "habitat" : "rover"}</span><span className="v">{sight.clear ? "In sight" : "Blocked"}</span></div>
         {manual && (() => {
           const goal = stopSeen.current ? z.home : z.stop, rel = bearing(position, goal) - heading;
           return <div className="cell"><span className="k">{stopSeen.current ? "Home" : "Science stop"}</span><span className="v"><ArrowUp size={18} aria-label={`${Math.round(((rel % 360) + 540) % 360 - 180)} degrees from your heading`} style={{ transform: `rotate(${rel}deg)`, verticalAlign: "middle" }} /> {Math.round(haversineM(position, goal))} m</span></div>;
@@ -213,7 +216,7 @@ export function WalkScene() {
           )}
           <p className="muted" style={{ fontSize: "var(--text-xs)", margin: "var(--space-2) 0 0" }}>{manual
             ? <>Hold W or the up arrow to walk, A and D to turn, drag the view to look around. You walk at the planner&apos;s pace: {walkSpeedKmh(0, 1, s.settings.speedFactor).toFixed(1)} km/h on the flat, slower uphill <SourceLink id="APOLLO17-TRAVERSE" data={data} />. The suit clock runs {pace === 1 ? "in real time" : `${pace}x faster than real time`}. Walk to the science stop and back home.</>
-            : `Mission time runs ${speed}x faster than real time.`} Eye height 1.7 m <Badge b="ASSUMPTION" />; horizon {data.facts.get("PLN-12")?.value} km away.{s.voice && <> Wind: Perseverance&apos;s real microphone recording, sol 1 <SourceLink id="NASA-SUPERCAM-SOL1" data={data} /></>}</p>
+            : `Mission time runs ${speed}x faster than real time.`} Radio to the shelter is a straight path over the HiRISE terrain and the planet's curvature (suit antenna 1.7 m, mast 3 m <Badge b="ASSUMPTION" />); out of sight means no direct voice link. Eye height 1.7 m <Badge b="ASSUMPTION" />; horizon {data.facts.get("PLN-12")?.value} km away.{s.voice && <> Wind: Perseverance&apos;s real microphone recording, sol 1 <SourceLink id="NASA-SUPERCAM-SOL1" data={data} /></>}</p>
           <div className="row" style={{ marginTop: "var(--space-2)" }}>
             <button className="btn" onClick={() => setEvent("solar-storm")}><Radiation size={16} aria-hidden />Solar-storm drill</button>
           </div>

@@ -78,4 +78,10 @@ export async function loadGrid(zone: "gale" | "boxwork"): Promise<{ header: Grid
     dLonDeg: header.dLonDeg, dLatDeg: header.dLatDeg, slopeDeg: all.subarray(0, n), reliefM: all.subarray(n, 2 * n), elevM: all.subarray(2 * n) } };
 }
 
+const OrbiterTable = z.object({ startUtc: z.string(), stepS: z.number().positive(), orbiters: z.array(z.object({ id: z.string(), name: z.string(), agency: z.string(),
+  horizonsId: z.number(), endUtc: z.string(), rows: z.array(z.array(z.number()).length(6)) })) });
+let orbiters: Promise<z.infer<typeof OrbiterTable>> | null = null;
+/** Loaded only when the orbit view opens (1.7 MB). */
+export const loadOrbiters = () => (orbiters ??= getJson("/data/sky/orbiters.json", OrbiterTable).catch((e) => { orbiters = null; throw e; }));
+
 export const incidentId = () => Math.random().toString(16).slice(2, 10);

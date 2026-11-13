@@ -812,5 +812,159 @@
   "credit": "Guinness World Records",
   "accessed": "2026-10-28",
   "status": "SECONDARY"
+ },
+ {
+  "id": "PDS-AN-MER-TRAVERSE",
+  "agency": "NASA",
+  "title": "Spirit and Opportunity interpolated rover traverses (MERA_traverse and MERB_traverse_5130; T. Parker; corrected by the PDS)",
+  "publisher": "NASA PDS Geosciences Node (Washington University in St. Louis)",
+  "url": "https://an.rsl.wustl.edu/mera/AN/pages/mer/mer_traverse.htm",
+  "licence": "NASA PDS",
+  "credit": "NASA/JPL-Caltech; MER science team (T. Parker); PDS Geosciences Node",
+  "accessed": "2026-11-13",
+  "status": "VERIFIED"
+ },
+ {
+  "id": "HIRISE-ESP-048041-1780",
+  "agency": "NASA",
+  "title": "HiRISE ESP_048041_1780: Schiaparelli impact site (25 Oct 2016)",
+  "publisher": "University of Arizona HiRISE",
+  "url": "https://www.uahirise.org/ESP_048041_1780",
+  "licence": "NASA media guidelines (HiRISE images are public)",
+  "credit": "NASA/JPL-Caltech/University of Arizona",
+  "accessed": "2026-11-13",
+  "status": "VERIFIED"
+ },
+ {
+  "id": "ESA-SCHIAPARELLI",
+  "agency": "ESA",
+  "title": "ExoMars Schiaparelli: the descent and the impact site",
+  "publisher": "ESA",
+  "url": "https://www.esa.int/articles/schiaparelli-crash-site-in-colour",
+  "licence": "ESA standard terms",
+  "credit": "ESA",
+  "accessed": "2026-11-13",
+  "status": "SECONDARY"
+ },
+ {
+  "id": "ONMARS-MDEM200M",
+  "agency": "ESA",
+  "title": "MOLA-HRSC blended DEM 200 m v2 as LERC elevation tiles (Esri OnMars MDEM200M)",
+  "publisher": "USGS; NASA; ESA; DLR/FU Berlin (HRSC); hosted by Esri",
+  "url": "https://astro.arcgis.com/arcgis/rest/services/OnMars/MDEM200M/ImageServer",
+  "licence": "MOLA CC0; HRSC CC BY-SA 3.0 IGO; Esri hosting terms not stated",
+  "credit": "NASA/GSFC MOLA team; ESA/DLR/FU Berlin HRSC; Fergason Hare and Laura 2018; hosted by Esri",
+  "accessed": "2026-11-13",
+  "status": "VERIFIED"
+ },
+ {
+  "id": "TREK-GEOLOGY",
+  "agency": "NASA",
+  "title": "Geologic map of Mars SIM 3292 (Tanaka et al. 2014) as Mars Trek tiles",
+  "publisher": "USGS; NASA Solar System Treks",
+  "url": "https://trek.nasa.gov/mars/trekarcgis/rest/services/SIM3292_Global_Geology/MapServer/WMTS/1.0.0/WMTSCapabilities.xml",
+  "licence": "Public domain (USGS)",
+  "credit": "USGS (Tanaka et al. 2014); NASA Solar System Treks",
+  "accessed": "2026-11-13",
+  "status": "VERIFIED"
+ },
+ {
+  "id": "TREK-TES-TI",
+  "agency": "NASA",
+  "title": "Mars Global Surveyor TES global thermal inertia (Mars Trek)",
+  "publisher": "NASA Solar System Treks; Arizona State University",
+  "url": "https://trek.nasa.gov/tiles/Mars/EQ/TES_Thermal_Inertia/1.0.0/WMTSCapabilities.xml",
+  "licence": "NASA media guidelines",
+  "credit": "NASA/JPL/Arizona State University (TES)",
+  "accessed": "2026-11-13",
+  "status": "VERIFIED"
+ },
+ {
+  "id": "TREK-TES-DUST",
+  "agency": "NASA",
+  "title": "Mars Global Surveyor TES global dust cover index (Mars Trek)",
+  "publisher": "NASA Solar System Treks; Arizona State University",
+  "url": "https://trek.nasa.gov/tiles/Mars/EQ/TES_Dust/1.0.0/WMTSCapabilities.xml",
+  "licence": "NASA media guidelines",
+  "credit": "NASA/JPL/Arizona State University (TES)",
+  "accessed": "2026-11-13",
+  "status": "VERIFIED"
+ },
+ {
+  "id": "TREK-MOLA-HRSC-SHADE",
+  "agency": "NASA",
+  "title": "MOLA and HRSC colour shaded relief 200 m (Mars Trek)",
+  "publisher": "NASA Solar System Treks; USGS",
+  "url": "https://trek.nasa.gov/tiles/Mars/EQ/Mars_MOLA_blend200ppx_HRSC_ClrShade_clon0dd_200mpp_lzw/1.0.0/WMTSCapabilities.xml",
+  "licence": "MOLA CC0; HRSC CC BY-SA 3.0 IGO",
+  "credit": "NASA/GSFC MOLA team; ESA/DLR/FU Berlin; USGS",
+  "accessed": "2026-11-13",
+  "status": "VERIFIED"
+ },
+ {
+  "id": "TREK-SITE-HIRISE",
+  "agency": "NASA",
+  "title": "HiRISE mosaics of Jezero (controlled 25 cm) and of the Spirit and Opportunity roving sites and the Phoenix and InSight landing sites (Mars Trek)",
+  "publisher": "NASA Solar System Treks; University of Arizona; USGS",
+  "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_hirise_soc_006_orthoMosaic_25cm_Eqc_latTs0_lon0_first_dd/1.0.0/WMTSCapabilities.xml",
+  "licence": "NASA media guidelines (HiRISE images are public)",
+  "credit": "NASA/JPL-Caltech/University of Arizona; USGS (Jezero: Fergason et al. 2020)",
+  "accessed": "2026-11-13",
+  "status": "VERIFIED"
+ },
+ {
+  "id": "MSL-REMS-FEED",
+  "agency": "NASA",
+  "title": "Curiosity REMS weather report feed (one row per sol released)",
+  "publisher": "NASA/JPL-Caltech; Centro de Astrobiologia (CSIC-INTA)",
+  "url": "https://mars.nasa.gov/rss/api/?feed=weather&category=msl&feedtype=json",
+  "licence": "NASA media guidelines",
+  "credit": "NASA/JPL-Caltech/CAB (CSIC-INTA)",
+  "accessed": "2026-11-13",
+  "status": "VERIFIED"
+ },
+ {
+  "id": "NASA-DONKI",
+  "agency": "NASA",
+  "title": "DONKI space weather database: WSA-ENLIL CME arrival predictions",
+  "publisher": "NASA Community Coordinated Modeling Center (GSFC)",
+  "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
+  "licence": "Public (NASA)",
+  "credit": "NASA CCMC",
+  "accessed": "2026-11-13",
+  "status": "VERIFIED"
+ },
+ {
+  "id": "NASA-IMAGES-API",
+  "agency": "NASA",
+  "title": "NASA Image and Video Library API",
+  "publisher": "NASA",
+  "url": "https://images.nasa.gov/docs/images.nasa.gov_api_docs.pdf",
+  "licence": "NASA media guidelines",
+  "credit": "NASA (credit given per image)",
+  "accessed": "2026-11-13",
+  "status": "VERIFIED"
+ },
+ {
+  "id": "INSIGHT-RAW-API",
+  "agency": "NASA",
+  "title": "InSight raw-image records",
+  "publisher": "NASA/JPL-Caltech",
+  "url": "https://mars.nasa.gov/api/v1/raw_image_items/?condition_1=insight:mission",
+  "licence": "NASA media guidelines",
+  "credit": "NASA/JPL-Caltech",
+  "accessed": "2026-11-13",
+  "status": "VERIFIED"
+ },
+ {
+  "id": "JPL-HORIZONS-ORBITERS",
+  "agency": "NASA",
+  "title": "JPL Horizons ephemerides of MRO (-74) Mars Odyssey (-53) Mars Express (-41) ExoMars TGO (-143) and Emirates Mars Mission Hope (-62)",
+  "publisher": "NASA/JPL Solar System Dynamics",
+  "url": "https://ssd.jpl.nasa.gov/horizons/",
+  "licence": "Public (NASA)",
+  "credit": "NASA/JPL-Caltech Solar System Dynamics",
+  "accessed": "2026-11-13",
+  "status": "VERIFIED"
  }
 ]

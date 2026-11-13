@@ -1,9 +1,9 @@
-// Homeward | app/src/scenes/Relive.tsx | v2.0.0 | 2026-11-01
+// Homeward | app/src/scenes/Relive.tsx | v3.0.0 | 2026-11-13
 // Scene 10 and 11 of the research plan: Rover view, a street view built from NASA's own rover photos. Each stop is an
 // MMGIS waypoint; each photo is placed by its camera model and the rover's attitude (core/camera.ts) over the 3D
 // globe seen from the same spot. Arrows step to the previous and next stop along the real drive.
 import { useEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent } from "react";
-import { Camera, ChevronLeft, ChevronRight, ChevronUp, ChevronsLeft, ChevronsRight, Images, Minus, Plus, Route, X } from "lucide-react";
+import { Camera, ChevronLeft, ChevronRight, ChevronUp, ChevronsLeft, ChevronsRight, Images, Minus, Pause, Play, Plus, Route, X } from "lucide-react";
 import { frameCentre, frameMatrix, project } from "../core/camera";
 import { bearingDeg, haversineM, type LatLon } from "../core/frames";
 import { useApp } from "../state";
@@ -123,6 +123,21 @@ export function ReliveScene() {
     return () => removeEventListener("keydown", onKey);
   }, [arrows, view.yaw, i, open]);
 
+  // The ride (PLAN-3 D26): step to the next stop a few seconds after this stop's photos are in, facing the way the
+  // rover drove, like a street-view drive. Stops at the last stop; a stop without photos waits the same time.
+  const [ride, setRide] = useState(false);
+  const [dwell, setDwell] = useState(6);
+  const settled = photos.kind !== "loading" && (photos.kind !== "ok" || loaded.size >= wanted.size);
+  useEffect(() => {
+    if (!ride || !stop || photos.kind === "loading") return;
+    if (!next) { setRide(false); return; }
+    const t = setTimeout(() => {
+      if (haversineM(stop, next) > 0.3) setView((v) => ({ ...v, yaw: bearingDeg(stop, next) }));
+      go(i + 1);
+    }, (settled ? dwell : dwell + 8) * 1000); // photos still arriving: wait a little longer, then move on anyway
+    return () => clearTimeout(t);
+  }, [ride, photos.kind, settled, i, dwell]);
+
   const loadGallery = (page: number) => {
     if (!stop) return;
     setGallery((g) => ({ ...g, state: "loading" }));
@@ -207,6 +222,10 @@ export function ReliveScene() {
                 <Tip text="Forward 10 stops"><button className="btn icon" onClick={() => go(i + 10)} disabled={i >= list.length - 1} aria-label="Forward 10 stops"><ChevronsRight size={16} /></button></Tip>
                 <Tip text="Zoom in (+)"><button className="btn icon" onClick={() => zoom(0.8)} aria-label="Zoom in"><Plus size={16} /></button></Tip>
                 <Tip text="Zoom out (-)"><button className="btn icon" onClick={() => zoom(1.25)} aria-label="Zoom out"><Minus size={16} /></button></Tip>
+              </div>
+              <div className="row" style={{ marginTop: "var(--space-2)" }}>
+                <button className="btn" aria-pressed={ride} onClick={() => setRide(!ride)} disabled={!next && !ride}>{ride ? <><Pause size={16} aria-hidden />Stop the ride</> : <><Play size={16} aria-hidden />Ride along the drive</>}</button>
+                <div className="seg" role="group" aria-label="Seconds at each stop">{[3, 6, 10].map((x) => <button key={x} aria-pressed={dwell === x} onClick={() => setDwell(x)}>{x} s</button>)}</div>
               </div>
               <form className="row" style={{ marginTop: "var(--space-2)" }} onSubmit={(e) => { e.preventDefault(); const sol = Number(new FormData(e.currentTarget).get("sol")); const k = list.findLastIndex((x) => x.sol <= sol); go(k < 0 ? 0 : k); }}>
                 <label htmlFor="go-sol" className="muted" style={{ fontSize: "var(--text-sm)" }}>Go to sol</label>

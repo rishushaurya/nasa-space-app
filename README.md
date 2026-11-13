@@ -1,6 +1,8 @@
 # Homeward
 
-> Version 2.0.0 | 2026-11-01 | Status: BUILT. All 9 scenes run on real data; `node scripts/diagnostics.mjs` passes. Built on 29 Oct 2026 after the team's local host in Bengaluru said building ahead was allowed; the global Space Apps FAQ says no work before the hackathon and submissions open 14 Nov 2026, 09:00 local, so read `legal/COMPLIANCE.md` 1.1 before submitting.
+> Version 3.0.0 | 2026-11-13 | Status: BUILT. All 9 scenes run on real data; `node scripts/diagnostics.mjs` passes. Built on 29 Oct 2026 after the team's local host in Bengaluru said building ahead was allowed; the global Space Apps FAQ says no work before the hackathon and submissions open 14 Nov 2026, 09:00 local, so read `legal/COMPLIANCE.md` 1.1 before submitting.
+>
+> 3.0.0: real 200 m relief for the whole planet (streamed, decoded off the main thread), a globe that renders only when something changes, geology, thermal-inertia, dust and shaded-relief overlays and HiRISE site mosaics, Spirit and Opportunity drive paths and the Schiaparelli site, a landing-site tour and a Rover view ride, every lander's own photos from NASA's image library, the latest measured Gale weather and live space weather at Mars, radio line of sight in the walk, and five orbiters at their real positions (`build/PLAN-3.md`). A knowledge graph of the project is in `graphify-out/` (`docs/PROJECT_GRAPH.md`).
 >
 > 2.0.0: Explore (a Google-Earth style globe with live orbiter imagery, every landing site and 2,051 named places), Rover view (street view from Curiosity's and Perseverance's own photos at every stop) and walking yourself (`build/PLAN-2.md`). 1.0.0: the app is built (section 13 says what is and is not in it). 0.2.0: renamed from "Red Atlas"; zero-budget stack; own 3D terrain and imagery instead of Cesium ion.
 
@@ -81,6 +83,8 @@ Recovery prompts are in `AI_RECOVERY.md`. Human shortcuts are in `COMMANDS.md`.
 | `build/MANIFEST.md` | Chunk status, locks, dependencies |
 | `build/chunk-00.md` ... `chunk-09.md` | Build specs, one per chunk, with verification commands |
 | `build/PLAN-2.md` | Research findings, decisions D15-D20 and chunks 10-16 for Explore, Rover view and walking yourself |
+| `build/PLAN-3.md` | The build checked against the official statement, research findings, decisions D21-D27 and chunks 17-26 (version 3.0) |
+| `docs/PROJECT_GRAPH.md`, `graphify-out/` | Knowledge graph of all code and documents: connection check, main paths, how to refresh |
 | `design/DESIGN_TOKENS.md` | CSS custom properties, contrast-checked |
 | `design/UI_DESIGN_PROMPTS.md` | Visual spec per component and scene, presence design |
 | `security/SECURITY_CHECKLIST.md` | 90+ checkbox audit items |
@@ -143,6 +147,7 @@ Exact versions pinned in `package.json` (no `^` or `~`; diagnostics check 02 enf
 
 | Service | Get it at | Free tier | Needed for |
 |---|---|---|---|
+| NASA Open APIs | api.nasa.gov, "Generate API Key" | Free; without a key the relay uses `DEMO_KEY` (10 requests an hour, our relay caches 30 min) | Live space weather (`NASA_API_KEY`, optional) |
 | Google AI Studio (Gemini API) | aistudio.google.com, "Get API key" | Free models listed on the pricing page (updated 27 Oct 2026); limits shown in AI Studio; free-tier content is used by Google to improve its products | AI brain 1; Kannada and Hindi voice (P2) |
 | Groq | console.groq.com/keys | Free plan; `openai/gpt-oss-120b` listed at 30 requests/min, 1,000/day, 8K tokens/min (base limits; check your console) | AI brain 2 |
 | OpenRouter | openrouter.ai/keys | `:free` models about 20 requests/min and 50/day for accounts that never bought credits (SECONDARY) | AI brain 3 |
@@ -198,6 +203,13 @@ Content rules, from the research paper:
 | D18 | Rover stops are MMGIS waypoints; a photo belongs to the latest stop at or before its site/drive counter | Positions are NASA's own; Perseverance's counter ticks without wheel motion |
 | D19 | Lander coordinates live in `pipeline/landers.csv` with badge and sources, checked like facts | Same provenance rule as facts, numeric for flying |
 | D20 | Walking yourself is the default; "Follow the plan" replays the planner | The team asked to walk themselves |
+| D21 | Global terrain streams live from Esri OnMars MDEM200M (MOLA-HRSC 200 m, LERC), decoded in two workers and cached; our metre-scale rasters win at Gale; offline falls back to our 7.5 km grid | Real relief everywhere without storing 11 GB; same planetocentric conversion as D7 |
+| D22 | The globe renders on demand (`requestRenderMode`); every globe method that changes the scene requests a frame | Idle frames went from continuous to zero (measured) |
+| D23 | Space weather (DONKI) comes through our relay `/api/v1/spaceweather` (`NASA_API_KEY` or `DEMO_KEY`, cached 30 min); Curiosity's REMS feed is read directly from mars.nasa.gov | Key stays server-side, `connect-src 'self'` for it; the weather host was already allowed |
+| D24 | CSP adds `images-api.nasa.gov` (connect) and `images-assets.nasa.gov` (img) for NASA's image library | Every lander's own photos; diagnostics check 15 allows exactly these two more hosts |
+| D25 | Spirit and Opportunity tracks come from the PDS Geosciences Node tables; lander pins stay at the PDS ODE values and the card shows the offset (Spirit 0.4 km) | Real, cited traverses; no silent re-alignment |
+| D26 | Rover view has a ride (autoplay to the next stop after its photos load); Explore has a landing-site tour in landing order | Google-Maps-style ride on real records |
+| D27 | Radio line of sight to the shelter uses the planner's HiRISE grid and the sphere's curvature; suit antenna 1.7 m and mast 3 m are ASSUMPTION values | Real terrain physics, labelled honestly |
 
 ## 10. Errata found in the research paper
 
@@ -212,40 +224,40 @@ Content rules, from the research paper:
 
 ## 11. Diagnostics
 
-`node scripts/diagnostics.mjs` runs 20 checks with a fix hint per failure (`--quick` skips the build and npm audit; `--base https://your-app.vercel.app` adds the live health check). Last full run, 1 Nov 2026: 19 PASS, 0 FAIL, 1 SKIP (health, needs the deployed URL); 52 tests; startup JS 140 KB gzip. The one accepted audit item is `sharp`, a Node-only image library pulled in by transformers.js that never ships to the browser or the API; check 16 re-verifies that on every run.
+`node scripts/diagnostics.mjs` runs 20 checks with a fix hint per failure (`--quick` skips the build and npm audit; `--base https://your-app.vercel.app` adds the live health check). Last full run, 13 Nov 2026: 19 PASS, 0 FAIL, 1 SKIP (health, needs the deployed URL); 73 tests in 15 files; startup JS 146 KB gzip. The one accepted audit item is `sharp`, a Node-only image library pulled in by transformers.js that never ships to the browser or the API; check 16 re-verifies that on every run.
 
 ## 12. UI flexibility
 
 All colours, spacing, type, radii, shadows and motion are CSS custom properties in `app/src/styles/tokens.css`. Change a token, the whole UI follows. Components never hard-code a visual value.
 
-## 13. As built (1 Nov 2026)
+## 13. As built (13 Nov 2026, version 3.0)
 
 What a visitor gets, scene by scene:
 
 | Scene | What it does | Real data behind it |
 |---|---|---|
 | Mars now | Live Mars Year, Ls, season, Gale local solar time, sunrise and sunset in UTC and IST, rover sols, radio delay | Mars24 (GISS), JPL planetary elements; golden tests against published values |
-| Explore | A Google-Earth style globe: search 2,051 IAU-named places, every lander or typed coordinates; cited cards for 12 landing sites with the terrain detail available there; Curiosity and Perseverance tracks with every stop, Ingenuity flights; live CTX 5 m, HiRISE, THEMIS day and night infrared or Viking colour; zoom, face north, tilt, keyboard panning, cursor position and height; a ruler with an elevation profile | USGS Gazetteer, PDS Geosciences Node landing sites and papers, MMGIS, NASA Mars Trek, Esri OnMars (Caltech Murray Lab CTX); planetocentric tiles converted to the ellipsoid (tested) |
-| Orbit | True-scale Mars lit by the real Sun, Earth marker, Phobos and Deimos at their real positions, time-lapse at 1 hour per second | MOLA-HRSC terrain, Viking colour, JPL Horizons vectors (within 5 km of Horizons for Phobos) |
+| Explore | A Google-Earth style globe with real 200 m relief everywhere and 1 m at Gale: search 2,051 IAU-named places, every lander or typed coordinates; cited cards for 13 landing sites (Schiaparelli added) with the terrain detail there and each mission's own photos from NASA's image library, one by one; a tour of every landing site; Curiosity and Perseverance tracks with every stop, Spirit and Opportunity drive paths, Ingenuity flights; live CTX 5 m, HiRISE, THEMIS day and night infrared or Viking colour; overlays for shaded relief, geology, thermal inertia, dust and HiRISE site mosaics with an opacity slider; zoom, face north, tilt, keyboard panning, cursor position and height; a ruler with an elevation profile | USGS Gazetteer, PDS Geosciences Node (landing sites, MER traverses), MMGIS, NASA Mars Trek (incl. USGS SIM 3292, MGS TES), Esri OnMars (CTX, MDEM200M), NASA Image and Video Library; planetocentric tiles and heights converted to the ellipsoid (tested) |
+| Orbit | True-scale Mars lit by the real Sun, Earth marker, Phobos and Deimos and five orbiters (MRO, Odyssey, Mars Express, TGO, Hope) at their real positions with their heights, time-lapse at 1 hour per second | MOLA-HRSC terrain, Viking colour, JPL Horizons vectors (moons hourly, orbiters every 10 min; golden tests) |
 | Descent | Camera from orbit to Bradbury Landing with Perseverance's real entry numbers; real Mars wind fades in below about 11 km | EDL-01, Perseverance SuperCam microphone (sol 1) |
-| Briefing | Conditions with badges, suit limits, dose; states plainly that Mars weather cannot be live | REMS, RAD, NASA EVA ConOps |
+| Briefing | Conditions with badges, suit limits, dose; the newest sol Curiosity's weather station has released (dated, MEASURED); coronal mass ejections NASA's models predict at Mars (live, MODELLED) | REMS feed, DONKI WSA-ENLIL, RAD, NASA EVA ConOps |
 | Plan | Two walk zones (Yellowknife Bay, boxwork ridges); hard budgets for life support, walk-back margin, daylight, radius; a walk-back heat map; a breach blocks Approve | HiRISE DTMs at 1 m, slope and relief grids at 2 m; Tobler speed scaled to the Apollo walk-back rate |
-| Walk | You walk it yourself (W, arrows, on-screen pad, drag to look) at the planner's pace, slower uphill, with the suit clock in real time, 10x or 30x; steep or rocky cells stop you; a guide points to the stop, then home; "Follow the plan" replays the route. Live HUD; dust-devil event and solar-storm drill announced by the suit voice; science stop with Curiosity's photos and a sample log; a debrief comparing the plan with what you did; GeoJSON and CSV export; share link | EVT-01, RAD-05, Tobler scaled to the Apollo walk-back rate (EVA-04), raw Mastcam and Navcam frames |
-| Rover view | Street view from the rovers' own photos: stand at any of Curiosity's 1,386 or Perseverance's 708 stops; Navcam and Mastcam-Z frames placed where each camera pointed, over the 3D view from the same spot; drag to look, zoom, arrows and keys step along the real drive; mini-map, go to sol, every photo of the stop with full-size view and NASA links; four featured stops work offline | MMGIS waypoints, NASA raw-image APIs (camera models, rover attitude; golden-tested against a real record) |
+| Walk | You walk it yourself (W, arrows, on-screen pad, drag to look) at the planner's pace, slower uphill, with the suit clock in real time, 10x or 30x; steep or rocky cells stop you; a guide points to the stop, then home; "Follow the plan" replays the route. Live HUD including radio line of sight to the habitat over the real terrain; dust-devil event and solar-storm drill announced by the suit voice; science stop with Curiosity's photos and a sample log; a debrief comparing the plan with what you did; GeoJSON and CSV export; share link | EVT-01, RAD-05, Tobler scaled to the Apollo walk-back rate (EVA-04), raw Mastcam and Navcam frames |
+| Rover view | Street view from the rovers' own photos: stand at any of Curiosity's 1,386 or Perseverance's 708 stops; Navcam and Mastcam-Z frames placed where each camera pointed, over the 3D view from the same spot; drag to look, zoom, arrows and keys step along the real drive; a ride that steps on by itself and faces the way the rover drove; mini-map, go to sol, every photo of the stop with full-size view and NASA links; four featured stops work offline | MMGIS waypoints, NASA raw-image APIs (camera models, rover attitude; golden-tested against a real record) |
 | Credits | Every agency, dataset, licence and AI tool, generated from `data/sources.json` | 74 sources |
 
 The assistant (bottom left) answers by voice and captions. It only speaks numbers returned by the app's tools, names its sources, and falls back from Gemini to Groq to OpenRouter to offline rules. Kokoro speaks on the device in a Web Worker, so the globe never freezes. Mission Control replies after the real round-trip light time, time-compressed 60x. The cloud button keeps every question on the device (offline rules only); the speaker button turns voice and wind on or off. After one online visit the service worker keeps the app working offline.
 
 Not built (planned as P1 or P2, or cut for time):
-- Street view for Spirit, Opportunity, InSight, Phoenix, Pathfinder, the Vikings and Zhurong: no public record found gives their camera pointing; they have pins and cited cards. Spirit and Opportunity traverse lines (no public vector file found).
-- Terrain finer than 7.5 km away from Gale: other landing sites look sharp in CTX but are flat in 3D.
+- 360 street view for Spirit, Opportunity, InSight, Phoenix, Pathfinder, the Vikings and Zhurong: no public record gives their camera pointing; they have pins, cited cards and their photos one by one.
+- Terrain finer than 200 m away from Gale (Jezero HiRISE heights exist only as shaded relief in Trek); offline, other sites fall back to the 7.5 km grid.
 - Lens distortion in Rover view (CAHVOR and CAHVORE terms ignored; edges a few pixels off); Curiosity Mastcam photos have no pointing data, so they appear only in the film strip.
 - Dingo Gap rover-scale 3D tiles (sol 528 shows Curiosity's position, track and photos, not the JPL mesh).
 - Kannada and Hindi voice and UI.
 - A Curiosity 3D model at the stop.
 - Every-agency layer set beyond NASA, ESA/DLR and USGS data; ice overlay; Exploration Zones layer.
-- Mars Climate Database conditions (the briefing says so); DONKI live space-weather list.
-- Star sphere rotated for Mars (Cesium's sky is used, labelled as an approximation); labelled orbiters.
+- Mars Climate Database conditions (the briefing says so).
+- Star sphere rotated for Mars (Cesium's sky is used, labelled as an approximation); MAVEN (its Horizons ephemeris ends 1 Mar 2026).
 - Per-band Martian acoustics and a suit-interior sound loop; scene light is tuned for visibility, not scaled to the 39% sunlight figure (PLN-13).
 - Comfort settings (field of view, vignette); browser end-to-end tests.
 - P2: landing-site checker, journey prologue, dusk clouds and frost, Mie-theory sky.

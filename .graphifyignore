@@ -1,0 +1,6 @@
+# Generated data, photos, audio, models and build output are not part of the knowledge graph.
+app/public/
+dist/
+node_modules/
+pipeline/raw/
+package-lock.json

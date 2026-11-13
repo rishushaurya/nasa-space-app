@@ -1,6 +1,6 @@
 # Build Log: Homeward
 
-> Version 2.0.0 | 2026-11-01 | Sections 1-11: the session of 29 Oct 2026 that planned, built, tested and refined Homeward. Section 12: the session of 1 Nov 2026 (Explore, Rover view, walking yourself). The record covers what was done, in what order, every decision, every bug and its fix, every measurement. `CHANGELOG.md` has the short form; this file has everything.
+> Version 3.0.0 | 2026-11-13 | Section 13: the session of 13 Nov 2026 (version 3.0). Sections 1-11: the session of 29 Oct 2026 that planned, built, tested and refined Homeward. Section 12: the session of 1 Nov 2026 (Explore, Rover view, walking yourself). The record covers what was done, in what order, every decision, every bug and its fix, every measurement. `CHANGELOG.md` has the short form; this file has everything.
 
 Contents: 1 Timeline | 2 Team decisions | 3 Environment | 4 What was built (every file) | 5 Data produced | 6 Decisions made during the build | 7 Bugs found and fixed | 8 Verification record | 9 Not built | 10 External services contacted | 11 Before deploy and submission
 
@@ -274,3 +274,38 @@ The team asked for a Google-Earth experience, walking themselves instead of auto
 - Git: the repository was created and pushed to https://github.com/rishushaurya/nasa-space-app (`main`, one commit, no Claude co-author line at the team's request). `.gitattributes` keeps `app/public/data/` byte-exact so the manifest hashes survive Windows checkouts.
 - Handoff: `CLAUDE.md` now opens with "Where to begin"; the Claude memory for this project records the repository, the no-co-author rule, the deferred Dingo Gap scene and that the team sets priorities.
 
+
+## 13. Session 4, 13 Nov 2026: version 3.0
+
+### 13.1 Order of work
+
+1. Read every document, the research paper and the code; ran the starting checks (52 tests; diagnostics 18 PASS and 1 FAIL only because the Cesium assets were not yet copied in the new worktree).
+2. Built the knowledge graph: code by syntax tree (559 nodes), the 29 documents by two extraction agents (254 and 227 nodes), merged to 1,055 nodes and 2,977 edges; connection check in `docs/PROJECT_GRAPH.md`.
+3. Compared the build with the official statement (table in `build/PLAN-3.md` section 2) and researched sources, opening each endpoint and checking CORS and formats.
+4. Built chunks 18-25 in the order of the plan, each checked in the browser; then the full checks and the production preview.
+
+### 13.2 Measurements
+
+| Item | Value |
+|---|---|
+| LERC tile decode (513 x 513, Node) | about 9 ms; done in two workers so the globe never waits |
+| Heights after the change | Olympus Mons summit area 19,841 m, Hellas floor sample -6,079 m (live 200 m); Gale still from our 1 m HiRISE raster |
+| Frames drawn in 6 s idle, tiles loaded | 0 with render on demand (the loop still ticks) |
+| Spirit, Opportunity tracks | 8,804 and 21,104 drives; 7.08 km to sol 2209 and 45.1 km to sol 5081 (NASA states 45.16 km); 543 and 1,664 vertices after Douglas-Peucker at 1.5e-5 deg |
+| Opportunity frame check | Sols 951-1634 average to 2.048 S, 5.504 W; Gazetteer Victoria crater 2.05 S, 5.50 W |
+| Spirit track start to PDS landing pin | about 0.4 km (control networks differ; shown on the card) |
+| REMS newest released sol (13 Nov) | 4995, 25 Aug 2026: -71 C to -5 C, 777 Pa |
+| DONKI arrivals at Mars, last 30 days | 9 (one glancing blow on 13 Nov 12:00 UTC) |
+| Orbiter heights at a test moment | MRO 297 km, Odyssey 399 km, Mars Express 8,161 km |
+| Startup JS | 146 KB gzip (was 140) |
+
+### 13.3 Bugs found and fixed
+
+- NASA image library: preview links come at several sizes; a filter that required `~thumb` dropped every Spirit photo. Fixed to accept any size and derive `~medium` and `~orig` from it (test added).
+- Some library photos have no `~medium`; the viewer falls back to `~orig` on error.
+- Horizons refuses requests past a spacecraft's published ephemeris end (MRO: 30 Nov 2026); the pipeline reads the end from the error and stops there.
+- Shell heredocs broke on apostrophes again; edits were written as Python files in the scratchpad.
+
+### 13.4 Not done
+
+InSight raw images by sol; MAVEN; Mars Climate Database; 360 view for missions without pointing data; Dingo Gap 3D (deferred by the team).

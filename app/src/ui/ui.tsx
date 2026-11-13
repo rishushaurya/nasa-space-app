@@ -9,7 +9,7 @@ import { incidentId } from "../data/load";
 export const BADGE_HELP: Record<BadgeT, string> = {
   LIVE: "Computed from the clock right now with published algorithms.",
   MEASURED: "Measured by an instrument or recorded by a mission.",
-  MODELLED: "Climate-model statistics, not a forecast.",
+  MODELLED: "Model output (climate statistics, or a space-weather model run), not a measurement.",
   COMPUTED: "Our calculation from published inputs, tested against published values.",
   STANDARD: "An agency limit or requirement.",
   ASSUMPTION: "A team choice. You can change it.",

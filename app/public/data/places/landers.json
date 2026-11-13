@@ -188,5 +188,21 @@
   ],
   "rover": null,
   "note": "Southern Utopia Planitia; drove about 2 km and has been silent since May 2022. Located in Tianwen-1 orbiter images"
+ },
+ {
+  "id": "schiaparelli",
+  "name": "Schiaparelli (ExoMars 2016)",
+  "agency": "ESA (with Roscosmos)",
+  "kind": "lander (crashed)",
+  "landedUtc": "2016-10-19",
+  "lat": -2.093,
+  "lon": -6.22,
+  "badge": "MEASURED",
+  "sourceIds": [
+   "HIRISE-ESP-048041-1780",
+   "ESA-SCHIAPARELLI"
+  ],
+  "rover": null,
+  "note": "Meridiani Planum; lost during descent; HiRISE saw a 2.4 m dark impact spot six days later. Position is the HiRISE image centre (353.780 E)"
  }
 ]

@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-11-01T16:46:38+00:00",
- "totalBytes": 220947474,
+ "generatedAt": "2026-11-13T17:50:48+00:00",
+ "totalBytes": 222687998,
  "files": [
   {
    "path": "/data/audio/supercam-sol001-wind.mp3",
@@ -94,8 +94,8 @@
   },
   {
    "path": "/data/places/landers.json",
-   "bytes": 4621,
-   "sha256": "498947a3d078edfd5b2e7020b59ce576630a6a61c47f2878bdfa9ab537574c27"
+   "bytes": 5101,
+   "sha256": "12d874105efd8f5e4462b3e01ef2b67a13c2eec87a7489cf50ff2797c7bf3c97"
   },
   {
    "path": "/data/rovers/cache/m20-3-0-NLE_0013_0668099266_784ECM_N0030008NCAM00110_04_0LLJ.jpg",
@@ -873,6 +873,16 @@
    "sha256": "ebfb901c47e458be9697f44ad75821268285cfa4b7c22b68aa3c6ae552d19228"
   },
   {
+   "path": "/data/rovers/mer-a-track.json",
+   "bytes": 18432,
+   "sha256": "828e66496e804c4011950483d4d1b9b3c78f01a5bc63de97aa8c2bb303e209ec"
+  },
+  {
+   "path": "/data/rovers/mer-b-track.json",
+   "bytes": 52991,
+   "sha256": "0aa8e56215de5ebeacf4c16e6639e61a9be1834000f34d1395320c5725474793"
+  },
+  {
    "path": "/data/rovers/msl-stops.json",
    "bytes": 152562,
    "sha256": "8095d56887596bf86fee012a4054204f41d228f3ea2e649436219301724b5d22"
@@ -906,6 +916,11 @@
    "path": "/data/sky/moons.json",
    "bytes": 251847,
    "sha256": "915779806f09f7c669adcbe1c3b3299e6ea5e8a88e37bbc537f00602388b8c4a"
+  },
+  {
+   "path": "/data/sky/orbiters.json",
+   "bytes": 1662402,
+   "sha256": "1c1360e3b4310017a0eeede4b8012aea369b0357fe489f6a72137f1284764ae9"
   },
   {
    "path": "/data/sols/img/msl-0182-0182ML0007400000105276E01_DXXX.jpg",
@@ -1014,8 +1029,8 @@
   },
   {
    "path": "/data/sources.json",
-   "bytes": 27000,
-   "sha256": "cf0a6d65111a1c63dce0492d0238a66721eafc0f7585b4e78b6eae5bcdb3ef68"
+   "bytes": 33219,
+   "sha256": "c7d8bdb6d5ba3f4b409f872f99ce447acfd1d57b13849febfc893f0548a98402"
   },
   {
    "path": "/data/traverse/msl.json",
