@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-11-13T17:50:48+00:00",
- "totalBytes": 222687998,
+ "generatedAt": "2026-11-14T08:01:51+00:00",
+ "totalBytes": 222716068,
  "files": [
   {
    "path": "/data/audio/supercam-sol001-wind.mp3",
@@ -14,8 +14,8 @@
   },
   {
    "path": "/data/facts.json",
-   "bytes": 12759,
-   "sha256": "96479ee241e5257740c4000a54a2b7b236dca83745c845c45cb9cfa230e7d86c"
+   "bytes": 13285,
+   "sha256": "41f1cb9f82686238e3d48f577e881d3eb2a6aa81b4d6b31017f22bb676911019"
   },
   {
    "path": "/data/globe/i0-global.jpg",
@@ -1029,13 +1029,18 @@
   },
   {
    "path": "/data/sources.json",
-   "bytes": 33219,
-   "sha256": "c7d8bdb6d5ba3f4b409f872f99ce447acfd1d57b13849febfc893f0548a98402"
+   "bytes": 34837,
+   "sha256": "64ce76bc2ad0fca4c47fd946253bfe35ddde312cbada1069192f4b816f3460f8"
   },
   {
    "path": "/data/traverse/msl.json",
    "bytes": 23445,
    "sha256": "26ef9e5c4946b73aeb14ddf630a9e29278b5627e8c9d1a7749770a32fe412c6a"
+  },
+  {
+   "path": "/data/usgs/mars-maps.json",
+   "bytes": 25926,
+   "sha256": "10776b9be444db6b61f414d632ace5c37800c07f1689d991b750b12b71314f72"
   },
   {
    "path": "/models/onnx-community/Kokoro-82M-v1.0-ONNX/config.json",

@@ -1,7 +1,9 @@
 // Homeward | app/src/scenes/Plan.tsx | v1.0.0 | 2026-10-29
 // Scene 5: the Marswalk planner. Hard budgets from NASA limits; ASSUMPTION values are sliders; a breach blocks Approve.
-import { useEffect, useMemo } from "react";
-import { Camera, Eraser, Footprints, House, Layers, Mountain, Radiation, Route, Sun, Timer, Wind } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Camera, Earth, Eraser, Footprints, House, Layers, Mountain, Radiation, Route, Sun, Timer, Wind } from "lucide-react";
+import { EARTH_MEAN_R_M, offsetM } from "../core/frames";
+import type { Data } from "../data/load";
 import { cellCenter, DEFAULTS } from "../core/planner";
 import { heatCanvas } from "../core/use-planner";
 import { localSolar } from "../core/mars-time";
@@ -110,6 +112,46 @@ export function PlanScene() {
         <div className="row"><button className="btn" onClick={() => { reset(); try { localStorage.removeItem(KEY); } catch { /* storage blocked */ } toast("Plan cleared: settings, samples and saved copy reset to defaults"); }}><Eraser size={16} aria-hidden />Clear plan</button></div>
         <details><summary className="muted">Terrain grid provenance</summary>{p && <ul className="muted" style={{ fontSize: "var(--text-xs)" }}>{p.header.processing.map((x) => <li key={x}>{x}</li>)}</ul>}</details>
       </section>
+      <EarthAnalog data={data} />
     </aside>
+  );
+}
+
+/** Learn from maps of other destinations (PLAN-4 D33): the Haughton-Mars Project station on Devon Island, where suits,
+ *  rovers and walks have been tested for Mars since 1997, seen from orbit through NASA GIBS (the imagery behind
+ *  Worldview), with the same walking radius as the plan drawn to scale. */
+function EarthAnalog({ data }: { data: Data }) {
+  const [day, setDay] = useState(""); // empty: Landsat's cloud-free annual composite; a date: that day's HLS 30 m image
+  const lat = Number(data.facts.get("EARTH-01")?.value), lon = Number(data.facts.get("EARTH-02")?.value), radiusM = Number(data.facts.get("EVA-02")?.value) * 1000;
+  if (!Number.isFinite(lat) || !Number.isFinite(lon) || !Number.isFinite(radiusM)) return null;
+  const half = 3 * radiusM, px = 512, home = { lat, lon };
+  const n = offsetM(home, 0, half, EARTH_MEAN_R_M).lat, e = offsetM(home, 90, half, EARTH_MEAN_R_M).lon;
+  const box = [2 * lat - n, 2 * lon - e, n, e].map((v) => v.toFixed(5)).join(","); // WMS 1.3.0, EPSG:4326: lat, lon order
+  const layer = day ? `HLS_S30_Nadir_BRDF_Adjusted_Reflectance&TIME=${day}` : "Landsat_WELD_CorrectedReflectance_TrueColor_Global_Annual";
+  const src = `https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.3.0&CRS=EPSG:4326&WIDTH=${px}&HEIGHT=${px}&FORMAT=image/jpeg&BBOX=${box}&LAYERS=${layer}`;
+  const r = (radiusM / half) * (px / 2);
+  return (
+    <section className="panel">
+      <h2><Earth size={18} aria-hidden />Practised on Earth first</h2>
+      <p className="muted" style={{ fontSize: "var(--text-sm)", marginTop: 0 }}>The Haughton-Mars Project station on Devon Island, Canada: a polar-desert crater where spacesuits, rovers and walks have been field-tested for Mars since 1997. The circle is this plan's walking radius at the same scale.</p>
+      <div style={{ position: "relative", width: "100%", aspectRatio: "1" }}>
+        <img src={src} alt={day ? `Devon Island on ${day}, Sentinel-2 30 m` : "Devon Island, Landsat annual composite"} referrerPolicy="no-referrer" style={{ width: "100%", height: "100%", borderRadius: "var(--radius-sm)", display: "block" }} />
+        <svg viewBox={`0 0 ${px} ${px}`} style={{ position: "absolute", inset: 0 }} aria-hidden>
+          <circle cx={px / 2} cy={px / 2} r={r} fill="none" stroke="var(--color-accent)" strokeWidth="3" />
+          <circle cx={px / 2} cy={px / 2} r="6" fill="var(--color-ok)" />
+        </svg>
+      </div>
+      <div className="facts" style={{ marginTop: "var(--space-3)" }}>
+        <FactRow id="EARTH-01" data={data} label="Station latitude" />
+        <FactRow id="EARTH-02" data={data} label="Station longitude" />
+        <FactRow id="EVA-02" data={data} label="Circle: walking radius" />
+      </div>
+      <div className="row" style={{ marginTop: "var(--space-2)" }}>
+        <label htmlFor="earth-day" className="muted" style={{ fontSize: "var(--text-sm)" }}>Image date</label>
+        <input id="earth-day" type="date" value={day} min="2015-12-01" max={new Date().toISOString().slice(0, 10)} onChange={(e) => setDay(e.target.value)} />
+        {day && <button className="btn" onClick={() => setDay("")}>Annual composite</button>}
+      </div>
+      <p className="muted" style={{ fontSize: "var(--text-xs)" }}>{day ? "Harmonized Landsat Sentinel-2, 30 m, for that day: a satellite passes every few days and the station is dark from November to February, so many dates show cloud or nothing." : "Landsat annual composite, 30 m, cloud-free. Pick a date to see one day, as in NASA Worldview."} <SourceLink id="NASA-GIBS" data={data} /> <SourceLink id="MARS-INSTITUTE-HMP" data={data} /></p>
+    </section>
   );
 }

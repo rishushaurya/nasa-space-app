@@ -1,7 +1,7 @@
 // Homeward | app/src/globe/live.ts | v3.0.0 | 2026-11-13
 // Live imagery layers (NASA Mars Trek and Esri OnMars tiles). Plain data, so scenes can list them without loading Cesium.
 export type LiveId = "ctx" | "hirise" | "themis-day" | "themis-night" | "viking";
-type Tiles = { url: string; size: number; max: number; rect?: [west: number, south: number, east: number, north: number] };
+type Tiles = { url: string; size: number; max: number; min?: number; rect?: [west: number, south: number, east: number, north: number] };
 const TREK = (layer: string, ext = "png") => `https://trek.nasa.gov/tiles/Mars/EQ/${layer}/1.0.0//default/default028mm/{z}/{y}/{x}.${ext}`;
 
 export const LIVE: Record<LiveId, Tiles & { label: string; sourceId: string; note: string }> = {
@@ -30,9 +30,16 @@ export const OVERLAYS: Record<OverlayId, { label: string; sourceId: string; kind
     note: "How well the ground holds heat, about 3 km per pixel: high is rock or crust (firm footing), low is loose dust", parts: [{ url: TREK("TES_Thermal_Inertia"), size: 256, max: 1 }] },
   dust: { label: "Dust cover (MGS TES)", sourceId: "TREK-TES-DUST", kind: "Spectral",
     note: "Dust cover index from the thermal spectrometer: where fine dust blankets the surface (a suit and seal hazard)", parts: [{ url: TREK("TES_Dust"), size: 256, max: 1 }] },
-  sites: { label: "HiRISE site mosaics (25 cm)", sourceId: "TREK-SITE-HIRISE", kind: "Optical",
-    note: "Controlled HiRISE mosaic of Jezero, and mosaics of the Spirit and Opportunity roving sites and the Phoenix and InSight landing sites",
+  sites: { label: "Landing-site mosaics (to 25 cm)", sourceId: "TREK-SITE-HIRISE", kind: "Optical",
+    note: "Mars Trek's landing-site mosaics: HiRISE at Jezero, the Spirit and Opportunity roving sites and the Phoenix and InSight landing sites; HiRISE, CTX and HRSC at Viking 1 and Viking 2 (PLAN-4 D28)",
+    // Each part is bounded by its WMTS footprint; coarse images first so the sharper ones draw over them.
     parts: [
+      { url: TREK("h2942_0000_nd3"), size: 256, max: 10, rect: [-49.5924, 14.0680, -46.3979, 26.8116] }, // Viking 1, Mars Express HRSC
+      { url: TREK("Viking_CTX_BlockAdj_dd"), size: 256, max: 12, rect: [-50.1289, 20.6080, -46.4711, 23.9921] }, // Viking 1, MRO CTX
+      { url: TREK("PSP_001521_2025_RED"), size: 256, max: 17, rect: [-48.0316, 22.0912, -47.8628, 22.4609] }, // Viking 1, MRO HiRISE
+      { url: TREK("h1394_0000_nd3"), size: 256, min: 4, max: 9, rect: [73.0889, 46.0494, 174.8215, 87.0653] }, // Viking 2, Mars Express HRSC; tiles exist from level 4 only
+      { url: TREK("b16_015887_2280_xn_48n225w"), size: 256, max: 12, rect: [133.7853, 46.3961, 135.0174, 48.9849] }, // Viking 2, MRO CTX
+      { url: TREK("PSP_001501_2280_RED"), size: 256, max: 16, rect: [134.1990, 47.5634, 134.3996, 47.7836] }, // Viking 2, MRO HiRISE
       { url: TREK("JEZ_hirise_soc_006_orthoMosaic_25cm_Eqc_latTs0_lon0_first_dd"), size: 256, max: 17, rect: [77.2229, 18.3068, 77.5840, 18.6693] },
       { url: TREK("spirit_hirise_mosaic"), size: 256, max: 17, rect: [175.4279, -14.6925, 175.5858, -14.5358] },
       { url: TREK("opportunity_hirise_mosaic"), size: 256, max: 17, rect: [-5.5964, -2.7513, -4.9954, -1.8994] },

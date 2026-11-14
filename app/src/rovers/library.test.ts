@@ -30,6 +30,11 @@ describe("NASA image library filter", () => {
     expect(libraryPhotos(json, "spirit")[0]).toMatchObject({ id: "PIA03250", thumb: "https://images-assets.nasa.gov/image/PIA03250/PIA03250~small.jpg",
       medium: "https://images-assets.nasa.gov/image/PIA03250/PIA03250~medium.jpg", orig: "https://images-assets.nasa.gov/image/PIA03250/PIA03250~orig.jpg" });
   });
+  it("keeps a pinned official resource even when its caption says animation (PIA23179)", () => {
+    const pia = { collection: { items: [item("PIA23179", "Curiosity's Proposed Path up Mount Sharp", "This animation shows a proposed route for NASA's Curiosity rover")] } };
+    expect(libraryPhotos(pia, "curiosity")).toEqual([]);
+    expect(libraryPhotos(pia, "curiosity", 1, true).map((p) => p.id)).toEqual(["PIA23179"]);
+  });
   it("returns nothing for a malformed response or an unknown lander", () => {
     expect(libraryPhotos({ nope: 1 }, "viking1")).toEqual([]);
     expect(libraryPhotos(json, "nowhere")).toEqual([]);

@@ -309,3 +309,12 @@ The team asked for a Google-Earth experience, walking themselves instead of auto
 ### 13.4 Not done
 
 InSight raw images by sol; MAVEN; Mars Climate Database; 360 view for missions without pointing data; Dingo Gap 3D (deferred by the team).
+
+## 14. Session 5, 14 Nov 2026: version 4.0 (the five NASA resources)
+
+1. Research (every endpoint opened, CORS checked from the deployed origin): the team's Trek link is the Viking 2 site with HRSC, CTX and HiRISE layers; Trek's search index lists 16 landing-site mosaics (two fictional); Trek's SIM 3292 MapServer answers identify with the unit at a point; the USGS "Interactive Maps: Mars" app sits on one feature layer of 148 map footprints (CORS `*`); PIA23179 is in the NASA Image Library; GIBS WMS serves Landsat WELD annual and HLS images with CORS `*`; the Perseverance and Curiosity feeds sort newest first and publish totals (1,055,868 and 1,519,190 on 14 Nov 2026).
+2. Plan: `build/PLAN-4.md` (decisions D28-D33, chunks 28-34).
+3. Build: `globe/live.ts` and `layers.ts` (Viking mosaics, `min` level), `data/usgs.ts` (+test), `pipeline/usgs_maps.py`, `rovers/library.ts` (pinned ids, +test), `rovers/raw.ts` (`latest`, `totals`, +test), `scenes/Explore.tsx` (Geology rows, "Show the site mosaic", photo notes), `scenes/Relive.tsx` ("Newest from Mars", "Stand at this stop"), `scenes/Plan.tsx` (Earth analog), `core/frames.ts` (Earth mean radius, +test), `vercel.json` and `diagnostics.mjs` (CSP D33), facts EARTH-01 and 02, three sources.
+4. Bugs found and fixed: Trek's capabilities file for `h1394_0000_nd3` lists levels 2 to 9 with a 2x1 matrix at "2", but its tiles use normal numbering and start at level 4 (an offset made it worse; `min: 4` is right); NASA's image-library filter dropped PIA23179 because its caption says "animation" (pinned ids skip the filter); the first badge choices (STANDARD for a rock unit and for the station's position) read "an agency limit", so the unit has no badge and the position is MEASURED like every other coordinate.
+5. Checks: 81 tests in 16 files; typecheck clean; diagnostics 19 PASS, 0 FAIL, 1 SKIP; production preview in headless Chrome on the GPU (Viking 2: 74 HiRISE, 50 CTX, 35 HRSC tiles; the only console errors are the known missing low-zoom OnMars CTX tiles) and in the browser pane (Newest from Mars: 50 Navcam images, totals, stand at stop 708 of 708).
+

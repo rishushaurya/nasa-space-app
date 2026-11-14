@@ -1,6 +1,6 @@
 # Homeward 4.0 plan: the five resources the challenge names
 
-> Version 4.0.0 | 2026-11-14 | Written after a research pass on 14 Nov 2026 (every endpoint below was opened and its CORS headers checked from the deployed origin). Read with `README.md`, `build/PLAN-3.md` and `docs/PROJECT_GRAPH.md`.
+> Version 4.0.0 | 2026-11-14 | Written after a research pass on 14 Nov 2026 (every endpoint below was opened and its CORS headers checked from the deployed origin). Read with `README.md`, `build/PLAN-3.md` and `docs/PROJECT_GRAPH.md`. Status: chunks 28-34 DONE on 14 Nov 2026 (`build/MANIFEST.md`). Found while building: Trek's WMTS file for `h1394_0000_nd3` names its levels 2 to 9, but the tiles use normal level numbers and exist only from level 4, so that part has `min: 4`; the USGS database has 148 entries, 116 with a published title and scale (the rest are unpublished or in progress and are skipped).
 
 ## 1. What the team asked for (14 Nov 2026)
 

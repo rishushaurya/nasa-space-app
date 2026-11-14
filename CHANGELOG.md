@@ -2,7 +2,7 @@
 
 > Version 3.0.0 | 2026-11-13 | Newest entry first. Every session adds one entry before it ends.
 
-## 2026-11-14 | Claude Opus 5.5 | Session 5c (Fly mode in the Walk scene)
+## 2026-11-14 | Claude Opus 5.5 | Session 5d (Fly mode in the Walk scene; 4.0 merged)
 
 **Description**: The team asked to change walking into flying with a speed control. Walking stays (it is the suited walk the challenge is about); the Walk scene gains a third mode, Fly, beside "Walk yourself" and "Follow the plan". The research and build of the five challenge resources (PLAN-4) moved to its own session.
 
@@ -10,9 +10,29 @@
 - Created: `flyStep()` in `app/src/core/frames.ts` (one frame of free flight: forward or back along the heading, climb at half speed, height above ground clamped 2 m to 300 km, latitude kept short of the poles, longitude wrapped), with three tests in `core.test.ts`
 - Modified: `app/src/scenes/Walk.tsx` (mode `walk | fly | follow`; speed buttons 10, 50, 250, 1,000 m/s; E/Q and Page Up/Down or the Climb and Descend buttons; HUD shows height above ground and flight speed in place of the radio and science-stop cells; the suit clock and events stop while flying; landing returns to where the walk paused); README section 13
 
-**Diagnostics**: Tests 76 passed in 15 files; typecheck clean; diagnostics 19 PASS, 0 FAIL, 1 SKIP. Browser (headless Chrome on the GPU, dev server): took off at Gale, climbed to 515 m, flew 8 s at 250 m/s = 2,002 m from home (as expected), landed back at the habitat; no page errors.
+**Diagnostics**: Tests 84 passed in 16 files after merging 4.0 (76 before); typecheck clean; diagnostics 19 PASS, 0 FAIL, 1 SKIP. Browser (headless Chrome on the GPU, dev server): took off at Gale, climbed to 515 m, flew 8 s at 250 m/s = 2,002 m from home (as expected), landed back at the habitat; no page errors.
 
-**NEXT AI SHOULD**: Ask the team whether Fly should also be in Explore. Watch the PLAN-4 session (five challenge resources) and merge its branch when the team asks.
+**NEXT AI SHOULD**: Ask the team whether Fly should also be in Explore. 4.0 (branch claude/clever-ptolemy-805f09) is merged into this checkout with Fly; push when the team says so.
+
+---
+
+## 2026-11-14 | Claude Opus 5.5 | Session 5c (version 4.0: the five NASA resources)
+
+**Description**: The team asked to research the five resources the official statement lists and build each into Homeward. Research pass, `build/PLAN-4.md` (D28-D33, chunks 28-34), then the build, checked under the production headers.
+
+**Changes**:
+- Created: `build/PLAN-4.md`, `app/src/data/usgs.ts` (+test), `pipeline/usgs_maps.py`, `app/public/data/usgs/mars-maps.json`
+- Modified: `globe/live.ts` (Viking 1 and 2 HiRISE, CTX, HRSC site mosaics), `globe/layers.ts` (`min` level), `scenes/Explore.tsx` (rock unit and USGS maps on every place and lander card, "Show the site mosaic", photo notes), `rovers/library.ts` (+test; PIA23179 pinned for Curiosity), `rovers/raw.ts` (+test; `latest`, `totals`, camera list), `scenes/Relive.tsx` ("Newest from Mars", "Stand at this stop"), `scenes/Plan.tsx` ("Practised on Earth first" from NASA GIBS), `core/frames.ts` (+test; Earth mean radius), `vercel.json` and `scripts/diagnostics.mjs` (CSP D33: gibs.earthdata.nasa.gov images), `pipeline/facts.csv` (EARTH-01, EARTH-02), `pipeline/sources.csv` (USGS-PGM-MAP-DB, MARS-INSTITUTE-HMP, NASA-GIBS; TREK-SITE-HIRISE widened)
+- Documents: README (header, file map, D28-D33, section 13), CLAUDE.md, MANIFEST, BUILD_LOG section 14, DATA_SPEC 0.3, COMPLIANCE, homeward-dev skill
+
+**Diagnostics**: 19 PASS, 0 FAIL, 1 SKIP (17 needs the deployed URL). Tests: 81 passed in 16 files. Startup JS 150 KB gzip.
+
+**Known Issues**:
+- Not deployed: the live site still runs 3.0 until this is committed and pushed (Vercel deploys `main`).
+- NASA's raw-image feeds refuse headless browsers, so "Newest from Mars" was checked in the browser pane, not by script.
+- HLS imagery for a chosen date is often cloudy or empty at 75 N (polar night November to February); the panel says so.
+
+**NEXT AI SHOULD**: If the team agrees, commit and push (no co-author line), then run `node scripts/diagnostics.mjs --base https://nasa-space-app-drab.vercel.app`. Then the open items in CLAUDE.md.
 
 ---
 

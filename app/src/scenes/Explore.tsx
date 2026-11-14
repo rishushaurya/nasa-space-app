@@ -10,6 +10,7 @@ import { IMAGERY, useApp } from "../state";
 import { useRuntime } from "../runtime";
 import { loadStops, loadTrack, ROVER, type Track, type TrackName } from "../rovers/raw";
 import { hasLibrary, loadLibrary, type LibraryPhoto } from "../rovers/library";
+import { fmtScale, loadMaps, mapsAt, rockUnit, type GeoMap, type RockUnit } from "../data/usgs";
 import { Panel, type PanelState } from "../ui/ui";
 import { incidentId } from "../data/load";
 import { Badge, SourceLink, Tip, fmtLatLon, useToast } from "../ui/ui";
@@ -277,13 +278,54 @@ function GroundDetail({ p }: { p: LatLon }) {
     <>
       <span className="fact-label">Terrain here</span>
       <span className="fact-value"><span>{level} ({fmtDistance(cellM)} cells{live ? ", streamed live" : ""})</span><Badge b="COMPUTED" />{sourceIds.map((id) => <SourceLink key={id} id={id} data={data} />)}</span>
+      <Geology p={p} />
     </>
   );
 }
 
-function LanderCard({ l }: { l: Lander }) {
-  const { set } = useApp();
+/** What the ground is made of (USGS SIM 3292 unit, live from Trek) and every published USGS geologic map of the spot
+ *  (PLAN-4 D29, D30). Rows simply stay away when a service or the file cannot answer. */
+function Geology({ p }: { p: LatLon }) {
   const { data } = useRuntime();
+  const [unit, setUnit] = useState<RockUnit | null>(null);
+  const [here, setHere] = useState<GeoMap[] | null>(null);
+  const [all, setAll] = useState(false);
+  useEffect(() => {
+    const ac = new AbortController();
+    setUnit(null); setHere(null); setAll(false);
+    if (navigator.onLine) rockUnit(p, ac.signal).then(setUnit).catch(() => {});
+    loadMaps().then((m) => !ac.signal.aborted && setHere(mapsAt(m, p))).catch(() => {});
+    return () => ac.abort();
+  }, [p.lat, p.lon]);
+  const shown = here && (all ? here : here.slice(0, 3));
+  return (
+    <>
+      {unit && <>
+        <span className="fact-label">Rock unit here</span>
+        <span className="fact-value"><span><span className="mono">{unit.unit}</span>: {unit.description}</span><SourceLink id="TREK-GEOLOGY" data={data} /></span>
+      </>}
+      {shown && shown.length > 0 && <>
+        <span className="fact-label">USGS geologic maps</span>
+        <span className="fact-value">
+          <span>{shown.map((m, k) => <span key={m.number + m.title}>{k > 0 && "; "}<a className="src" href={m.url} target="_blank" rel="noreferrer noopener">{m.number || m.title}</a> {m.title}, <span className="mono">{fmtScale(m.scale)}</span>{m.year && `, ${m.year}`}</span>)}
+            {here!.length > 3 && !all && <> <button className="btn-plain src" onClick={() => setAll(true)}>and {here!.length - 3} more</button></>}</span>
+          <SourceLink id="USGS-PGM-MAP-DB" data={data} />
+        </span>
+      </>}
+    </>
+  );
+}
+
+// A Mars Trek landing-site mosaic covers this point (PLAN-4 D28).
+const hasSiteMosaic = (p: LatLon) => OVERLAYS.sites.parts.some((t) => t.rect && p.lon >= t.rect[0] && p.lon <= t.rect[2] && p.lat >= t.rect[1] && p.lat <= t.rect[3]);
+
+function LanderCard({ l }: { l: Lander }) {
+  const { s, set } = useApp();
+  const { data, globe } = useRuntime();
+  const showMosaic = () => {
+    if (!s.overlays.includes("sites")) set({ overlays: [...s.overlays, "sites"] });
+    void globe?.flyTo({ lat: l.lat, lon: l.lon }, 4000, { pitchDeg: -60, seconds: 3 });
+  };
   const [track, setTrack] = useState<Track | null>(null);
   useEffect(() => { setTrack(null); MER_TRACK[l.id]?.().then(setTrack).catch(() => {}); }, [l.id]);
   const first = track?.lines[0] ? { lon: track.lines[0][0]!, lat: track.lines[0][1]! } : null;
@@ -305,6 +347,7 @@ function LanderCard({ l }: { l: Lander }) {
       <div className="row" style={{ marginTop: "var(--space-3)" }}>
         {l.rover && <button className="btn primary" onClick={() => set({ rover: { m: l.rover!, site: 0, drive: 0 }, scene: "relive" })}><Camera size={16} aria-hidden />{ROVER[l.rover].name} street view</button>}
         {l.id === "curiosity" && <button className="btn" onClick={() => set({ zone: "gale", scene: "plan" })}><Footprints size={16} aria-hidden />Plan a Marswalk here</button>}
+        {hasSiteMosaic(l) && <button className="btn" onClick={showMosaic}><Layers size={16} aria-hidden />Show the site mosaic</button>}
       </div>
       {!l.rover && <p className="muted" style={{ fontSize: "var(--text-xs)" }}>No public record gives this mission's camera pointing, so there is no 360 street view here; its own photos are below, one by one.</p>}
     </section>
@@ -360,6 +403,7 @@ function PhotoBox({ ph, k, setK }: { ph: LibraryPhoto[]; k: number; setK: (k: nu
           <button className="btn icon" onClick={() => setK(Math.min(k + 1, ph.length - 1))} disabled={k === ph.length - 1} aria-label="Next photo"><ChevronRight size={16} /></button>
           <button className="btn icon" autoFocus onClick={() => setK(null)} aria-label="Close"><X size={16} /></button>
         </div>
+        {p.note && <p style={{ fontSize: "var(--text-sm)", marginBottom: 0 }}>{p.note}</p>}
         <p className="muted mono" style={{ fontSize: "var(--text-xs)", marginBottom: 0 }}>{p.id} | {p.date} | {p.credit} | <a className="src" href={p.link} target="_blank" rel="noreferrer noopener">NASA page</a></p>
       </section>
     </div>

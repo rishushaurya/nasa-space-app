@@ -1,6 +1,6 @@
 // Homeward | app/src/rovers/raw.test.ts | v2.0.0 | 2026-11-01
 import { describe, expect, it } from "vitest";
-import { atStop, forStop, pickFrames, resolveStop, type Frame, type Stop } from "./raw";
+import { atStop, forStop, latestFrames, pickFrames, resolveStop, totals, type Frame, type Stop } from "./raw";
 import { parseCahv, parseQuat } from "../core/camera";
 
 const stop = (site: number, drive: number, sol: number, i = 0): Stop => ({ i, site, drive, sol, lat: 0, lon: 0, elev: 0, yaw: 0, distM: 0 });
@@ -30,5 +30,27 @@ describe("rover stops and frames", () => {
     expect(resolveStop(stops, 9, 0, "m20")).toBe(3);
     expect(resolveStop(stops, 0, 0, "msl")).toBe(1);
     expect(resolveStop(stops, 0, 0, "m20")).toBe(0);
+  });
+});
+
+describe("newest raw images (PLAN-4 D32)", () => {
+  // Shapes copied from real responses on 14 Nov 2026.
+  const m20 = { per_page: "50", total_results: 64795, page: 0, mission: "mars2020", total_images: 1055868, images: [
+    { imageid: "NLG_2024_0846620381_164ECM_N0930000NCAM00518_00_2I3J", sol: 2024, site: 93, drive: "0", sample_type: "Full", credit: "NASA/JPL-Caltech",
+      date_taken_utc: "2026-10-30T08:44:57.868", link: "https://mars.nasa.gov/mars2020/multimedia/raw-images/NLG_2024_0846620381_164ECM_N0930000NCAM00518_00_2I3J",
+      camera: { instrument: "NAVCAM_LEFT" }, image_files: { small: "https://mars.nasa.gov/mars2020-raw-images/pub/ods/surface/sol/02024/ids/edr/browse/ncam/NLG_2024_0846620381_164ECM_N0930000NCAM00518_00_2I3J01_320.jpg",
+        medium: "https://mars.nasa.gov/mars2020-raw-images/pub/ods/surface/sol/02024/ids/edr/browse/ncam/NLG_2024_0846620381_164ECM_N0930000NCAM00518_00_2I3J01_800.jpg" } },
+    { imageid: "thumb", sol: 2024, sample_type: "Thumbnail", camera: { instrument: "NAVCAM_LEFT" }, image_files: { medium: "https://mars.nasa.gov/x/t_800.jpg" } },
+    { imageid: "elsewhere", sol: 2024, camera: { instrument: "NAVCAM_LEFT" }, image_files: { medium: "https://example.com/x.jpg" } },
+  ] };
+  it("reads Perseverance's newest frames with their stop counter, dropping thumbnails and foreign hosts", () => {
+    const r = latestFrames("m20", m20);
+    expect(r.frames.map((f) => [f.id.slice(0, 8), f.cam, f.site, f.drive])).toEqual([["NLG_2024", "NAVCAM_LEFT", 93, 0]]);
+  });
+  it("reports NASA's published totals: all images, and those of the chosen camera", () => {
+    expect(totals("m20", m20, true)).toEqual({ total: 1055868, matching: 64795 });
+    expect(totals("m20", m20, false)).toEqual({ total: 1055868, matching: null });
+    expect(totals("msl", { total: 1519190 }, false)).toEqual({ total: 1519190, matching: null });
+    expect(totals("msl", { total: 195807 }, true)).toEqual({ total: null, matching: 195807 });
   });
 });

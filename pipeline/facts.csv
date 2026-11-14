@@ -53,3 +53,5 @@ EDL-02,Robotic landing record (2024),12 of 19,,MEASURED,NASA-EDL-2024,
 MSN-01,MMX launch to Phobos,20 Oct 2026 04:41:03 JST,,MEASURED,JAXA-MMX,
 MSN-03,Ingenuity,72 flights; 128.8 min aloft; 17.0 km,,MEASURED,NASA-INGENUITY,
 MSN-05,Phobos,about 6000 km up; three orbits a day,,MEASURED,NASA-MOONS,
+EARTH-01,Haughton-Mars Project Research Station latitude (Devon Island; NASA-supported Mars analog since 1997),75.433,deg N,MEASURED,MARS-INSTITUTE-HMP,75 deg 26 min N
+EARTH-02,Haughton-Mars Project Research Station longitude,-89.867,deg E,MEASURED,MARS-INSTITUTE-HMP,89 deg 52 min W

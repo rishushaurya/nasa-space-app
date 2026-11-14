@@ -23,9 +23,10 @@ export class OcentricTiling extends Cesium.GeographicTilingScheme {
   }
 }
 
-/** A tile provider; `rect` (planetocentric degrees) keeps a local mosaic from requesting tiles it does not have. */
-export function tileProvider(t: { url: string; size: number; max: number; rect?: [number, number, number, number] }, ellipsoid: Cesium.Ellipsoid, alpha: boolean, onError: () => void) {
-  const p = new Cesium.UrlTemplateImageryProvider({ url: t.url, tilingScheme: new OcentricTiling(ellipsoid), tileWidth: t.size, tileHeight: t.size, maximumLevel: t.max, hasAlphaChannel: alpha,
+/** A tile provider; `rect` (planetocentric degrees) keeps a local mosaic from requesting tiles it does not have, and
+ *  `min` skips coarse levels a pyramid lacks (Trek's h1394 HRSC strip starts at level 4, whatever its WMTS file says). */
+export function tileProvider(t: { url: string; size: number; max: number; min?: number; rect?: [number, number, number, number] }, ellipsoid: Cesium.Ellipsoid, alpha: boolean, onError: () => void) {
+  const p = new Cesium.UrlTemplateImageryProvider({ url: t.url, tilingScheme: new OcentricTiling(ellipsoid), tileWidth: t.size, tileHeight: t.size, minimumLevel: t.min ?? 0, maximumLevel: t.max, hasAlphaChannel: alpha,
     ...(t.rect ? { rectangle: Cesium.Rectangle.fromDegrees(t.rect[0], ocToOg(t.rect[1]), t.rect[2], ocToOg(t.rect[3])) } : {}) });
   p.errorEvent.addEventListener(onError); // a listener also stops Cesium logging every failed tile
   return p;

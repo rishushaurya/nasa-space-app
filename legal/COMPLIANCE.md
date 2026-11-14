@@ -94,6 +94,8 @@ Voice rules: stock voices only; never clone a real astronaut, NASA engineer or a
 | lerc 2.0.0 (LERC decoder) | Apache-2.0 | Notice in the bundle |
 | Other teams' public repositories | Their own licences | Context only; never copy code or assets |
 
+Version 4.0 (14 Nov 2026) adds: Mars Express HRSC images on Trek (ESA/DLR/FU Berlin; credit, as for the HRSC-derived DEM), the USGS Planetary Geologic Mapping Program map database (public domain, USGS), NASA GIBS imagery (NASA Earthdata: no restrictions, credit "NASA GIBS / Worldview"; Landsat and Copernicus Sentinel-2 data, credit per the HLS product), and the Mars Institute's Haughton-Mars Project page (cited; no copied content). NASA's statement notes it does not endorse non-U.S. Government sites; each is used under its own data terms.
+
 Version 2.0 (1 Nov 2026) added the rows for CTX, HiRISE, Trek, rover images, MMGIS and the Gazetteer above; every one also appears in `data/sources.json` and the Credits scene.
 
 Homeward itself: choose an open licence for our code at submission (MIT recommended). Derived data built from share-alike sources (any HRSC-derived product) is published under CC BY-SA 3.0 IGO.

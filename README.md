@@ -1,6 +1,8 @@
 # Homeward
 
-> Version 3.0.0 | 2026-11-13 | Status: BUILT. All 9 scenes run on real data; `node scripts/diagnostics.mjs` passes. Built on 29 Oct 2026 after the team's local host in Bengaluru said building ahead was allowed; the global Space Apps FAQ says no work before the hackathon and submissions open 14 Nov 2026, 09:00 local, so read `legal/COMPLIANCE.md` 1.1 before submitting.
+> Version 4.0.0 | 2026-11-14 | Status: BUILT. All 9 scenes run on real data; `node scripts/diagnostics.mjs` passes. Built on 29 Oct 2026 after the team's local host in Bengaluru said building ahead was allowed; the global Space Apps FAQ says no work before the hackathon and submissions open 14 Nov 2026, 09:00 local, so read `legal/COMPLIANCE.md` 1.1 before submitting.
+>
+> 4.0.0: the five resources the official statement lists, researched and built in (`build/PLAN-4.md`): Mars Trek landing-site mosaics of Viking 1 and Viking 2 (HiRISE, CTX, HRSC), the USGS rock unit under any place and every published USGS geologic map of it, NASA's 2019 proposed route up Mount Sharp beside Curiosity's real drive, "Newest from Mars" from the Perseverance and Curiosity raw-image galleries, and an Earth analog (the Haughton-Mars Project on Devon Island) from NASA GIBS, the imagery behind Worldview.
 >
 > 3.0.0: real 200 m relief for the whole planet (streamed, decoded off the main thread), a globe that renders only when something changes, geology, thermal-inertia, dust and shaded-relief overlays and HiRISE site mosaics, Spirit and Opportunity drive paths and the Schiaparelli site, a landing-site tour and a Rover view ride, every lander's own photos from NASA's image library, the latest measured Gale weather and live space weather at Mars, radio line of sight in the walk, and five orbiters at their real positions (`build/PLAN-3.md`). A knowledge graph of the project is in `graphify-out/` (`docs/PROJECT_GRAPH.md`).
 >
@@ -84,6 +86,7 @@ Recovery prompts are in `AI_RECOVERY.md`. Human shortcuts are in `COMMANDS.md`.
 | `build/chunk-00.md` ... `chunk-09.md` | Build specs, one per chunk, with verification commands |
 | `build/PLAN-2.md` | Research findings, decisions D15-D20 and chunks 10-16 for Explore, Rover view and walking yourself |
 | `build/PLAN-3.md` | The build checked against the official statement, research findings, decisions D21-D27 and chunks 17-26 (version 3.0) |
+| `build/PLAN-4.md` | The five NASA resources the statement lists: what each really is (checked), decisions D28-D33 and chunks 28-34 (version 4.0) |
 | `film/SCRIPT.md`, `film/*.mjs`, `film/music.py` | The two demo films (30-second submission cut and a 2:20 story film): script, storylines, and the free pipeline that records the real app, voices the script (Kokoro), writes the music (MusicGen) and edits both with ffmpeg; output in `film/out/` (git-ignored) |
 | `docs/PROJECT_GRAPH.md`, `graphify-out/` | Knowledge graph of all code and documents: connection check, main paths, how to refresh |
 | `design/DESIGN_TOKENS.md` | CSS custom properties, contrast-checked |
@@ -211,6 +214,12 @@ Content rules, from the research paper:
 | D25 | Spirit and Opportunity tracks come from the PDS Geosciences Node tables; lander pins stay at the PDS ODE values and the card shows the offset (Spirit 0.4 km) | Real, cited traverses; no silent re-alignment |
 | D26 | Rover view has a ride (autoplay to the next stop after its photos load); Explore has a landing-site tour in landing order | Google-Maps-style ride on real records |
 | D27 | Radio line of sight to the shelter uses the planner's HiRISE grid and the sphere's curvature; suit antenna 1.7 m and mast 3 m are ASSUMPTION values | Real terrain physics, labelled honestly |
+| D28 | Mars Trek's Viking 1 and Viking 2 landing-site mosaics (HiRISE, CTX, HRSC) join the "sites" overlay, bounded by their footprints; a lander card offers "Show the site mosaic" | The statement's Trek link (Viking 2), generalised; Trek's two fictional "The Martian" sites left out |
+| D29 | The SIM 3292 rock unit under a place comes live from Trek's identify service (host already allowed) | Words for the coloured geologic map |
+| D30 | The USGS Planetary Geologic Mapping Program map database is snapshotted by `pipeline/usgs_maps.py` and searched on the device | 116 published maps in 25 KB; offline; no new host |
+| D31 | NASA's PIA23179 (proposed route up Mount Sharp, 2019) is pinned first in Curiosity's photos and captioned as a proposal | Official resource, honest framing beside the real drive |
+| D32 | Rover view lists the newest raw images from NASA's galleries, by camera, with the published totals, and steps to the stop an image was taken at | The raw-images gallery tied to the street view |
+| D33 | CSP `img-src` adds `https://gibs.earthdata.nasa.gov` for one Earth panel in Plan: the Haughton-Mars Project station in Landsat annual or HLS 30 m imagery for a chosen date, with the plan's walking radius to scale | NASA Worldview's imagery for "learn from maps of other destinations"; diagnostics check 15 allows exactly this host more |
 
 ## 10. Errata found in the research paper
 
@@ -231,7 +240,7 @@ Content rules, from the research paper:
 
 All colours, spacing, type, radii, shadows and motion are CSS custom properties in `app/src/styles/tokens.css`. Change a token, the whole UI follows. Components never hard-code a visual value.
 
-## 13. As built (13 Nov 2026, version 3.0)
+## 13. As built (14 Nov 2026, version 4.0)
 
 What a visitor gets, scene by scene:
 
@@ -245,7 +254,9 @@ What a visitor gets, scene by scene:
 | Plan | Two walk zones (Yellowknife Bay, boxwork ridges); hard budgets for life support, walk-back margin, daylight, radius; a walk-back heat map; a breach blocks Approve | HiRISE DTMs at 1 m, slope and relief grids at 2 m; Tobler speed scaled to the Apollo walk-back rate |
 | Walk | You walk it yourself (W, arrows, on-screen pad, drag to look) at the planner's pace, slower uphill, with the suit clock in real time, 10x or 30x; steep or rocky cells stop you; a guide points to the stop, then home; "Follow the plan" replays the route; "Fly" flies anywhere over the real terrain at 10, 50, 250 or 1,000 m/s (E and Q climb and descend; height and speed in the HUD; a view, not a suited walk, so the suit clock stops and the walk resumes where you took off). Live HUD including radio line of sight to the habitat over the real terrain; dust-devil event and solar-storm drill announced by the suit voice; science stop with Curiosity's photos and a sample log; a debrief comparing the plan with what you did; GeoJSON and CSV export; share link | EVT-01, RAD-05, Tobler scaled to the Apollo walk-back rate (EVA-04), raw Mastcam and Navcam frames |
 | Rover view | Street view from the rovers' own photos: stand at any of Curiosity's 1,386 or Perseverance's 708 stops; Navcam and Mastcam-Z frames placed where each camera pointed, over the 3D view from the same spot; drag to look, zoom, arrows and keys step along the real drive; a ride that steps on by itself and faces the way the rover drove; mini-map, go to sol, every photo of the stop with full-size view and NASA links; four featured stops work offline | MMGIS waypoints, NASA raw-image APIs (camera models, rover attitude; golden-tested against a real record) |
-| Credits | Every agency, dataset, licence and AI tool, generated from `data/sources.json` | 88 sources |
+| Credits | Every agency, dataset, licence and AI tool, generated from `data/sources.json` | 91 sources |
+
+Added in 4.0 (`build/PLAN-4.md`): Explore's place and lander cards name the USGS rock unit underfoot (live from Mars Trek) and list every published USGS geologic map of the spot, finest first, with its USGS page; Viking 1 and Viking 2 gain Trek's HiRISE, CTX and HRSC site mosaics ("Show the site mosaic" on the card); Curiosity's photos open with NASA's 2019 proposed route up Mount Sharp; Rover view has "Newest from Mars" (newest raw images by camera, NASA's published totals, a step to the stop an image was taken at); Plan has "Practised on Earth first", the Haughton-Mars Project station on Devon Island from NASA GIBS (Worldview) with the walking radius to scale and a date picker.
 
 The assistant (bottom left) answers by voice and captions. It only speaks numbers returned by the app's tools, names its sources, and falls back from Gemini to Groq to OpenRouter to offline rules. Kokoro speaks on the device in a Web Worker, so the globe never freezes. Mission Control replies after the real round-trip light time, time-compressed 60x. The cloud button keeps every question on the device (offline rules only); the speaker button turns voice and wind on or off. After one online visit the service worker keeps the app working offline.
 

@@ -36,6 +36,13 @@ Chunk files contain goals, file lists, interfaces, validation rules, golden test
 | 25 | Physics | DONE (radio line of sight with curvature, golden horizon test; five orbiters from Horizons, golden tests) | - | 04 | - | 1.5 h | Planner engineer |
 | 26 | Documents | DONE | - | 17-25 | - | 1 h | Lead |
 | 27 | Demo films | DONE as a first cut (30 s and 2:20 story film from real recordings; re-cut after 09:00 on 14 Nov for the event window) | - | 26 | - | 2 h | Lead and storyteller |
+| 28 | Trek landing-site mosaics | DONE (Viking 1 and 2 HiRISE, CTX, HRSC; "Show the site mosaic"; HRSC h1394 from level 4) | - | 20 | - | 1 h | 3D engineer |
+| 29 | Rock unit here | DONE (Trek SIM 3292 identify, tested parser) | - | 20 | - | 0.5 h | Data engineer |
+| 30 | USGS geologic maps here | DONE (116 maps snapshotted, point in polygon, golden tests) | - | 29 | - | 1 h | Data engineer |
+| 31 | Mount Sharp route | DONE (PIA23179 pinned for Curiosity, tested) | - | 23 | - | 0.5 h | Science lead |
+| 32 | Newest from Mars | DONE (newest raw images by camera, totals, stand at the stop; tested) | - | 22 | - | 1 h | 3D engineer |
+| 33 | Earth analog (Worldview) | DONE (GIBS Landsat annual and HLS by date; CSP D33) | - | 33 | - | 1 h | Lead |
+| 34 | Documents | DONE | - | 28-33 | - | 0.5 h | Lead |
 
 Statuses: DONE (verified, files exist), IN-PROGRESS (locked; others keep out), READY (dependencies met), BLOCKED (wait).
 
@@ -60,6 +67,7 @@ Rules:
 | 2026-11-14 | - | Fly mode in the Walk scene (10 to 1,000 m/s, climb and descend, tested `flyStep`); 76 tests | Claude Opus 5.5 |
 | 2026-11-14 | - | Deployed on Vercel Hobby (https://nasa-space-app-drab.vercel.app); function import fix; diagnostics 20 PASS, 0 FAIL, 0 SKIP | Claude Opus 5.5 |
 | 2026-11-14 | 27 | Demo films: `film/` pipeline (record the real app, Kokoro narration, MusicGen bed, NASA Mars wind, ffmpeg edit with subtitles); first cut of both films; no app code changed | Claude Opus 5.5 |
+| 2026-11-14 | 28-34 | Version 4.0: the five resources the statement lists (`build/PLAN-4.md`); 81 tests; 19 PASS, 0 FAIL, 1 SKIP; checked under the production headers | Claude Opus 5.5 |
 
 ## Cut from chunk 08 and 09 (not built)
 

@@ -157,7 +157,7 @@ await check(15, "security and isolation headers", () => {
   const csp = v.headers.flatMap((h) => h.headers).find((x) => x.key === "Content-Security-Policy").value;
   if (!/connect-src 'self'/.test(csp)) fail("CSP connect-src is not 'self'");
   // Only NASA and Esri OnMars hosts may be added (rover photos, Trek and OnMars tiles; PLAN-2 D15; NASA image library, PLAN-3 D24).
-  const ALLOWED = new Set(["https://mars.nasa.gov", "https://trek.nasa.gov", "https://astro.arcgis.com", "https://images-api.nasa.gov", "https://images-assets.nasa.gov"]);
+  const ALLOWED = new Set(["https://mars.nasa.gov", "https://trek.nasa.gov", "https://astro.arcgis.com", "https://images-api.nasa.gov", "https://images-assets.nasa.gov", "https://gibs.earthdata.nasa.gov"]);
   const extra = [...csp.matchAll(/https:\/\/[^\s;]+/g)].map((m) => m[0]).filter((h) => !ALLOWED.has(h));
   if (extra.length) fail(`CSP lists unexpected hosts ${extra.join(", ")}`);
   const coep = v.headers.flatMap((h) => h.headers).find((x) => x.key === "Cross-Origin-Embedder-Policy").value;
