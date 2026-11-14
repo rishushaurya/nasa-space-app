@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { LANDINGS, localSolar, marsTime, marsYear, nextSunEvent, solNumber, sunPosition } from "./mars-time";
 import { earthElongation, directionFromMars, lightTimeMin } from "./ephemeris";
-import { bearingDeg, haversineM, horizonM, ocToOg, offsetM, ogToOc } from "./frames";
+import { bearingDeg, EARTH_MEAN_R_M, haversineM, horizonM, ocToOg, offsetM, ogToOc } from "./frames";
 import { gcrDoseMSv, missionDoseMSv } from "./dose";
 import { moonPosition, type Moon, type MoonTable } from "./moons";
 import { DEFAULTS, plan, route, timeHomeField, walkSpeedKmh, type Grid } from "./planner";
@@ -156,4 +156,13 @@ describe("moons (JPL Horizons vectors, Hermite between hourly rows, rotated to M
     expect(Math.abs(s.lat + 0.427)).toBeLessThan(0.3);
   });
   it("is null outside the table", () => { expect(moonPosition(t, "phobos", Date.UTC(2030, 0, 1))).toBeNull(); });
+});
+
+describe("Earth analog box (PLAN-4 D33)", () => {
+  it("6 km north and east of the Haughton-Mars Project station on Earth's sphere", () => {
+    const p = { lat: 75.433, lon: -89.867 };
+    expect(offsetM(p, 0, 6000, EARTH_MEAN_R_M).lat - p.lat).toBeCloseTo(0.05396, 4); // 6 km / 111.195 km per degree
+    expect(offsetM(p, 90, 6000, EARTH_MEAN_R_M).lon - p.lon).toBeCloseTo(0.2145, 3); // shrunk by cos(75.433 deg)
+    expect(haversineM(p, offsetM(p, 90, 6000, EARTH_MEAN_R_M), EARTH_MEAN_R_M)).toBeCloseTo(6000, -1);
+  });
 });

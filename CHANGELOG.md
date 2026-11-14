@@ -2,6 +2,26 @@
 
 > Version 3.0.0 | 2026-11-13 | Newest entry first. Every session adds one entry before it ends.
 
+## 2026-11-14 | Claude Opus 5.5 | Session 5c (version 4.0: the five NASA resources)
+
+**Description**: The team asked to research the five resources the official statement lists and build each into Homeward. Research pass, `build/PLAN-4.md` (D28-D33, chunks 28-34), then the build, checked under the production headers.
+
+**Changes**:
+- Created: `build/PLAN-4.md`, `app/src/data/usgs.ts` (+test), `pipeline/usgs_maps.py`, `app/public/data/usgs/mars-maps.json`
+- Modified: `globe/live.ts` (Viking 1 and 2 HiRISE, CTX, HRSC site mosaics), `globe/layers.ts` (`min` level), `scenes/Explore.tsx` (rock unit and USGS maps on every place and lander card, "Show the site mosaic", photo notes), `rovers/library.ts` (+test; PIA23179 pinned for Curiosity), `rovers/raw.ts` (+test; `latest`, `totals`, camera list), `scenes/Relive.tsx` ("Newest from Mars", "Stand at this stop"), `scenes/Plan.tsx` ("Practised on Earth first" from NASA GIBS), `core/frames.ts` (+test; Earth mean radius), `vercel.json` and `scripts/diagnostics.mjs` (CSP D33: gibs.earthdata.nasa.gov images), `pipeline/facts.csv` (EARTH-01, EARTH-02), `pipeline/sources.csv` (USGS-PGM-MAP-DB, MARS-INSTITUTE-HMP, NASA-GIBS; TREK-SITE-HIRISE widened)
+- Documents: README (header, file map, D28-D33, section 13), CLAUDE.md, MANIFEST, BUILD_LOG section 14, DATA_SPEC 0.3, COMPLIANCE, homeward-dev skill
+
+**Diagnostics**: 19 PASS, 0 FAIL, 1 SKIP (17 needs the deployed URL). Tests: 81 passed in 16 files. Startup JS 150 KB gzip.
+
+**Known Issues**:
+- Not deployed: the live site still runs 3.0 until this is committed and pushed (Vercel deploys `main`).
+- NASA's raw-image feeds refuse headless browsers, so "Newest from Mars" was checked in the browser pane, not by script.
+- HLS imagery for a chosen date is often cloudy or empty at 75 N (polar night November to February); the panel says so.
+
+**NEXT AI SHOULD**: If the team agrees, commit and push (no co-author line), then run `node scripts/diagnostics.mjs --base https://nasa-space-app-drab.vercel.app`. Then the open items in CLAUDE.md.
+
+---
+
 ## 2026-11-14 | Claude Opus 5.5 | Session 5b (Vercel deploy)
 
 **Description**: The team asked for a $0 deploy with all environment variables. Deployed on Vercel Hobby (free; no card; over-limit usage pauses, never bills) with the CLI: project `nasa-space-app`, connected to `rishushaurya/nasa-space-app` so pushes to `main` redeploy. Live at https://nasa-space-app-drab.vercel.app.

@@ -904,12 +904,12 @@
  {
   "id": "TREK-SITE-HIRISE",
   "agency": "NASA",
-  "title": "HiRISE mosaics of Jezero (controlled 25 cm) and of the Spirit and Opportunity roving sites and the Phoenix and InSight landing sites (Mars Trek)",
-  "publisher": "NASA Solar System Treks; University of Arizona; USGS",
-  "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_hirise_soc_006_orthoMosaic_25cm_Eqc_latTs0_lon0_first_dd/1.0.0/WMTSCapabilities.xml",
-  "licence": "NASA media guidelines (HiRISE images are public)",
-  "credit": "NASA/JPL-Caltech/University of Arizona; USGS (Jezero: Fergason et al. 2020)",
-  "accessed": "2026-11-13",
+  "title": "Landing-site mosaics on Mars Trek: HiRISE of Jezero (controlled 25 cm) and the Spirit; Opportunity; Phoenix and InSight sites; HiRISE; CTX and HRSC of the Viking 1 and Viking 2 sites",
+  "publisher": "NASA Solar System Treks; University of Arizona; USGS; ESA/DLR/FU Berlin",
+  "url": "https://trek.nasa.gov/tiles/Mars/EQ/PSP_001501_2280_RED/1.0.0/WMTSCapabilities.xml",
+  "licence": "NASA media guidelines (HiRISE and CTX images are public); ESA/DLR/FU Berlin terms for HRSC",
+  "credit": "NASA/JPL-Caltech/University of Arizona (HiRISE); NASA/JPL-Caltech/MSSS (CTX); ESA/DLR/FU Berlin (HRSC); USGS (Jezero: Fergason et al. 2020)",
+  "accessed": "2026-11-14",
   "status": "VERIFIED"
  },
  {
@@ -965,6 +965,39 @@
   "licence": "Public (NASA)",
   "credit": "NASA/JPL-Caltech Solar System Dynamics",
   "accessed": "2026-11-13",
+  "status": "VERIFIED"
+ },
+ {
+  "id": "USGS-PGM-MAP-DB",
+  "agency": "USGS",
+  "title": "Planetary Geologic Mapping Program map database: footprints of the published USGS geologic maps of Mars (the layer behind Interactive Maps: Mars)",
+  "publisher": "USGS Astrogeology Science Center; NASA",
+  "url": "https://astrogeology-usgs.hub.arcgis.com/pages/interactive-maps-mars",
+  "licence": "Public domain (USGS)",
+  "credit": "USGS-NASA Planetary Geologic Mapping Program",
+  "accessed": "2026-11-14",
+  "status": "VERIFIED"
+ },
+ {
+  "id": "MARS-INSTITUTE-HMP",
+  "agency": "Mars Institute (NASA-supported)",
+  "title": "Haughton-Mars Project: research station on Devon Island where spacesuits; rovers and EVA are field-tested for Mars",
+  "publisher": "Mars Institute; NASA Ames Research Center",
+  "url": "https://www.marsinstitute.no/hmp",
+  "licence": "Cite",
+  "credit": "Mars Institute; Haughton-Mars Project (supported by NASA)",
+  "accessed": "2026-11-14",
+  "status": "VERIFIED"
+ },
+ {
+  "id": "NASA-GIBS",
+  "agency": "NASA",
+  "title": "Global Imagery Browse Services (the imagery behind NASA Worldview): Landsat WELD annual true colour and HLS Sentinel-2 30 m",
+  "publisher": "NASA Earthdata (ESDIS)",
+  "url": "https://worldview.earthdata.nasa.gov/",
+  "licence": "NASA Earthdata data use (no restrictions; credit)",
+  "credit": "NASA GIBS / Worldview; Landsat WELD (USGS/NASA); HLS (NASA/USGS/ESA Copernicus Sentinel-2)",
+  "accessed": "2026-11-14",
   "status": "VERIFIED"
  }
 ]

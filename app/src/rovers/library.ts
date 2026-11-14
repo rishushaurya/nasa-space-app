@@ -5,7 +5,7 @@
 import { z } from "zod";
 
 /** medium is missing for some older photos (only orig and thumb exist), so the viewer falls back to orig. */
-export type LibraryPhoto = { id: string; title: string; date: string; credit: string; thumb: string; medium: string; orig: string; link: string };
+export type LibraryPhoto = { id: string; title: string; date: string; credit: string; thumb: string; medium: string; orig: string; link: string; note?: string };
 
 const QUERY: Record<string, { q: string; must: RegExp }> = {
   mars3: { q: "Soviet Mars 3 lander", must: /mars 3|soviet/i },
@@ -22,6 +22,11 @@ const QUERY: Record<string, { q: string; must: RegExp }> = {
   zhurong: { q: "Zhurong", must: /zhurong/i },
   schiaparelli: { q: "Schiaparelli ExoMars lander", must: /exomars|lander/i },
 };
+// Official resources shown first for a lander, whatever the filter says (PLAN-4 D31): PIA23179 is a rendered route
+// view, so its caption says "animation" and the filter would drop it.
+const PINNED: Record<string, { id: string; note: string }[]> = {
+  curiosity: [{ id: "PIA23179", note: "NASA's proposed route up lower Mount Sharp (2019), a perspective view built from MRO and Mars Express data. The drive drawn on the map is where Curiosity actually went." }],
+};
 const NOT_FROM_MARS = /artist|concept|illustration|animation|processing|assembly|clean ?room|kennedy|launch|testbed|engineering model|full-scale model/i;
 
 const Search = z.object({ collection: z.object({ items: z.array(z.object({
@@ -34,14 +39,14 @@ const Search = z.object({ collection: z.object({ items: z.array(z.object({
 const ASSET = /^(https:\/\/images-assets\.nasa\.gov\/image\/[\w.%-]+\/[\w.%-]+)~(thumb|small|medium|large|orig)\.jpg$/;
 
 /** Filters and maps one search response; exported for the test. Only NASA's own image host is accepted. */
-export function libraryPhotos(json: unknown, landerId: string, max = 18): LibraryPhoto[] {
+export function libraryPhotos(json: unknown, landerId: string, max = 18, pinned = false): LibraryPhoto[] {
   const want = QUERY[landerId];
   const r = Search.safeParse(json);
   if (!want || !r.success) return [];
   return r.data.collection.items.flatMap((it) => {
     const d = it.data[0]!, text = `${d.title} ${d.description ?? ""}`;
     const thumb = (it.links?.[0]?.href ?? "").replace(/^http:\/\//, "https://"), base = thumb.match(ASSET)?.[1];
-    if (!want.must.test(text) || NOT_FROM_MARS.test(text) || !base) return [];
+    if (!base || (!pinned && (!want.must.test(text) || NOT_FROM_MARS.test(text)))) return [];
     return [{ id: d.nasa_id, title: d.title, date: (d.date_created ?? "").slice(0, 10), credit: d.secondary_creator ?? d.photographer ?? d.center ?? "NASA",
       thumb, medium: `${base}~medium.jpg`, orig: `${base}~orig.jpg`, link: `https://images.nasa.gov/details/${encodeURIComponent(d.nasa_id)}` }];
   }).slice(0, max);
@@ -52,7 +57,13 @@ export const hasLibrary = (landerId: string) => landerId in QUERY;
 export async function loadLibrary(landerId: string, signal?: AbortSignal): Promise<LibraryPhoto[]> {
   const want = QUERY[landerId];
   if (!want) return [];
-  const r = await fetch(`https://images-api.nasa.gov/search?q=${encodeURIComponent(want.q)}&media_type=image&page_size=60`, { signal, credentials: "omit" });
-  if (!r.ok) throw new Error(`NASA image library HTTP ${r.status}`);
-  return libraryPhotos(await r.json(), landerId);
+  const get = async (q: string) => {
+    const r = await fetch(`https://images-api.nasa.gov/search?${q}&media_type=image`, { signal, credentials: "omit" });
+    if (!r.ok) throw new Error(`NASA image library HTTP ${r.status}`);
+    return r.json();
+  };
+  const pins = PINNED[landerId] ?? [];
+  const [found, ...pinned] = await Promise.all([get(`q=${encodeURIComponent(want.q)}&page_size=60`), ...pins.map((p) => get(`nasa_id=${p.id}`))]);
+  const first = pinned.flatMap((j, k) => libraryPhotos(j, landerId, 1, true).map((p) => ({ ...p, note: pins[k]!.note })));
+  return [...first, ...libraryPhotos(found, landerId).filter((p) => !first.some((f) => f.id === p.id))];
 }

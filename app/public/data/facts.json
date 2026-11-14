@@ -596,5 +596,27 @@
    "NASA-MOONS"
   ],
   "note": null
+ },
+ {
+  "id": "EARTH-01",
+  "label": "Haughton-Mars Project Research Station latitude (Devon Island; NASA-supported Mars analog since 1997)",
+  "value": 75.433,
+  "unit": "deg N",
+  "badge": "MEASURED",
+  "sourceIds": [
+   "MARS-INSTITUTE-HMP"
+  ],
+  "note": "75 deg 26 min N"
+ },
+ {
+  "id": "EARTH-02",
+  "label": "Haughton-Mars Project Research Station longitude",
+  "value": -89.867,
+  "unit": "deg E",
+  "badge": "MEASURED",
+  "sourceIds": [
+   "MARS-INSTITUTE-HMP"
+  ],
+  "note": "89 deg 52 min W"
  }
 ]

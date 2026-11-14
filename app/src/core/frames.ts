@@ -5,6 +5,7 @@
 export const MARS_A_M = 3396190; // IAU 2015 equatorial radius
 export const MARS_B_M = 3376200; // IAU 2015 polar radius
 export const MARS_SPHERE_M = 3396190; // radius of the sphere the USGS products use
+export const EARTH_MEAN_R_M = 6371008.8; // IUGG mean Earth radius, for the Earth analog panel (PLAN-4 D33)
 const D2R = Math.PI / 180;
 const K = (MARS_A_M / MARS_B_M) ** 2;
 

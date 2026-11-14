@@ -77,11 +77,9 @@ const url = (m: Mission, a: number, b: number, page: number, cams?: string[]) =>
   ? `https://mars.nasa.gov/api/v1/raw_image_items/?order=sol%20asc&per_page=100&page=${page}&condition_1=msl:mission&condition_2=${a}:sol:gte&condition_3=${b}:sol:lte${cams ? `&condition_4=${cams[0]}:instrument` : ""}`
   : `https://mars.nasa.gov/rss/api/?feed=raw_images&category=mars2020&feedtype=json&num=100&page=${page}&order=sol+asc${cams ? `&search=${cams.map((c) => `%7C${c}`).join("")}` : ""}&condition_2=${a}:sol:gte&condition_3=${b}:sol:lte`;
 
-/** One page of raw records, validated item by item (a bad record is skipped, never trusted). */
-async function page(m: Mission, a: number, b: number, p: number, signal: AbortSignal, cams?: string[]): Promise<{ frames: Frame[]; more: boolean }> {
-  const r = await fetch(url(m, a, b, p, cams), { signal, credentials: "omit" });
-  if (!r.ok) throw new Error(`NASA raw images HTTP ${r.status}`);
-  const j = (await r.json()) as { items?: unknown[]; images?: unknown[]; more?: boolean };
+type RawPage = { items?: unknown[]; images?: unknown[]; more?: boolean; total?: number; total_results?: number | string; total_images?: number | string };
+/** Frames from one page of raw records, validated item by item (a bad record is skipped, never trusted). */
+export function parsePage(m: Mission, j: RawPage, per = 100): { frames: Frame[]; more: boolean } {
   const items = (m === "msl" ? j.items : j.images) ?? [];
   const frames = items.flatMap((x) => {
     const p2 = (m === "msl" ? MslItem : M20Item).safeParse(x);
@@ -89,8 +87,38 @@ async function page(m: Mission, a: number, b: number, p: number, signal: AbortSi
     const f = m === "msl" ? fromMsl(p2.data as z.infer<typeof MslItem>) : fromM20(p2.data as z.infer<typeof M20Item>);
     return f ? [f] : [];
   });
-  return { frames, more: m === "msl" ? !!j.more : items.length === 100 };
+  return { frames, more: m === "msl" ? !!j.more : items.length === per };
 }
+async function getPage(u: string, signal: AbortSignal): Promise<RawPage> {
+  const r = await fetch(u, { signal, credentials: "omit" });
+  if (!r.ok) throw new Error(`NASA raw images HTTP ${r.status}`);
+  return (await r.json()) as RawPage;
+}
+async function page(m: Mission, a: number, b: number, p: number, signal: AbortSignal, cams?: string[]): Promise<{ frames: Frame[]; more: boolean }> {
+  return parsePage(m, await getPage(url(m, a, b, p, cams), signal));
+}
+
+/** Cameras offered in the newest-images gallery (the feeds' own instrument names). */
+export const LATEST_CAMS: Record<Mission, [id: string, label: string][]> = {
+  msl: [["NAV_LEFT_B", "Navcam"], ["MAST_LEFT", "Mastcam"], ["MAHLI", "MAHLI arm camera"], ["CHEMCAM_RMI", "ChemCam"], ["FHAZ_LEFT_B", "Front Hazcam"]],
+  m20: [["NAVCAM_LEFT", "Navcam"], ["MCZ_LEFT", "Mastcam-Z"], ["SHERLOC_WATSON", "WATSON arm camera"], ["SUPERCAM_RMI", "SuperCam"], ["FRONT_HAZCAM_LEFT_A", "Front Hazcam"]],
+};
+/** The newest raw images from Mars, as NASA's raw-image gallery lists them (PLAN-4 D32), with the published totals:
+ *  `total` every image the mission has released, `matching` those of the chosen camera. Thumbnails are dropped. */
+export async function latest(m: Mission, p: number, signal: AbortSignal, cam?: string): Promise<{ frames: Frame[]; more: boolean; total: number | null; matching: number | null }> {
+  const per = 50;
+  const u = m === "msl"
+    ? `https://mars.nasa.gov/api/v1/raw_image_items/?order=sol%20desc,date_taken%20desc&per_page=${per}&page=${p}&condition_1=msl:mission${cam ? `&condition_2=${cam}:instrument` : ""}`
+    : `https://mars.nasa.gov/rss/api/?feed=raw_images&category=mars2020&feedtype=json&num=${per}&page=${p}&order=sol+desc${cam ? `&search=%7C${cam}` : ""}`;
+  const j = await getPage(u, signal);
+  return { ...latestFrames(m, j, per), ...totals(m, j, !!cam) };
+}
+const num = (v: unknown) => (v === undefined || v === null || v === "" || !Number.isFinite(Number(v)) ? null : Number(v));
+/** Exported for the test. */
+export const totals = (m: Mission, j: RawPage, filtered: boolean) => m === "msl"
+  ? { total: filtered ? null : num(j.total), matching: filtered ? num(j.total) : null }
+  : { total: num(j.total_images), matching: filtered ? num(j.total_results) : null };
+export const latestFrames = (m: Mission, j: RawPage, per = 50) => { const r = parsePage(m, j, per); return { frames: r.frames.filter((f) => f.sample !== "thumbnail"), more: r.more }; };
 
 const PLACE_CAMS: Record<Mission, string[][]> = { msl: [["NAV_LEFT_A"], ["NAV_LEFT_B"]], m20: [["NAVCAM_LEFT", "MCZ_LEFT"]] };
 /** At or after this stop's rover motion counter and before the next stop's. Perseverance's drive counter also ticks

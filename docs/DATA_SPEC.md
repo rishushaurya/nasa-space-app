@@ -25,6 +25,13 @@ Homeward has no database (README D2). All data are static, versioned files under
 - Live, not cached: Trek and OnMars tiles (CTX beta01 5 m, HiRISE, THEMIS day and night IR 100 m, Viking 232 m) and NASA raw-image records and photos. Curiosity Navcam records carry camera models and attitude from sol 13; Curiosity Mastcam records do not, so those photos appear only in the film strip.
 - Conventions checked on real records: the attitude quaternion `(s, x, y, z)` rotates the rover frame to local level (north, east, down); Curiosity site 85 gives 28.68 deg, equal to MMGIS yaw; Perseverance site 4 drive 218 gives 221.38 deg (MMGIS -138.62). Camera models are already adjusted to each delivered image's pixel grid (downsampled and subframed alike). Perseverance's drive counter also ticks without wheel motion, so a frame belongs to the latest stop at or before its counter.
 
+### 0.3 Added on 14 Nov 2026 (build/PLAN-4.md)
+
+- Files: 226 in `data/manifest.json`, 222.7 MB; 56 facts, 91 sources, 13 landers.
+- `data/usgs/mars-maps.json`: `{ sourceId, maps: [{ title, number, scale, year, url, rings }] }`, the 116 published USGS geologic maps of Mars from the Planetary Geologic Mapping Program map database (`pipeline/usgs_maps.py`), sorted finest scale first; rings in degrees (outSR 4326), simplified to 0.05 deg. Source USGS-PGM-MAP-DB.
+- Facts EARTH-01 and EARTH-02: the Haughton-Mars Project Research Station (75.433 N, 89.867 W; Mars Institute). Sources MARS-INSTITUTE-HMP and NASA-GIBS added; TREK-SITE-HIRISE now also covers the Viking 1 and 2 mosaics.
+- Live, not cached: Trek's SIM 3292 identify (rock unit), Trek's Viking site mosaics, NASA's newest raw images (both rovers), PIA23179 from the NASA Image Library, GIBS WMS images (Landsat WELD annual; HLS Sentinel-2 30 m by date).
+
 ### 0.2 Added on 13 Nov 2026 (build/PLAN-3.md)
 
 - Files: 225 in `data/manifest.json`, 222.7 MB; 54 facts, 88 sources, 13 landers.

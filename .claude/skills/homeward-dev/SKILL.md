@@ -74,3 +74,12 @@ End every session with a `CHANGELOG.md` entry, a `build/MANIFEST.md` update and,
 - Horizons refuses requests past a spacecraft's published ephemeris end; `make_orbiters.py` reads the end from the error. MAVEN's ends 1 Mar 2026.
 - `npm run preview` has no API routes: `/api/v1/*` panels show their error state there; test them in `npm run dev`.
 - Write edit scripts as files (Write tool) and run them with python: heredocs break on apostrophes here.
+
+## Version 4.0 notes (14 Nov 2026; `build/PLAN-4.md`)
+
+- Trek WMTS capability files can be wrong: `h1394_0000_nd3` claims levels 2 to 9 but its tiles use normal numbering from level 4. Probe real tiles at the lander before trusting a layer's levels; `min` in a `Tiles` entry skips missing coarse levels.
+- NASA's raw-image feeds sort newest first (`order=sol+desc`, Curiosity `sol desc,date_taken desc`) and publish totals (`total_images`, `total_results`; Curiosity `total`). They refuse headless browsers: check raw-image features in the browser pane, never by changing the user agent.
+- `data/usgs/mars-maps.json` comes from `pipeline/usgs_maps.py`; `data/usgs.ts` `mapsAt` is the tested point-in-polygon search.
+- `library.ts` `PINNED` puts official resources first for a lander, past the artist-concept filter.
+- One more CSP image host since D33: `gibs.earthdata.nasa.gov` (diagnostics check 15 allows it).
+

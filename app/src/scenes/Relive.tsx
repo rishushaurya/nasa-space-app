@@ -3,12 +3,12 @@
 // MMGIS waypoint; each photo is placed by its camera model and the rover's attitude (core/camera.ts) over the 3D
 // globe seen from the same spot. Arrows step to the previous and next stop along the real drive.
 import { useEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent } from "react";
-import { Camera, ChevronLeft, ChevronRight, ChevronUp, ChevronsLeft, ChevronsRight, Images, Minus, Pause, Play, Plus, Route, X } from "lucide-react";
+import { Camera, ChevronLeft, ChevronRight, ChevronUp, ChevronsLeft, ChevronsRight, Footprints, Images, Minus, Pause, Play, Plus, Radio, Route, X } from "lucide-react";
 import { frameCentre, frameMatrix, project } from "../core/camera";
 import { bearingDeg, haversineM, type LatLon } from "../core/frames";
 import { useApp } from "../state";
 import { useRuntime } from "../runtime";
-import { placeable, resolveStop, ROVER, stopGallery, stopPhotos, type Frame, type Mission, type Stop, type StopPhotos } from "../rovers/raw";
+import { LATEST_CAMS, latest, placeable, resolveStop, ROVER, stopGallery, stopPhotos, type Frame, type Mission, type Stop, type StopPhotos } from "../rovers/raw";
 import { stopsFor } from "./Explore";
 import { Badge, FactRow, Panel, SourceLink, Tip, fmtLatLon, type PanelState } from "../ui/ui";
 import { incidentId } from "../data/load";
@@ -34,6 +34,8 @@ export function ReliveScene() {
   const [size, setSize] = useState({ w: innerWidth, h: innerHeight });
   const [loaded, setLoaded] = useState<Set<string>>(new Set());
   const [gallery, setGallery] = useState<{ frames: Frame[]; more: boolean; page: number; state: "idle" | "loading" | "error" }>({ frames: [], more: false, page: 0, state: "idle" });
+  // What the film strip shows: this stop's photos, or the newest images from Mars (PLAN-4 D32).
+  const [strip, setStrip] = useState<{ kind: "stop" } | { kind: "latest"; cam: string; total: number | null; matching: number | null }>({ kind: "stop" });
   const [open, setOpen] = useState<number | null>(null);
   const [n, setN] = useState(0); // retry counter
   const el = useRef<HTMLDivElement>(null);
@@ -54,7 +56,7 @@ export function ReliveScene() {
   useEffect(() => {
     if (!stop) return;
     const ac = new AbortController();
-    setPhotos({ kind: "loading" }); setLoaded(new Set()); setGallery({ frames: [], more: false, page: 0, state: "idle" }); setOpen(null);
+    setPhotos({ kind: "loading" }); setLoaded(new Set()); setGallery({ frames: [], more: false, page: 0, state: "idle" }); setStrip({ kind: "stop" }); setOpen(null);
     stopPhotos(m, list, i, ac.signal).then((p) => setPhotos(p.placed.length ? { kind: "ok", data: p }
       : { kind: "empty", message: p.frames.length ? "NASA's records for this stop have photos but none with a camera model, so none can be placed. The film strip has them all." : "No Navcam or Mastcam-Z photos were recorded at this stop. Step to the next stop or open the film strip." }))
       .catch((e) => { if (e.name !== "AbortError") setPhotos({ kind: "error", message: `NASA's raw-image service did not answer (${e.message}). Featured stops work offline.`, incident: incidentId(), retry: () => setN((k) => k + 1) }); });
@@ -140,11 +142,20 @@ export function ReliveScene() {
 
   const loadGallery = (page: number) => {
     if (!stop) return;
-    setGallery((g) => ({ ...g, state: "loading" }));
+    setStrip({ kind: "stop" });
+    setGallery((g) => ({ ...(page === 0 ? { frames: [] } : g), more: g.more, page: g.page, state: "loading" }));
     stopGallery(m, list, i, page, new AbortController().signal)
       .then((r) => setGallery((g) => ({ frames: page === 0 ? r.frames : [...g.frames, ...r.frames], more: r.more, page, state: "idle" })))
       .catch(() => setGallery((g) => ({ ...g, state: "error" })));
   };
+  const loadLatest = (cam: string, page: number) => {
+    setGallery((g) => ({ ...(page === 0 ? { frames: [] } : g), more: g.more, page: g.page, state: "loading" }));
+    latest(m, page, new AbortController().signal, cam || undefined)
+      .then((r) => { setStrip({ kind: "latest", cam, total: r.total, matching: r.matching }); setGallery((g) => ({ frames: page === 0 ? r.frames : [...g.frames, ...r.frames], more: r.more, page, state: "idle" })); })
+      .catch(() => setGallery((g) => ({ ...g, state: "error" })));
+  };
+  const [latestCam, setLatestCam] = useState("");
+  useEffect(() => { setLatestCam(""); }, [m]);
   const featured = FEATURED.find((f) => f.m === m && stop && f.site === stop.site && f.drive === stop.drive);
   const story = featured?.sol ? data.sols.get(featured.sol) : undefined;
   const compass = (b: number) => ["north", "north-east", "east", "south-east", "south", "south-west", "west", "north-west"][Math.round(((b % 360) + 360) % 360 / 45) % 8];
@@ -191,10 +202,11 @@ export function ReliveScene() {
       {gallery.frames.length > 0 && (
         <div className="strip" role="list" aria-label="All photos from this stop">
           {gallery.frames.map((f, k) => <button key={f.id} role="listitem" onClick={() => setOpen(k)} aria-label={`${f.cam}, sol ${f.sol}`}><img src={f.thumb} alt="" loading="lazy" referrerPolicy="no-referrer" /></button>)}
-          {gallery.more && <button className="btn" onClick={() => loadGallery(gallery.page + 1)} disabled={gallery.state === "loading"}>More</button>}
+          {gallery.more && <button className="btn" onClick={() => (strip.kind === "latest" ? loadLatest(strip.cam, gallery.page + 1) : loadGallery(gallery.page + 1))} disabled={gallery.state === "loading"}>More</button>}
         </div>
       )}
-      {open !== null && gallery.frames[open] && <Lightbox frames={gallery.frames} k={open} setK={setOpen} />}
+      {open !== null && gallery.frames[open] && <Lightbox frames={gallery.frames} k={open} setK={setOpen}
+        stand={strip.kind === "latest" ? (f) => { setOpen(null); faced.current = false; set({ rover: { m, site: f.site!, drive: f.drive! } }); } : undefined} />}
 
       <aside className="side">
         <Panel title="Rover view" icon={<Camera size={18} aria-hidden />} state={stops} lines={5}>
@@ -254,6 +266,28 @@ export function ReliveScene() {
           )}
         </Panel>
 
+        <section className="panel">
+          <h2><Radio size={18} aria-hidden />Newest from Mars</h2>
+          <p className="muted" style={{ fontSize: "var(--text-sm)", marginTop: 0 }}>{ROVER[m].name}'s newest raw images, as NASA's raw-image gallery lists them, newest sol first.</p>
+          <div className="row">
+            <label className="muted" htmlFor="latest-cam" style={{ fontSize: "var(--text-sm)" }}>Camera</label>
+            <select id="latest-cam" value={latestCam} onChange={(e) => setLatestCam(e.target.value)}>
+              <option value="">All cameras</option>
+              {LATEST_CAMS[m].map(([id, label]) => <option key={id} value={id}>{label}</option>)}
+            </select>
+            <button className="btn" onClick={() => loadLatest(latestCam, 0)} disabled={gallery.state === "loading"}><Images size={16} aria-hidden />Show the newest</button>
+          </div>
+          {strip.kind === "latest" && (
+            <div className="facts" style={{ marginTop: "var(--space-3)" }}>
+              {strip.total !== null && <><span className="fact-label">Raw images released</span><span className="fact-value"><span className="mono">{strip.total.toLocaleString("en-US")}</span><Badge b="MEASURED" /><SourceLink id={ROVER[m].rawSource} data={data} /></span></>}
+              {strip.matching !== null && <><span className="fact-label">From this camera</span><span className="fact-value"><span className="mono">{strip.matching.toLocaleString("en-US")}</span><Badge b="MEASURED" /></span></>}
+              {gallery.frames[0] && <><span className="fact-label">Newest sol</span><span className="fact-value mono">{gallery.frames[0].sol}</span></>}
+            </div>
+          )}
+          {gallery.state === "error" && strip.kind === "latest" && <p role="alert" className="muted">NASA's raw-image service did not answer.</p>}
+          <p className="muted" style={{ fontSize: "var(--text-xs)" }}>Open an image and choose "Stand at this stop" to see where it was taken.</p>
+        </section>
+
         {featured && (
           <section className="panel">
             <h2><Route size={18} aria-hidden />{featured.title}</h2>
@@ -288,7 +322,7 @@ function Minimap({ stops, i, yaw, go, color }: { stops: Stop[]; i: number; yaw: 
   );
 }
 
-function Lightbox({ frames, k, setK }: { frames: Frame[]; k: number; setK: (k: number | null) => void }) {
+function Lightbox({ frames, k, setK, stand }: { frames: Frame[]; k: number; setK: (k: number | null) => void; stand?: (f: Frame) => void }) {
   const f = frames[k]!;
   const closeRef = useRef<HTMLButtonElement>(null);
   useEffect(() => { closeRef.current?.focus(); }, []);
@@ -312,6 +346,7 @@ function Lightbox({ frames, k, setK }: { frames: Frame[]; k: number; setK: (k: n
           <button className="btn icon" onClick={() => setK(Math.max(k - 1, 0))} disabled={k === 0} aria-label="Previous photo"><ChevronLeft size={16} /></button>
           <span className="mono muted">{k + 1} / {frames.length}</span>
           <button className="btn icon" onClick={() => setK(Math.min(k + 1, frames.length - 1))} disabled={k === frames.length - 1} aria-label="Next photo"><ChevronRight size={16} /></button>
+          {stand && f.site !== null && f.drive !== null && <button className="btn" onClick={() => stand(f)}><Footprints size={16} aria-hidden />Stand at this stop</button>}
           <button ref={closeRef} className="btn icon" onClick={() => setK(null)} aria-label="Close"><X size={16} /></button>
         </div>
         <p className="muted mono" style={{ fontSize: "var(--text-xs)", marginBottom: 0 }}>{f.id}{f.lmst ? ` | ${f.lmst}` : ""}{f.utc ? ` | ${f.utc.replace("T", " ").slice(0, 19)} UTC` : ""} | {f.credit} | <a className="src" href={f.link} target="_blank" rel="noreferrer noopener">NASA page</a></p>
