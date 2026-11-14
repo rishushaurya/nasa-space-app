@@ -57,6 +57,7 @@ Rules:
 | 2026-11-06 | 16 | Every document and both skills at 2.0; CTX licence recorded; pushed to https://github.com/rishushaurya/nasa-space-app (`main`) | Claude Opus 5.5 |
 | 2026-11-07 | - | Handoff: "Where to begin" in `CLAUDE.md`; memory updated. Next: team's choice, else deploy, Esri terms, 200 m terrain | Claude Opus 5.5 |
 | 2026-11-13 | 17-26 | Version 3.0: research, `build/PLAN-3.md`, knowledge graph, global relief, render on demand, overlays, MER tracks, Schiaparelli, tour, ride, lander photos, live conditions, line of sight, orbiters; checked in the dev server and under production headers; 73 tests; 19 PASS, 0 FAIL, 1 SKIP | Claude Fable 5.2, Claude Opus 5.5 |
+| 2026-11-14 | - | Fly mode in the Walk scene (10 to 1,000 m/s, climb and descend, tested `flyStep`); 76 tests | Claude Opus 5.5 |
 | 2026-11-14 | - | Deployed on Vercel Hobby (https://nasa-space-app-drab.vercel.app); function import fix; diagnostics 20 PASS, 0 FAIL, 0 SKIP | Claude Opus 5.5 |
 | 2026-11-14 | 27 | Demo films: `film/` pipeline (record the real app, Kokoro narration, MusicGen bed, NASA Mars wind, ffmpeg edit with subtitles); first cut of both films; no app code changed | Claude Opus 5.5 |
 

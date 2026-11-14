@@ -2,6 +2,20 @@
 
 > Version 3.0.0 | 2026-11-13 | Newest entry first. Every session adds one entry before it ends.
 
+## 2026-11-14 | Claude Opus 5.5 | Session 5c (Fly mode in the Walk scene)
+
+**Description**: The team asked to change walking into flying with a speed control. Walking stays (it is the suited walk the challenge is about); the Walk scene gains a third mode, Fly, beside "Walk yourself" and "Follow the plan". The research and build of the five challenge resources (PLAN-4) moved to its own session.
+
+**Changes**:
+- Created: `flyStep()` in `app/src/core/frames.ts` (one frame of free flight: forward or back along the heading, climb at half speed, height above ground clamped 2 m to 300 km, latitude kept short of the poles, longitude wrapped), with three tests in `core.test.ts`
+- Modified: `app/src/scenes/Walk.tsx` (mode `walk | fly | follow`; speed buttons 10, 50, 250, 1,000 m/s; E/Q and Page Up/Down or the Climb and Descend buttons; HUD shows height above ground and flight speed in place of the radio and science-stop cells; the suit clock and events stop while flying; landing returns to where the walk paused); README section 13
+
+**Diagnostics**: Tests 76 passed in 15 files; typecheck clean; diagnostics 19 PASS, 0 FAIL, 1 SKIP. Browser (headless Chrome on the GPU, dev server): took off at Gale, climbed to 515 m, flew 8 s at 250 m/s = 2,002 m from home (as expected), landed back at the habitat; no page errors.
+
+**NEXT AI SHOULD**: Ask the team whether Fly should also be in Explore. Watch the PLAN-4 session (five challenge resources) and merge its branch when the team asks.
+
+---
+
 ## 2026-11-14 | Claude Opus 5.5 | Session 5b (Vercel deploy)
 
 **Description**: The team asked for a $0 deploy with all environment variables. Deployed on Vercel Hobby (free; no card; over-limit usage pauses, never bills) with the CLI: project `nasa-space-app`, connected to `rishushaurya/nasa-space-app` so pushes to `main` redeploy. Live at https://nasa-space-app-drab.vercel.app.

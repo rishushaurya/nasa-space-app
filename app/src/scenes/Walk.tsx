@@ -1,10 +1,11 @@
-// Homeward | app/src/scenes/Walk.tsx | v3.0.0 | 2026-11-13
-// Scene 6-9: you walk the plan yourself (D20); "Follow the plan" replays the planner's route. HUD values come from
-// the planner and tested core functions.
+// Homeward | app/src/scenes/Walk.tsx | v3.1.0 | 2026-11-14
+// Scene 6-9: you walk the plan yourself (D20); "Follow the plan" replays the planner's route; "Fly" is a free
+// flight over the real terrain at a chosen speed (a view, not a suited walk: the suit clock stops). HUD values come
+// from the planner and tested core functions.
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
-import { Antenna, ArrowUp, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Download, Eye, FlaskConical, House, Pause, Play, Radiation, RadioTower, Share2, Sun, TriangleAlert, Wind } from "lucide-react";
+import { Antenna, ArrowDownToLine, ArrowUp, ArrowUpFromLine, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Download, Eye, FlaskConical, Gauge, House, Pause, Play, Plane, Radiation, RadioTower, Share2, Sun, TriangleAlert, Wind } from "lucide-react";
 import { lightTimeMin } from "../core/ephemeris";
-import { bearingDeg as bearing, haversineM, offsetM as offset } from "../core/frames";
+import { bearingDeg as bearing, flyStep, haversineM, offsetM as offset } from "../core/frames";
 import { gcrDoseMSv } from "../core/dose";
 import { lineOfSight } from "../core/los";
 import { cellCenter, cellIndex, passable, walkSpeedKmh } from "../core/planner";
@@ -33,7 +34,10 @@ export function WalkScene() {
   const [atStop, setAtStop] = useState(false);
   const [done, setDone] = useState(false);
   const [heading, setHeading] = useState(90);
-  const [manual, setManual] = useState(true);
+  const [mode, setMode] = useState<"walk" | "fly" | "follow">("walk");
+  const manual = mode !== "follow", flying = mode === "fly";
+  const [flySpeed, setFlySpeed] = useState(50); // metres per second
+  const [flyHeight, setFlyHeight] = useState(150); // metres above the ground, shown in the HUD
   const devilStart = useRef<number | null>(null);
   const stopSeen = useRef(false);
   const tRef = useRef(0);
@@ -41,6 +45,8 @@ export function WalkScene() {
   const look = useRef({ heading: 90, pitch: -4 });
   const here = useRef(z.home);
   const walked = useRef(0); // metres actually walked when walking yourself
+  const height = useRef(150); // flight height above the ground
+  const walkPos = useRef(z.home); // where the walk paused when you took off
 
   const tl = useMemo(() => (p ? p.result.timeline.map((x) => ({ ...x, p: cellCenter(p.grid, x.cell) })) : []), [p]);
   const total = p?.result.totals.totalMin ?? 0;
@@ -48,7 +54,7 @@ export function WalkScene() {
 
   useEffect(() => {
     tRef.current = 0; setElapsedMin(0); setEvent(null); stopSeen.current = false; devilStart.current = null; setDone(false); setAtStop(false); setPosition(z.home);
-    here.current = z.home; walked.current = 0; look.current = { heading: bearing(z.home, z.stop), pitch: -4 }; setHeading(look.current.heading);
+    here.current = z.home; walkPos.current = z.home; walked.current = 0; look.current = { heading: bearing(z.home, z.stop), pitch: -4 }; setHeading(look.current.heading);
     return () => setEvent(null);
   }, [p?.startUtcMs, s.zone]);
   useEffect(() => { void setAmbient(s.voice); return () => void setAmbient(false); }, [s.voice]);
@@ -103,7 +109,7 @@ export function WalkScene() {
     if (!manual || !globe || !p) return;
     const ctl = globe.viewer.scene.screenSpaceCameraController;
     ctl.enableInputs = false;
-    const KEYS: Record<string, string> = { w: "up", arrowup: "up", s: "down", arrowdown: "down", a: "left", arrowleft: "left", d: "right", arrowright: "right" };
+    const KEYS: Record<string, string> = { w: "up", arrowup: "up", s: "down", arrowdown: "down", a: "left", arrowleft: "left", d: "right", arrowright: "right", e: "rise", pageup: "rise", q: "sink", pagedown: "sink" };
     const kd = (e: KeyboardEvent) => { const k = KEYS[e.key.toLowerCase()]; if (!k || (e.target as HTMLElement)?.closest?.("input, textarea, select")) return; held.current.add(k); e.preventDefault(); };
     const ku = (e: KeyboardEvent) => { const k = KEYS[e.key.toLowerCase()]; if (k) held.current.delete(k); };
     const clear = () => held.current.clear();
@@ -112,7 +118,12 @@ export function WalkScene() {
     const loop = (now: number) => {
       const dt = Math.min((now - last) / 1000, 0.1); last = now;
       const k = held.current, L = look.current;
-      if (playing && !done) {
+      if (flying) {
+        // Free flight: no walk-zone limits, no events, the suit clock stops (this is a view, not an EVA).
+        L.heading = (L.heading + ((k.has("right") ? 1 : 0) - (k.has("left") ? 1 : 0)) * 60 * dt + 360) % 360;
+        const f = flyStep(here.current, height.current, L.heading, (k.has("up") ? 1 : 0) - (k.has("down") ? 1 : 0), (k.has("rise") ? 1 : 0) - (k.has("sink") ? 1 : 0), flySpeed, dt);
+        here.current = f.p; height.current = f.heightM;
+      } else if (playing && !done) {
         L.heading = (L.heading + ((k.has("right") ? 1 : 0) - (k.has("left") ? 1 : 0)) * 60 * dt + 360) % 360;
         const dir = (k.has("up") ? 1 : 0) - (k.has("down") ? 1 : 0);
         if (dir && !atStop) {
@@ -129,15 +140,23 @@ export function WalkScene() {
         if (!stopSeen.current && toStop < 15) { stopSeen.current = true; setAtStop(true); held.current.clear(); }
         if (stopSeen.current && !atStop && toHome < 10) { setDone(true); held.current.clear(); }
       }
-      globe.eye(here.current, L.heading, L.pitch);
+      globe.eye(here.current, L.heading, L.pitch, flying ? height.current : undefined);
       globe.setSun(p.startUtcMs + tRef.current * 60000);
       dustDevil(here.current, L.heading);
-      if (now - lastUi > 100) { lastUi = now; setPosition(here.current); setHeading(L.heading); setElapsedMin(tRef.current); }
+      if (now - lastUi > 100) { lastUi = now; setPosition(here.current); setHeading(L.heading); setElapsedMin(tRef.current); if (flying) setFlyHeight(height.current); }
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
     return () => { cancelAnimationFrame(raf); removeEventListener("keydown", kd); removeEventListener("keyup", ku); removeEventListener("blur", clear); held.current.clear(); ctl.enableInputs = true; };
-  }, [manual, globe, p, playing, pace, atStop, done, s.settings]);
+  }, [manual, flying, flySpeed, globe, p, playing, pace, atStop, done, s.settings]);
+
+  // Take off from where you stand; land back where the walk paused (the walk stays inside the mapped zone).
+  const choose = (m: typeof mode) => {
+    if (m === mode) return;
+    if (m === "fly") { walkPos.current = here.current; height.current = 150; look.current = { ...look.current, pitch: -20 }; }
+    else if (mode === "fly") { here.current = walkPos.current; look.current = { ...look.current, pitch: -4 }; }
+    setMode(m);
+  };
 
   // Drag anywhere on the view to look around (as in Rover view); the pad buttons hold like keys.
   const drag = useRef<{ x: number; y: number; h: number; p: number } | null>(null);
@@ -182,9 +201,14 @@ export function WalkScene() {
         <div className={`cell ${lifeLeft < lim * 0.25 ? "warn" : ""}`}><span className="k"><Wind size={12} aria-hidden />Life support</span><span className="v">{fmtHM(lifeLeft)}</span></div>
         <div className="cell"><span className="k"><Radiation size={12} aria-hidden />Dose</span><span className="v">{gcrDoseMSv(elapsedMin / 60).toFixed(3)} mSv</span></div>
         <div className={`cell ${daylight < 60 ? "warn" : ""}`}><span className="k"><Sun size={12} aria-hidden />Daylight</span><span className="v">{fmtHM(daylight)}</span></div>
-        <div className="cell secondary"><span className="k">Distance home</span><span className="v">{Math.round(haversineM(position, z.home))} m</span></div>
-        <div className={`cell ${sight.clear ? "secondary" : "warn"}`}><span className="k"><Antenna size={12} aria-hidden />Radio to {s.zone === "gale" ? "habitat" : "rover"}</span><span className="v">{sight.clear ? "In sight" : "Blocked"}</span></div>
-        {manual && (() => {
+        <div className="cell secondary"><span className="k">Distance home</span><span className="v">{(() => { const d = haversineM(position, z.home); return d < 10000 ? `${Math.round(d)} m` : `${(d / 1000).toLocaleString("en-US", { maximumFractionDigits: 0 })} km`; })()}</span></div>
+        {flying ? (
+          <>
+            <div className="cell"><span className="k"><Plane size={12} aria-hidden />Height above ground</span><span className="v">{flyHeight < 10000 ? `${Math.round(flyHeight)} m` : `${(flyHeight / 1000).toFixed(1)} km`}</span></div>
+            <div className="cell"><span className="k"><Gauge size={12} aria-hidden />Flight speed</span><span className="v">{flySpeed} m/s</span><span className="k">{Math.round(flySpeed * 3.6).toLocaleString("en-US")} km/h</span></div>
+          </>
+        ) : <div className={`cell ${sight.clear ? "secondary" : "warn"}`}><span className="k"><Antenna size={12} aria-hidden />Radio to {s.zone === "gale" ? "habitat" : "rover"}</span><span className="v">{sight.clear ? "In sight" : "Blocked"}</span></div>}
+        {manual && !flying && (() => {
           const goal = stopSeen.current ? z.home : z.stop, rel = bearing(position, goal) - heading;
           return <div className="cell"><span className="k">{stopSeen.current ? "Home" : "Science stop"}</span><span className="v"><ArrowUp size={18} aria-label={`${Math.round(((rel % 360) + 540) % 360 - 180)} degrees from your heading`} style={{ transform: `rotate(${rel}deg)`, verticalAlign: "middle" }} /> {Math.round(haversineM(position, goal))} m</span></div>;
         })()}
@@ -195,13 +219,16 @@ export function WalkScene() {
 
       <aside className="side">
         <section className="panel">
-          <div className="seg" role="group" aria-label="How to walk">
-            <button aria-pressed={manual} onClick={() => setManual(true)}>Walk yourself</button>
-            <button aria-pressed={!manual} onClick={() => setManual(false)}>Follow the plan</button>
+          <div className="seg" role="group" aria-label="How to move">
+            <button aria-pressed={mode === "walk"} onClick={() => choose("walk")}>Walk yourself</button>
+            <button aria-pressed={flying} onClick={() => choose("fly")}><Plane size={14} aria-hidden />Fly</button>
+            <button aria-pressed={mode === "follow"} onClick={() => choose("follow")}>Follow the plan</button>
           </div>
           <div className="row" style={{ marginTop: "var(--space-2)" }}>
             <button className="btn icon" onClick={() => setPlaying(!playing)} aria-label={playing ? "Pause the suit clock" : "Resume"}>{playing ? <Pause size={16} /> : <Play size={16} />}</button>
-            {manual
+            {flying
+              ? <div className="seg" role="group" aria-label="Flight speed">{[10, 50, 250, 1000].map((x) => <button key={x} aria-pressed={flySpeed === x} onClick={() => setFlySpeed(x)}>{x} m/s</button>)}</div>
+              : manual
               ? <div className="seg" role="group" aria-label="Time compression">{[1, 10, 30].map((x) => <button key={x} aria-pressed={pace === x} onClick={() => setPace(x)}>{x === 1 ? "Real time" : `${x}x`}</button>)}</div>
               : <div className="seg" role="group" aria-label="Time speed">{[10, 30, 60].map((x) => <button key={x} aria-pressed={speed === x} onClick={() => setSpeed(x)}>{x}x</button>)}</div>}
             {!manual && <button className="btn icon" onClick={() => setView(view === "eye" ? "above" : "eye")} aria-label="Toggle view"><Eye size={16} /></button>}
@@ -214,7 +241,15 @@ export function WalkScene() {
               <button className="btn right" aria-label="Turn right (D)" {...hold("right")}><ChevronRight size={22} /></button>
             </div>
           )}
-          <p className="muted" style={{ fontSize: "var(--text-xs)", margin: "var(--space-2) 0 0" }}>{manual
+          {flying && (
+            <div className="row" style={{ marginTop: "var(--space-2)" }}>
+              <button className="btn" aria-label="Climb (E)" {...hold("rise")}><ArrowUpFromLine size={16} aria-hidden />Climb</button>
+              <button className="btn" aria-label="Descend (Q)" {...hold("sink")}><ArrowDownToLine size={16} aria-hidden />Descend</button>
+            </div>
+          )}
+          <p className="muted" style={{ fontSize: "var(--text-xs)", margin: "var(--space-2) 0 0" }}>{flying
+            ? <>Fly anywhere over the real terrain: W and S fly forward and back, A and D turn, E and Q (or Page Up and Down) climb and descend, drag the view to look. Height follows the ground (200 m relief everywhere, 1 m at Gale). Flying is a view, not a suited walk: the suit clock stops, and the walk resumes where you took off.</>
+            : manual
             ? <>Hold W or the up arrow to walk, A and D to turn, drag the view to look around. You walk at the planner&apos;s pace: {walkSpeedKmh(0, 1, s.settings.speedFactor).toFixed(1)} km/h on the flat, slower uphill <SourceLink id="APOLLO17-TRAVERSE" data={data} />. The suit clock runs {pace === 1 ? "in real time" : `${pace}x faster than real time`}. Walk to the science stop and back home.</>
             : `Mission time runs ${speed}x faster than real time.`} Radio to the shelter is a straight path over the HiRISE terrain and the planet's curvature (suit antenna 1.7 m, mast 3 m <Badge b="ASSUMPTION" />); out of sight means no direct voice link. Eye height 1.7 m <Badge b="ASSUMPTION" />; horizon {data.facts.get("PLN-12")?.value} km away.{s.voice && <> Wind: Perseverance&apos;s real microphone recording, sol 1 <SourceLink id="NASA-SUPERCAM-SOL1" data={data} /></>}</p>
           <div className="row" style={{ marginTop: "var(--space-2)" }}>

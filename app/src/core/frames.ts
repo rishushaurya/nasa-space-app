@@ -38,3 +38,14 @@ export function offsetM(p: LatLon, bearing: number, m: number, r = MARS_SPHERE_M
   const d = m / r;
   return { lat: p.lat + (d * Math.cos(bearing * D2R)) / D2R, lon: p.lon + (d * Math.sin(bearing * D2R)) / D2R / Math.cos(p.lat * D2R) };
 }
+
+export const FLY_MIN_M = 2, FLY_MAX_M = 300_000;
+/** One frame of free flight (Walk scene, Fly mode): `fwd` and `up` are -1, 0 or 1; climbing runs at half the
+ *  ground speed. Height is above the ground, clamped; latitude stops short of the poles; longitude wraps. */
+export function flyStep(p: LatLon, heightM: number, headingDeg: number, fwd: number, up: number, speedMs: number, dt: number): { p: LatLon; heightM: number } {
+  const n = fwd ? offsetM(p, headingDeg + (fwd < 0 ? 180 : 0), speedMs * dt) : p;
+  return {
+    p: { lat: Math.max(-89, Math.min(89, n.lat)), lon: ((n.lon + 540) % 360) - 180 },
+    heightM: Math.max(FLY_MIN_M, Math.min(FLY_MAX_M, heightM + up * speedMs * 0.5 * dt)),
+  };
+}

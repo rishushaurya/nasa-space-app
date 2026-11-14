@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { LANDINGS, localSolar, marsTime, marsYear, nextSunEvent, solNumber, sunPosition } from "./mars-time";
 import { earthElongation, directionFromMars, lightTimeMin } from "./ephemeris";
-import { bearingDeg, haversineM, horizonM, ocToOg, offsetM, ogToOc } from "./frames";
+import { bearingDeg, flyStep, FLY_MIN_M, haversineM, horizonM, ocToOg, offsetM, ogToOc } from "./frames";
 import { gcrDoseMSv, missionDoseMSv } from "./dose";
 import { moonPosition, type Moon, type MoonTable } from "./moons";
 import { DEFAULTS, plan, route, timeHomeField, walkSpeedKmh, type Grid } from "./planner";
@@ -156,4 +156,22 @@ describe("moons (JPL Horizons vectors, Hermite between hourly rows, rotated to M
     expect(Math.abs(s.lat + 0.427)).toBeLessThan(0.3);
   });
   it("is null outside the table", () => { expect(moonPosition(t, "phobos", Date.UTC(2030, 0, 1))).toBeNull(); });
+});
+
+describe("Fly mode (flyStep)", () => {
+  const gale = { lat: -4.5895, lon: 137.4417 };
+  it("moves forward at the chosen speed and keeps its height", () => {
+    const r = flyStep(gale, 100, 90, 1, 0, 250, 2);
+    expect(haversineM(gale, r.p)).toBeCloseTo(500, -1);
+    expect(r.heightM).toBe(100);
+  });
+  it("climbs at half speed and never goes below the ground floor", () => {
+    expect(flyStep(gale, 100, 0, 0, 1, 100, 1).heightM).toBe(150);
+    expect(flyStep(gale, 10, 0, 0, -1, 1000, 1).heightM).toBe(FLY_MIN_M);
+  });
+  it("wraps longitude across 180 degrees and stops short of the poles", () => {
+    const r = flyStep({ lat: 0, lon: 179.99 }, 100, 90, 1, 0, 1000, 1);
+    expect(r.p.lon).toBeLessThan(-179.9);
+    expect(flyStep({ lat: 88.99, lon: 0 }, 100, 0, 1, 0, 100000, 1).p.lat).toBe(89);
+  });
 });

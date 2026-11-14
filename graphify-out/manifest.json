@@ -144,9 +144,9 @@
     "semantic_hash": ""
   },
   "app/src/core/core.test.ts": {
-    "mtime": 1794512695.2512414,
-    "seen": 1794592418.920967,
-    "ast_hash": "da2d249c6ac4708589b5a26962891573",
+    "mtime": 1794642653.2392354,
+    "seen": 1794643121.96875,
+    "ast_hash": "9000e08c9d002c91b615883dd7c49d17",
     "semantic_hash": ""
   },
   "app/src/core/dose.ts": {
@@ -162,9 +162,9 @@
     "semantic_hash": ""
   },
   "app/src/core/frames.ts": {
-    "mtime": 1794512695.2526193,
-    "seen": 1794592418.920967,
-    "ast_hash": "427bb4c6ad96c0459ca31fc1dc4a84df",
+    "mtime": 1794642652.6602964,
+    "seen": 1794643121.96875,
+    "ast_hash": "46864ca6d0c6d395d563f399c0a6bed1",
     "semantic_hash": ""
   },
   "app/src/core/los.test.ts": {
@@ -366,9 +366,9 @@
     "semantic_hash": ""
   },
   "app/src/scenes/Walk.tsx": {
-    "mtime": 1794592072.271988,
-    "seen": 1794592418.920967,
-    "ast_hash": "acbc53dc200bbec36158da01974b6e6e",
+    "mtime": 1794642694.8799474,
+    "seen": 1794643121.96875,
+    "ast_hash": "2233b3ceb3447742c0926659379218dd",
     "semantic_hash": ""
   },
   "app/src/sites.ts": {
@@ -504,9 +504,9 @@
     "semantic_hash": ""
   },
   ".claude/skills/homeward-dev/SKILL.md": {
-    "mtime": 1794592585.5372171,
-    "seen": 1794592588.3904848,
-    "ast_hash": "4d70d4f3d66189d0842933166cc5d787",
+    "mtime": 1794643116.6344733,
+    "seen": 1794643121.96875,
+    "ast_hash": "afa336f42b3739e49ab73a7572233058",
     "semantic_hash": ""
   },
   ".claude/skills/homeward-facts/SKILL.md": {
@@ -534,9 +534,9 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1794640711.2226958,
-    "seen": 1794640718.2642012,
-    "ast_hash": "e094dc0af27c492f682e704b9a54e2f9",
+    "mtime": 1794643116.6334658,
+    "seen": 1794643121.96875,
+    "ast_hash": "7e8f437508ae0b84040758a1d2232e8a",
     "semantic_hash": ""
   },
   "CLAUDE.md": {
@@ -582,9 +582,9 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1794640711.2206886,
-    "seen": 1794640718.2642012,
-    "ast_hash": "0217b63bb8acd54ec8379c75edc63295",
+    "mtime": 1794643116.6321156,
+    "seen": 1794643121.96875,
+    "ast_hash": "4117eb9b4b81af43659cfad20f706092",
     "semantic_hash": ""
   },
   "TAD.md": {
