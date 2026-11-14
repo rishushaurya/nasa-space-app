@@ -84,6 +84,7 @@ Recovery prompts are in `AI_RECOVERY.md`. Human shortcuts are in `COMMANDS.md`.
 | `build/chunk-00.md` ... `chunk-09.md` | Build specs, one per chunk, with verification commands |
 | `build/PLAN-2.md` | Research findings, decisions D15-D20 and chunks 10-16 for Explore, Rover view and walking yourself |
 | `build/PLAN-3.md` | The build checked against the official statement, research findings, decisions D21-D27 and chunks 17-26 (version 3.0) |
+| `film/SCRIPT.md`, `film/*.mjs`, `film/music.py` | The two demo films (30-second submission cut and a 2:20 story film): script, storylines, and the free pipeline that records the real app, voices the script (Kokoro), writes the music (MusicGen) and edits both with ffmpeg; output in `film/out/` (git-ignored) |
 | `docs/PROJECT_GRAPH.md`, `graphify-out/` | Knowledge graph of all code and documents: connection check, main paths, how to refresh |
 | `design/DESIGN_TOKENS.md` | CSS custom properties, contrast-checked |
 | `design/UI_DESIGN_PROMPTS.md` | Visual spec per component and scene, presence design |
@@ -244,7 +245,7 @@ What a visitor gets, scene by scene:
 | Plan | Two walk zones (Yellowknife Bay, boxwork ridges); hard budgets for life support, walk-back margin, daylight, radius; a walk-back heat map; a breach blocks Approve | HiRISE DTMs at 1 m, slope and relief grids at 2 m; Tobler speed scaled to the Apollo walk-back rate |
 | Walk | You walk it yourself (W, arrows, on-screen pad, drag to look) at the planner's pace, slower uphill, with the suit clock in real time, 10x or 30x; steep or rocky cells stop you; a guide points to the stop, then home; "Follow the plan" replays the route. Live HUD including radio line of sight to the habitat over the real terrain; dust-devil event and solar-storm drill announced by the suit voice; science stop with Curiosity's photos and a sample log; a debrief comparing the plan with what you did; GeoJSON and CSV export; share link | EVT-01, RAD-05, Tobler scaled to the Apollo walk-back rate (EVA-04), raw Mastcam and Navcam frames |
 | Rover view | Street view from the rovers' own photos: stand at any of Curiosity's 1,386 or Perseverance's 708 stops; Navcam and Mastcam-Z frames placed where each camera pointed, over the 3D view from the same spot; drag to look, zoom, arrows and keys step along the real drive; a ride that steps on by itself and faces the way the rover drove; mini-map, go to sol, every photo of the stop with full-size view and NASA links; four featured stops work offline | MMGIS waypoints, NASA raw-image APIs (camera models, rover attitude; golden-tested against a real record) |
-| Credits | Every agency, dataset, licence and AI tool, generated from `data/sources.json` | 74 sources |
+| Credits | Every agency, dataset, licence and AI tool, generated from `data/sources.json` | 88 sources |
 
 The assistant (bottom left) answers by voice and captions. It only speaks numbers returned by the app's tools, names its sources, and falls back from Gemini to Groq to OpenRouter to offline rules. Kokoro speaks on the device in a Web Worker, so the globe never freezes. Mission Control replies after the real round-trip light time, time-compressed 60x. The cloud button keeps every question on the device (offline rules only); the speaker button turns voice and wind on or off. After one online visit the service worker keeps the app working offline.
 
@@ -276,5 +277,7 @@ npm test
 npm run typecheck
 node scripts/diagnostics.mjs
 ```
+
+Live: https://nasa-space-app-drab.vercel.app (Vercel Hobby, free; project `nasa-space-app` on rishushaurya's projects, connected to the GitHub repository, so every push to `main` redeploys). Set on Vercel (Production): `ALLOWED_ORIGINS`, `IP_SALT`, `GEMINI_MODEL`, `GROQ_MODEL`, `OPENROUTER_MODEL`; the four keys (`GEMINI_API_KEY`, `GROQ_API_KEY`, `OPENROUTER_API_KEY`, `NASA_API_KEY`) are added by the team in Project Settings, then Redeploy. Without them the assistant uses offline rules and space weather uses `DEMO_KEY`. From this folder, `npx vercel deploy --prod` deploys too (`.vercelignore` keeps the upload under Hobby's 100 MB).
 
 Source: https://github.com/rishushaurya/nasa-space-app (branch `main`). Deploy on Vercel (Hobby, free): import that repository, keep the settings from `vercel.json` (build command `npm run models && npm run build`, output `dist`), add the variables from `.env.example` in Project Settings, deploy, then run `node scripts/diagnostics.mjs --base https://your-app.vercel.app`. The data pipeline in `pipeline/` only needs re-running to regenerate data; its outputs are committed.

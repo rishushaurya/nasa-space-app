@@ -2,7 +2,7 @@
 // GET: coronal mass ejections predicted to reach Mars, from NASA's DONKI (CCMC WSA-ENLIL model runs), last 30 days.
 // Through our relay so the NASA key stays server-side and the page's connect-src stays 'self' (PLAN-3 D23).
 import { z } from "zod";
-import { ipHash, json, log, rateLimit, requestId } from "../_lib/http";
+import { ipHash, json, log, rateLimit, requestId } from "../_lib/http.js";
 
 const Sim = z.object({
   simulationID: z.string(), modelCompletionTime: z.string().nullable().optional(), link: z.string().nullable().optional(),

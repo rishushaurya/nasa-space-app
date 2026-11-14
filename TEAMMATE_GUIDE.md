@@ -102,6 +102,8 @@ There are no accounts and we store nothing about you. Your voice is turned into 
 
 ## 11. The 30-second film (paper 14.1)
 
+As made (14 Nov 2026): `film/SCRIPT.md` has the final script for the 30-second cut and a 2:20 story film, and `film/` rebuilds both from the real app. The table below is the original plan.
+
 | Seconds | Picture | Subtitle |
 |---|---|---|
 | 0-4 | True-scale Mars in space; Phobos crossing; Earth as an evening star | "14 November 2026. Mars Year 39. One Mars, built from many missions' data." |

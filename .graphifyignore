@@ -4,3 +4,4 @@ dist/
 node_modules/
 pipeline/raw/
 package-lock.json
+film/out/

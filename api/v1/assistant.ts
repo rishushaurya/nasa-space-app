@@ -1,8 +1,8 @@
 // Homeward | api/v1/assistant.ts | v1.0.0 | 2026-10-29
 // POST: one assistant turn through the free provider chain. Tools run in the browser, never here.
 import { z } from "zod";
-import { ipHash, json, log, originAllowed, rateLimit, requestId } from "../_lib/http";
-import { runChain, systemPrompt, type ChatMessage, type Env } from "../_lib/providers";
+import { ipHash, json, log, originAllowed, rateLimit, requestId } from "../_lib/http.js";
+import { runChain, systemPrompt, type ChatMessage, type Env } from "../_lib/providers.js";
 
 const ToolCall = z.object({ id: z.string().max(100), name: z.string().max(64), arguments: z.string().max(4000) }).strict();
 const Message = z.discriminatedUnion("role", [

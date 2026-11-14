@@ -1,0 +1,29 @@
+{
+  "story": [
+    ["s01", "Listen. That is real wind, on Mars. Perseverance recorded it on its fourth day there."],
+    ["s02", "One day, a person will stand in that wind. Earth will be eleven light-minutes away. If something goes wrong out there, no one can reach them in time."],
+    ["s03", "Everything they need to know already exists. But it is scattered across dozens of missions, archives and formats. No single map brings it together."],
+    ["s04", "So we built one. Homeward. A map of Mars made only from real data, that plans your walk, and always brings you home."],
+    ["s05", "The whole planet, in true three D, from NASA and ESA orbiters. Olympus Mons. Valles Marineris. Two thousand named places, one search away."],
+    ["s06", "Every place we have landed, from Mars 3 in 1971, to Zhurong. Opportunity's forty-five kilometre drive, traced from NASA's own records."],
+    ["s07", "Lay the science on top: the geology, the heat of the ground, the dust. Every layer names where it came from."],
+    ["s08", "Then stand where the rovers stood, and look all around, in their own photographs."],
+    ["s09", "Now it is your turn. Sol one eighty two. You want to reach the rock where Curiosity found an ancient lake. First, the briefing: daylight, radiation, and what Curiosity measured there."],
+    ["s10", "Homeward plans the route. It steers around slopes and rocks a suit cannot cross, and keeps air, power, dose and daylight in budget, with enough left to walk back."],
+    ["s11", "Then you walk it. Every step, the display shows the way home, the air you have left, and whether your radio still reaches the habitat."],
+    ["s12", "Ask the suit assistant, and it answers only with real numbers, and where they came from."],
+    ["s13", "Above you, the real orbiters pass overhead, exactly where they are right now."],
+    ["s14", "Every number you saw is real. Measured, computed, and cited. No demo data. Nothing invented."],
+    ["s15", "Homeward. So the first people on Mars can always find their way home."]
+  ],
+  "short": [
+    ["t01", "Listen. That is real wind, recorded on Mars."],
+    ["t02", "One day, someone will walk there, eleven light-minutes from help."],
+    ["t03", "Homeward is the map they can trust."],
+    ["t04", "The whole planet, in true three D."],
+    ["t05", "Every landing site."],
+    ["t06", "The rovers' own photographs."],
+    ["t07", "A route that keeps air, dose and daylight in budget, and always gets you home."],
+    ["t08", "Every number real. Every source cited."]
+  ]
+}

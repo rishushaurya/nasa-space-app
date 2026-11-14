@@ -2,6 +2,46 @@
 
 > Version 3.0.0 | 2026-11-13 | Newest entry first. Every session adds one entry before it ends.
 
+## 2026-11-14 | Claude Opus 5.5 | Session 5b (Vercel deploy)
+
+**Description**: The team asked for a $0 deploy with all environment variables. Deployed on Vercel Hobby (free; no card; over-limit usage pauses, never bills) with the CLI: project `nasa-space-app`, connected to `rishushaurya/nasa-space-app` so pushes to `main` redeploy. Live at https://nasa-space-app-drab.vercel.app.
+
+**Changes**:
+- Fixed: the server functions crashed on Vercel (`ERR_MODULE_NOT_FOUND`: Node's ES modules need the `.js` ending on relative imports); `api/v1/assistant.ts`, `health.ts`, `spaceweather.ts` now import `../_lib/*.js` (TypeScript resolves them to the `.ts` files; tests unchanged)
+- Created: `.vercelignore` (keeps a CLI upload under Hobby's 100 MB: no models, Cesium copy, film output, graph cache)
+- Vercel Production variables: `ALLOWED_ORIGINS` (the live URL), `IP_SALT` (random), `GEMINI_MODEL`, `GROQ_MODEL`, `OPENROUTER_MODEL`. The four API keys were not available; the team adds them in Project Settings and redeploys
+- Documents: README section 14, CLAUDE.md
+
+**Diagnostics**: `node scripts/diagnostics.mjs --base https://nasa-space-app-drab.vercel.app`: 20 PASS, 0 FAIL, 0 SKIP (health `healthy-offline-assistant`). Live in a real browser: REMS feed, raw-image API, MDEM200M, NASA image library and `/api/v1/spaceweather` all 200 under the production CSP; tests 73 passed; typecheck clean.
+
+**Known Issues**:
+- The GitHub copy of `main` still has the old imports until this fix is pushed; a push from GitHub before then would deploy functions that crash.
+- Esri does not serve some low-zoom CTX tiles (for example 1/0/2); the globe falls back, the console shows a CORS error for each.
+
+**NEXT AI SHOULD**: If the team agrees, commit and push (no co-author line) so GitHub deploys match. Remind the team to add the four free keys in Vercel and redeploy, then re-run the diagnostics.
+
+---
+
+## 2026-11-14 | Claude Opus 5.5 | Session 5 (demo films)
+
+**Description**: The team asked for a story-style film that explains the whole project, with a natural female voice, calm space music and real Mars sound. Space Apps allows a 30-second video, so two films come from one set of real recordings: `homeward-30s.mp4` (submission) and `homeward-story.mp4` (2:20, to show anyone). Everything is free and runs on this machine.
+
+**Changes**:
+- Created: `film/SCRIPT.md` (one thing, three storylines with the pick, look and sound, shot-by-shot script for both films, how they are made), `film/lines.json` (narration), `film/record.mjs` (records each shot from the real app: headless Chrome on the GPU, DevTools screencast, about 60 fps, to 30 fps MP4), `film/voice.mjs` (Kokoro-82M fp32, voice `af_heart`), `film/music.py` (MusicGen medium, three moods), `film/make.mjs` (cuts to the voice, titles, burned-in subtitles and `.srt`, music ducked under the voice, NASA's Mars wind, -14 LUFS), `film/sheet.sh` (contact sheets for review), `film/.gitignore` (`out/`)
+- Modified: README (file map; Credits count 74 to 88, the real count in `sources.csv`), CLAUDE.md, `legal/COMPLIANCE.md` (demo row, AI disclosure rows, checklist note), `TEAMMATE_GUIDE.md` section 11
+- Real sound: Perseverance SuperCam sol 4 wind (NASA/JPL-Caltech/LANL/CNES) from nasa.gov "Sounds from Beyond", downloaded at build time, not committed
+- Found while recording: NASA's raw-image and weather services refuse headless browsers, so Rover view shots use the four featured stops the app keeps (`pipeline/rovers.py` FEATURED) and the briefing shot shows measured conditions rather than the live REMS panel; a hash-only URL change does not reload the app, so each shot loads with a new query string; ffmpeg 8 renamed `-filter_complex_script` to `-/filter_complex`
+
+**Diagnostics**: no app code changed. Narration checked with Whisper tiny.en against `lines.json` (every line matches; "and cited" sounded like "incited", so that line was reworded). Films: 30-second cut 30.0 s (-15.5 LUFS, peak -1.4 dBFS); story film 2:19 (-14.7 LUFS, peak -1.4 dBFS); music sits about 9 dB under the voice in the gaps and is ducked under speech. Tests 73 passed; typecheck clean; diagnostics 19 PASS, 0 FAIL, 1 SKIP; `graphify update .` run.
+
+**Known Issues**:
+- The first cut was made at about 02:30 on 14 Nov, before the event window (09:00). Re-run `film/SCRIPT.md` section 6 after 09:00 for the submitted film.
+- The walk shot's ground is the 200 m relief at eye level (HiRISE tiles were still streaming); the helmet display is the subject of that shot.
+
+**NEXT AI SHOULD**: After 09:00 on 14 Nov, start `npm run dev`, then re-run the film pipeline (`film/SCRIPT.md` section 6), watch both films end to end, and help the team host the 30-second film publicly with its `.srt`. Then: deploy on Vercel and run `node scripts/diagnostics.mjs --base <url>`; confirm Esri's terms.
+
+---
+
 ## 2026-11-13 | Claude Fable 5.2, Claude Opus 5.5 | Session 4 (version 3.0: whole-Mars 3D, every visited place, live conditions)
 
 **Description**: The team asked for a project graph, a check of the build against the official statement, real data everywhere, better controls and less lag, every visited place as a Google-Maps-style ride, and whole-planet Google Earth. Research pass (every endpoint opened and its headers checked), then `build/PLAN-3.md` (statement-by-statement comparison, findings, decisions D21-D27, chunks 17-26), then the build, checked in the dev server and under the production headers.

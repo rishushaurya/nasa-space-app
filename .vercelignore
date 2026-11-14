@@ -1,0 +1,18 @@
+# Files the Vercel CLI must not upload (Hobby caps a CLI upload at 100 MB). Vercel builds everything else itself.
+node_modules
+dist
+.env
+.env.*
+!.env.example
+.vercel
+.venv
+.claude
+coverage
+*.log
+app/public/cesium
+app/public/models
+app/public/ort
+pipeline/raw
+film/out
+graphify-out
+HEALTHSYNC_AI_Humanized.pdf

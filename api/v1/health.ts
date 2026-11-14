@@ -1,6 +1,6 @@
 // Homeward | api/v1/health.ts | v1.0.0 | 2026-10-29
 // GET: configuration and data reachability. Never calls an AI provider (that would spend free quota).
-import { json, requestId } from "../_lib/http";
+import { json, requestId } from "../_lib/http.js";
 
 const started = Date.now();
 const has = (v?: string) => (v && v !== "replace-me" ? "ok" : "missing");

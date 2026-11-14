@@ -35,6 +35,7 @@ Chunk files contain goals, file lists, interfaces, validation rules, golden test
 | 24 | Live conditions | DONE (REMS latest sol; DONKI relay `/api/v1/spaceweather`, tested) | - | 02 | - | 1 h | AI engineer |
 | 25 | Physics | DONE (radio line of sight with curvature, golden horizon test; five orbiters from Horizons, golden tests) | - | 04 | - | 1.5 h | Planner engineer |
 | 26 | Documents | DONE | - | 17-25 | - | 1 h | Lead |
+| 27 | Demo films | DONE as a first cut (30 s and 2:20 story film from real recordings; re-cut after 09:00 on 14 Nov for the event window) | - | 26 | - | 2 h | Lead and storyteller |
 
 Statuses: DONE (verified, files exist), IN-PROGRESS (locked; others keep out), READY (dependencies met), BLOCKED (wait).
 
@@ -56,6 +57,8 @@ Rules:
 | 2026-11-06 | 16 | Every document and both skills at 2.0; CTX licence recorded; pushed to https://github.com/rishushaurya/nasa-space-app (`main`) | Claude Opus 5.5 |
 | 2026-11-07 | - | Handoff: "Where to begin" in `CLAUDE.md`; memory updated. Next: team's choice, else deploy, Esri terms, 200 m terrain | Claude Opus 5.5 |
 | 2026-11-13 | 17-26 | Version 3.0: research, `build/PLAN-3.md`, knowledge graph, global relief, render on demand, overlays, MER tracks, Schiaparelli, tour, ride, lander photos, live conditions, line of sight, orbiters; checked in the dev server and under production headers; 73 tests; 19 PASS, 0 FAIL, 1 SKIP | Claude Fable 5.2, Claude Opus 5.5 |
+| 2026-11-14 | - | Deployed on Vercel Hobby (https://nasa-space-app-drab.vercel.app); function import fix; diagnostics 20 PASS, 0 FAIL, 0 SKIP | Claude Opus 5.5 |
+| 2026-11-14 | 27 | Demo films: `film/` pipeline (record the real app, Kokoro narration, MusicGen bed, NASA Mars wind, ffmpeg edit with subtitles); first cut of both films; no app code changed | Claude Opus 5.5 |
 
 ## Cut from chunk 08 and 09 (not built)
 

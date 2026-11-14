@@ -8,7 +8,7 @@
 |---|---|---|
 | Hackathon 14-15 Nov 2026; submissions open 14 Nov 09:00 local; global judging from 16 Nov | VERIFIED | Hour plan in `IMPLEMENTATION_PLAN.md` section 12 |
 | Teams may not begin working on the challenges before the hackathon | VERIFIED via FAQ excerpt | No project code, no data processing, no deliverables before 14 Nov 09:00 IST. See section 1.1 |
-| Demo: 30-second video or up to 7 slides, hosted publicly outside the Space Apps site; English subtitles; slides in English | VERIFIED via guide excerpt | Film plan in `TEAMMATE_GUIDE.md` section 11 |
+| Demo: 30-second video or up to 7 slides, hosted publicly outside the Space Apps site; English subtitles; slides in English | VERIFIED via guide excerpt | Film plan in `TEAMMATE_GUIDE.md` section 11; script and pipeline in `film/SCRIPT.md` (30 s cut with burned-in English subtitles and an `.srt`) |
 | AI allowed but must be disclosed; generated content may not use or alter NASA branding; AI images and video need a visible AI watermark | VERIFIED via guide excerpt | Section 2 |
 | Every source must be cited, even open-source or free material | VERIFIED via Terms excerpt | Credits panel + repository README; section 3 |
 | Up to six people, all registered and listed | SECONDARY | Lead checks the project page |
@@ -44,7 +44,8 @@ Update 29 Oct 2026: the team reports that the local host also allowed building t
 | Assistant voice: Kokoro-82M (hexgrad/kokoro, Apache-2.0) via kokoro-js, generated on the user's device | On-screen label "AI voice"; credits panel |
 | Speech recognition: browser Web Speech API; Whisper (MIT weights) via transformers.js (Apache-2.0) | Credits panel |
 | Kannada and Hindi voice (Gemini TTS, P2) | Credits panel if built |
-| Any AI-generated image or video | Visible "AI-generated" watermark on the media itself |
+| Any AI-generated image or video | Visible "AI-generated" watermark on the media itself (the films use none: every picture is a real screen recording of the app) |
+| Film narration (Kokoro-82M, voice `af_heart`) and film music (MusicGen, Meta, CC BY-NC 4.0, non-commercial entry) | Named on the films' end card and in `film/SCRIPT.md` |
 
 Voice rules: stock voices only; never clone a real astronaut, NASA engineer or archival broadcast voice; never present the assistant or Mission Control persona as NASA.
 
@@ -112,7 +113,7 @@ Places that may need special procedures, such as recurring slope lineae, are fla
 ## 8. Submission checklist (paper 14.4)
 
 - [ ] Project page complete; all members registered and listed.
-- [ ] Film (30 s) or slides (up to 7) hosted publicly outside the Space Apps site, English subtitles.
+- [ ] Film (30 s) or slides (up to 7) hosted publicly outside the Space Apps site, English subtitles. A first cut was made at about 02:30 on 14 Nov, before the window opened; re-record and re-cut after 09:00 (`film/SCRIPT.md` section 6, about 20 minutes) so the submitted film is made inside the event window.
 - [ ] Public repository with a README listing every data source, licence and AI tool.
 - [ ] Credits panel in the app matches the README.
 - [ ] AI disclosure statement; watermarks on any AI media.

@@ -24,15 +24,15 @@
     "semantic_hash": ""
   },
   "api/v1/assistant.ts": {
-    "mtime": 1794512694.9421093,
-    "seen": 1794592418.920967,
-    "ast_hash": "9bfdf18b33b5b3455dc9d6bbde6b52e8",
+    "mtime": 1794640272.9514925,
+    "seen": 1794640718.2642012,
+    "ast_hash": "bebebc5c515b6cedd77d9d67ed47a4f9",
     "semantic_hash": ""
   },
   "api/v1/health.ts": {
-    "mtime": 1794512694.9421093,
-    "seen": 1794592418.920967,
-    "ast_hash": "9602bd2638c081bd30c0888aebb76a4c",
+    "mtime": 1794640272.969754,
+    "seen": 1794640718.2642012,
+    "ast_hash": "ad4690ef07b07eb41469c018efec9dc0",
     "semantic_hash": ""
   },
   "api/v1/spaceweather.test.ts": {
@@ -42,9 +42,9 @@
     "semantic_hash": ""
   },
   "api/v1/spaceweather.ts": {
-    "mtime": 1794591937.389763,
-    "seen": 1794592418.920967,
-    "ast_hash": "847b563364a4f7b55e971e42457296ec",
+    "mtime": 1794640272.9835224,
+    "seen": 1794640718.2642012,
+    "ast_hash": "78f3792ad202a2bb357e5d42cda5e0b4",
     "semantic_hash": ""
   },
   "app/src/App.tsx": {
@@ -534,15 +534,15 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1794592564.91987,
-    "seen": 1794592588.3904848,
-    "ast_hash": "8a4e16d4eee84282c218fab205a4714d",
+    "mtime": 1794640711.2226958,
+    "seen": 1794640718.2642012,
+    "ast_hash": "e094dc0af27c492f682e704b9a54e2f9",
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1794592564.909874,
-    "seen": 1794592588.3904848,
-    "ast_hash": "5797375ae9d40cd63536181810de8590",
+    "mtime": 1794640711.221695,
+    "seen": 1794640718.2642012,
+    "ast_hash": "61a2a7d410b59dd42f3d24f2b33e42a0",
     "semantic_hash": ""
   },
   "COMMANDS.md": {
@@ -582,9 +582,9 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1794592564.9088697,
-    "seen": 1794592588.3904848,
-    "ast_hash": "d04f3e2dd282b59cb4c37db29cf0d711",
+    "mtime": 1794640711.2206886,
+    "seen": 1794640718.2642012,
+    "ast_hash": "0217b63bb8acd54ec8379c75edc63295",
     "semantic_hash": ""
   },
   "TAD.md": {
@@ -594,9 +594,9 @@
     "semantic_hash": ""
   },
   "TEAMMATE_GUIDE.md": {
-    "mtime": 1794512694.9396057,
-    "seen": 1794592418.920967,
-    "ast_hash": "7568f62669ab4bb409232966e8d6e106",
+    "mtime": 1794602945.8697283,
+    "seen": 1794603031.8295608,
+    "ast_hash": "268934264a2d11962412537bf5643dd4",
     "semantic_hash": ""
   },
   "app/index.html": {
@@ -654,9 +654,9 @@
     "semantic_hash": ""
   },
   "legal/COMPLIANCE.md": {
-    "mtime": 1794592564.9332952,
-    "seen": 1794592588.3904848,
-    "ast_hash": "00a5a499901c2a9240eaf67f72d20e5c",
+    "mtime": 1794602945.8414235,
+    "seen": 1794603031.8295608,
+    "ast_hash": "08232266d494da64f55891945e588113",
     "semantic_hash": ""
   },
   "legal/PRIVACY_POLICY.md": {
@@ -678,9 +678,51 @@
     "semantic_hash": ""
   },
   "docs/PROJECT_GRAPH.md": {
-    "mtime": 1794592460.7527602,
-    "seen": 1794592588.3904848,
-    "ast_hash": "11a763c2a6052b08bb72ec04ab118c3f",
+    "mtime": 1794592607.061753,
+    "seen": 1794603031.8295608,
+    "ast_hash": "1aaf48c2a952f466a54ae038b4e28027",
+    "semantic_hash": ""
+  },
+  "film/lines.json": {
+    "mtime": 1794602862.9079442,
+    "seen": 1794603031.8295608,
+    "ast_hash": "07e827050240b7d0e220a1d4dfcdcd68",
+    "semantic_hash": ""
+  },
+  "film/make.mjs": {
+    "mtime": 1794602822.8801973,
+    "seen": 1794603031.8295608,
+    "ast_hash": "46078a901c6c12af3787b2a7d2149374",
+    "semantic_hash": ""
+  },
+  "film/music.py": {
+    "mtime": 1794600861.2026904,
+    "seen": 1794603031.8295608,
+    "ast_hash": "eb292a917e28554f9da130ff1860c4e8",
+    "semantic_hash": ""
+  },
+  "film/record.mjs": {
+    "mtime": 1794602721.473272,
+    "seen": 1794603031.8295608,
+    "ast_hash": "acd3b80f5ff98c29c8d5788551f579c0",
+    "semantic_hash": ""
+  },
+  "film/sheet.sh": {
+    "mtime": 1794601151.5949879,
+    "seen": 1794603031.8295608,
+    "ast_hash": "7c1999755c302cce8e1ddc0ea42376c7",
+    "semantic_hash": ""
+  },
+  "film/voice.mjs": {
+    "mtime": 1794600788.5353835,
+    "seen": 1794603031.8295608,
+    "ast_hash": "2a2ffdb97587c693a90ff1642e541972",
+    "semantic_hash": ""
+  },
+  "film/SCRIPT.md": {
+    "mtime": 1794602981.589634,
+    "seen": 1794603031.8295608,
+    "ast_hash": "f9d40244c77624f9a64fe6de53fa91c8",
     "semantic_hash": ""
   },
   "package-lock.json": {
