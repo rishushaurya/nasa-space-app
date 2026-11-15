@@ -42,11 +42,11 @@ const SHORT = [
   { clip: "clock", in: 2.0, vo: "t02", pad: 0.3, zoom: [1.0, 1.08, 0.14, 0.33] },
   { clip: "dusk", in: 15.0, vo: "t03", pad: 0.3, dim: 0.3, titles: [["Title", 0.15, 99, "Homeward", 5]] },
   { clip: "olympus", in: 3.0, vo: "t04", pad: 0.25 },
-  { clip: "tour", in: 1.0, vo: "t05", pad: 0.3 },
+  { clip: "layers", in: 1.6, vo: "t05", pad: 0.3 },
   { clip: "yellowknife", in: 2.0, vo: "t06", pad: 0.3 },
   { clip: "plan", in: 1.0, dur: 2.9, vo: "t07", at: 0.2 },
   { clip: "walk", in: 2.0, dur: 3.0, wind: true, zoom: [1.25, 1.35, 0.2, 0.15] },
-  { clip: "hook", in: 9.0, vo: "t08", at: 0.3, dim: 1, blur: 14, end: true, fill: 30 },
+  { clip: "hook", in: 9.0, vo: "t08", at: 0.3, dim: 1, blur: 14, end: true, fill: 29.5 },
 ];
 const DATASETS = ["HiRISE", "CTX", "MOLA", "HRSC", "THEMIS", "TES", "Viking", "REMS", "RAD", "DONKI", "JPL Horizons", "PDS", "USGS Gazetteer", "Mars24"];
 

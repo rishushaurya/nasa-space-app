@@ -4,7 +4,7 @@
 
 ## 0. Current state (1 Nov 2026)
 
-The app is built and verified (version 2.0: Explore, Rover view and walking yourself added). Before changing anything, read `CLAUDE.md`, `README.md` (sections 9, 13 and 14), the newest `CHANGELOG.md` entry, `build/MANIFEST.md`, `build/PLAN-2.md` and `BUILD_LOG.md` (section 12 for 2.0), then run `npm test` and `npm run diag`. The project is a git repository on `main`, pushed to https://github.com/rishushaurya/nasa-space-app; commit or push only when the team asks, and never add a Claude `Co-Authored-By` line. `CLAUDE.md` section "Where to begin" lists what is done and what is open.
+The app is built and verified (version 2.0: Explore, Rover view and walking yourself added). Before changing anything, read `CLAUDE.md`, `docs/CONTEXT.md` (sections 9, 13 and 14), the newest `CHANGELOG.md` entry, `build/MANIFEST.md`, `build/PLAN-2.md` and `BUILD_LOG.md` (section 12 for 2.0), then run `npm test` and `npm run diag`. The project is a git repository on `main`, pushed to https://github.com/rishushaurya/nasa-space-app; commit or push only when the team asks, and never add a Claude `Co-Authored-By` line. `CLAUDE.md` section "Where to begin" lists what is done and what is open.
 
 Known traps:
 - A hidden browser pane pauses animation frames: camera flights finish on a timer fallback, and frame-rate numbers from a hidden pane mean nothing.
@@ -19,14 +19,14 @@ Known traps:
 - The full list of traps is in the `homeward-dev` skill.
 
 ## Hallucination
-- "Stop. Read README.md section 6 and list the tech stack. Use only those. If you need something else, ask first."
-- "List the files that actually exist with `git ls-files`. Re-read README.md section 4 and compare."
-- "Check your work against TAD.md. If it adds a database, accounts, a router, a state library or a WebSocket server, remove it (README section 9)."
+- "Stop. Read docs/CONTEXT.md section 6 and list the tech stack. Use only those. If you need something else, ask first."
+- "List the files that actually exist with `git ls-files`. Re-read docs/CONTEXT.md section 4 and compare."
+- "Check your work against TAD.md. If it adds a database, accounts, a router, a state library or a WebSocket server, remove it (`docs/CONTEXT.md` section 9)."
 - "Where does this number come from? Show the fact ID in docs/DATA_SPEC.md. If there is none, remove the number or add a sourced fact first."
 - "You wrote a coordinate. Is it planetocentric east? Did it go through toCesium? Show the line."
 
 ## Context loss
-- "Run the session start protocol: README.md, the last 3 CHANGELOG.md entries, build/MANIFEST.md, MENTAL_MODEL.md. Then tell me what you understand."
+- "Run the session start protocol: docs/CONTEXT.md, the last 3 CHANGELOG.md entries, build/MANIFEST.md, MENTAL_MODEL.md. Then tell me what you understand."
 - "What is the build status? Show the MANIFEST table."
 - "What did the last session do? Read the newest CHANGELOG entry and its NEXT AI SHOULD line."
 

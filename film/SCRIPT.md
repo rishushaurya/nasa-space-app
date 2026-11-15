@@ -41,7 +41,7 @@
 | 14 | Credits scene | "Every number you saw is real: measured, computed, and cited. No demo data. Nothing invented." | "88 cited sources" |
 | 15 | End card | "Homeward. So the first people on Mars can always find their way home." | Homeward / Martian Map / NASA Space Apps Challenge 2026, Bengaluru / AI disclosure |
 
-## 5. The 30-second film
+## 5. The 30-second film (29.5 s)
 
 | Seconds | Picture | Voice |
 |---|---|---|
@@ -49,7 +49,7 @@
 | 4-8 | Live clock, 11.04 min | "One day, someone will walk there, eleven light-minutes from help." |
 | 8-11 | Title over the turning globe | "Homeward is the map they can trust." |
 | 11-14 | Olympus Mons in relief | "The whole planet, in true three D." |
-| 14-17 | Landing-site tour | "Every landing site." |
+| 14-17 | Geology and thermal overlays switched on | "NASA's geology, heat and dust, layered." |
 | 17-20 | Rover view look-around | "The rovers' own photographs." |
 | 20-25 | Plan, then the walk HUD | "A route that keeps air, dose and daylight in budget, and always gets you home." |
 | 25-30 | End card with credits and AI disclosure | "Every number real. Every source cited." |

@@ -5,7 +5,7 @@ description: Build, run, test and extend the Homeward Mars app (NASA Space Apps 
 
 # Homeward development
 
-Read `README.md` first (rules, decisions D1-D27, section 13 for what is built), then `docs/PROJECT_GRAPH.md` (how the parts connect), the last `CHANGELOG.md` entry, `build/MANIFEST.md`, `build/PLAN-2.md` and `build/PLAN-3.md` (research and decisions behind 2.0 and 3.0) and, for detail, `BUILD_LOG.md` (section 12 for 2.0, section 13 for 3.0).
+Read `docs/CONTEXT.md` first (rules, decisions D1-D27, section 13 for what is built), then `docs/PROJECT_GRAPH.md` (how the parts connect), the last `CHANGELOG.md` entry, `build/MANIFEST.md`, `build/PLAN-2.md` and `build/PLAN-3.md` (research and decisions behind 2.0 and 3.0) and, for detail, `BUILD_LOG.md` (section 12 for 2.0, section 13 for 3.0).
 
 ## Commands
 

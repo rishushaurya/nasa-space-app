@@ -13,7 +13,7 @@ description: Add or change a fact, source, data file or discovery card in Homewa
 6. Rebuild: from `pipeline/`, run `../.venv/Scripts/python build_facts.py` and then `manifest.py`; then `npm test` and `npm run diag` (checks every fact has a badge and a known source, and every file hash).
 7. New data files: write them under `app/public/data/` from a pipeline script (examples: `make_moons.py`, `fetch_audio.py`, `rovers.py`), add the source row, rerun `manifest.py`.
 7a. Landing sites: one row in `pipeline/landers.csv` (planetocentric lat, east lon -180..180, badge, sources); `build_facts.py` checks it like a fact and writes `data/places/landers.json`. Prefer the PDS Geosciences Node table (PDS-ODE-LANDING) or the mission's own paper; mark anything else SECONDARY.
-7b. Live imagery layers: add the entry to `app/src/globe/live.ts` with a `sourceId` from `sources.csv`. A new host also needs the CSP in `vercel.json` (diagnostics check 15 lists the allowed hosts) and a decision row in README section 9.
+7b. Live imagery layers: add the entry to `app/src/globe/live.ts` with a `sourceId` from `sources.csv`. A new host also needs the CSP in `vercel.json` (diagnostics check 15 lists the allowed hosts) and a decision row in `docs/CONTEXT.md` section 9.
 7c. Rover stops, tracks, Ingenuity flights and Mars place names are refreshed with `pipeline/rovers.py` (NASA MMGIS and the USGS Gazetteer change as missions go on); then `manifest.py`.
 8. Mirror important facts in `docs/DATA_SPEC.md` section 2 (data files in section 0.1) and log the change in `CHANGELOG.md`.
 

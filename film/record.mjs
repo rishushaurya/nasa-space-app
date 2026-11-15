@@ -13,7 +13,7 @@ const CHROME = process.env.CHROME ?? "C:/Program Files/Google/Chrome/Application
 mkdirSync(OUT, { recursive: true });
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 let n = 0;
-const url = (patch) => `http://localhost:5173/?r=${++n}#s=` + encodeURIComponent(JSON.stringify({ voice: false, online: false, ...patch }));
+const url = (patch) => `http://localhost:${process.env.PORT ?? 5173}/?r=${++n}#s=` + encodeURIComponent(JSON.stringify({ voice: false, online: false, ...patch }));
 
 const browser = await puppeteer.launch({
   executablePath: CHROME, headless: true,

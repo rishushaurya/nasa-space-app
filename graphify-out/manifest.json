@@ -504,21 +504,21 @@
     "semantic_hash": ""
   },
   ".claude/skills/homeward-dev/SKILL.md": {
-    "mtime": 1794645923.337227,
-    "seen": 1794646001.9508517,
-    "ast_hash": "3452d0b45c70eae3bdc4d8450faf60c9",
+    "mtime": 1794753086.1846676,
+    "seen": 1794753386.5220351,
+    "ast_hash": "21d4114b383014c9b62fa157d9ee0cf9",
     "semantic_hash": ""
   },
   ".claude/skills/homeward-facts/SKILL.md": {
-    "mtime": 1794512694.6905067,
-    "seen": 1794646001.9508517,
-    "ast_hash": "c97bc8d4ecfc24bd458ff6999f3cc8d2",
+    "mtime": 1794753086.1846676,
+    "seen": 1794753386.5220351,
+    "ast_hash": "7ec09c6f524e73d98babcd1afeeae66d",
     "semantic_hash": ""
   },
   "AI_RECOVERY.md": {
-    "mtime": 1794512694.9328618,
-    "seen": 1794646001.9508517,
-    "ast_hash": "cb065272e3d37dd116f033e47fa6f5cc",
+    "mtime": 1794753086.1930132,
+    "seen": 1794753386.5220351,
+    "ast_hash": "7e4c5526508c98907e4b49e7f76b4340",
     "semantic_hash": ""
   },
   "APP_FLOW.md": {
@@ -534,15 +534,15 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1794645949.6782403,
-    "seen": 1794646001.9508517,
-    "ast_hash": "d4794be7d2d4a71ba61909ba2accb032",
+    "mtime": 1794753344.7237823,
+    "seen": 1794753386.5220351,
+    "ast_hash": "98a389fe8d94475246b19a24f0c34644",
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1794645923.3393574,
-    "seen": 1794646001.9508517,
-    "ast_hash": "1fcf045e638f936b10f5f9ec1ea28fb6",
+    "mtime": 1794753086.1836686,
+    "seen": 1794753386.5220351,
+    "ast_hash": "3d11232483c50fdcf8fa8702ac3a0c20",
     "semantic_hash": ""
   },
   "COMMANDS.md": {
@@ -582,9 +582,9 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1794645923.3403635,
-    "seen": 1794646001.9508517,
-    "ast_hash": "26de4cc3809f77505b70d397ab555ee6",
+    "mtime": 1794753128.615574,
+    "seen": 1794753386.5220351,
+    "ast_hash": "4cc310e509ea2f09aaf1eacd63d806e8",
     "semantic_hash": ""
   },
   "TAD.md": {
@@ -684,15 +684,15 @@
     "semantic_hash": ""
   },
   "film/lines.json": {
-    "mtime": 1794602862.9079442,
-    "seen": 1794646001.9508517,
-    "ast_hash": "07e827050240b7d0e220a1d4dfcdcd68",
+    "mtime": 1794753071.917528,
+    "seen": 1794753386.5220351,
+    "ast_hash": "95cc154bfd8387e223af81eb4f298cd7",
     "semantic_hash": ""
   },
   "film/make.mjs": {
-    "mtime": 1794602822.8801973,
-    "seen": 1794646001.9508517,
-    "ast_hash": "46078a901c6c12af3787b2a7d2149374",
+    "mtime": 1794753071.9190204,
+    "seen": 1794753386.5220351,
+    "ast_hash": "6db706acff46e461efe336b1f93622c3",
     "semantic_hash": ""
   },
   "film/music.py": {
@@ -702,9 +702,9 @@
     "semantic_hash": ""
   },
   "film/record.mjs": {
-    "mtime": 1794602721.473272,
-    "seen": 1794646001.9508517,
-    "ast_hash": "acd3b80f5ff98c29c8d5788551f579c0",
+    "mtime": 1794752796.6210718,
+    "seen": 1794753386.5220351,
+    "ast_hash": "9c8f6e1fb391dfc6247646c5ae3214f1",
     "semantic_hash": ""
   },
   "film/sheet.sh": {
@@ -720,9 +720,9 @@
     "semantic_hash": ""
   },
   "film/SCRIPT.md": {
-    "mtime": 1794602981.589634,
-    "seen": 1794646001.9508517,
-    "ast_hash": "f9d40244c77624f9a64fe6de53fa91c8",
+    "mtime": 1794753071.9190204,
+    "seen": 1794753386.5220351,
+    "ast_hash": "99187da0bf6814f56b7bc9c619c1ed1d",
     "semantic_hash": ""
   },
   "app/src/data/usgs.test.ts": {
@@ -741,6 +741,24 @@
     "mtime": 1794645923.3694627,
     "seen": 1794646001.9508517,
     "ast_hash": "3e7e2c66247fed1788f75dede84b5fe3",
+    "semantic_hash": ""
+  },
+  "docs/CONTEXT.md": {
+    "mtime": 1794753086.1826675,
+    "seen": 1794753386.5220351,
+    "ast_hash": "f2b4c8e751217d77f54e3dde6b9d989f",
+    "semantic_hash": ""
+  },
+  "docs/media/homeward-demo-poster.jpg": {
+    "mtime": 1794753289.127264,
+    "seen": 1794753386.5220351,
+    "ast_hash": "e38586224d5ea7c7acda2b717acd9311",
+    "semantic_hash": ""
+  },
+  "docs/media/homeward-30s.mp4": {
+    "mtime": 1794753288.8326051,
+    "seen": 1794753386.5220351,
+    "ast_hash": "c0f1b79062febc534c98dad9b679d35d",
     "semantic_hash": ""
   },
   "package-lock.json": {

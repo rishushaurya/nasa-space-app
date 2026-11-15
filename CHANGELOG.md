@@ -2,6 +2,19 @@
 
 > Version 3.0.0 | 2026-11-13 | Newest entry first. Every session adds one entry before it ends.
 
+## 2026-11-15 | Claude Opus 5.5 | Session 6 (submission: 29.5 s film, 7-slide deck, showcase README)
+
+**Description**: For the submission the team asked for a film under 30 seconds, a deck of at most 7 slides in the Smart India Hackathon style (diagrams over text, modelled on the team's Code Clash 2.0 deck), and a GitHub README like `rishushaurya/Code_clash_2.0`; then push. No app code changed.
+
+**Changes**:
+- Film: every shot re-recorded on 15 Nov from the merged 4.0 app (inside the event window); the 30-second cut is now 29.5 s and its fifth beat shows the geology and thermal layers ("NASA's geology, heat and dust, layered."); `film/record.mjs` takes `PORT`
+- Created: `docs/media/homeward-30s.mp4` (with `.srt` and a poster), `docs/media/Homeward-Team-Barfi-SpaceApps2026.pptx` (7 slides: title, problem, solution loop, architecture, real screens, feasibility and impact, NASA resources)
+- `README.md` is now a public showcase (demo video, problem, loop diagram, statement table, run steps, tour, architecture, data, quality, team); the old README is `docs/CONTEXT.md`, and CLAUDE.md, both skills and AI_RECOVERY point there
+
+**NEXT AI SHOULD**: Read `docs/CONTEXT.md` where older documents say README. Team names on the deck and README come from the team's Code Clash deck: confirm them.
+
+---
+
 ## 2026-11-14 | Claude Opus 5.5 | Session 5d (Fly mode in the Walk scene; 4.0 merged)
 
 **Description**: The team asked to change walking into flying with a speed control. Walking stays (it is the suited walk the challenge is about); the Walk scene gains a third mode, Fly, beside "Walk yourself" and "Follow the plan". The research and build of the five challenge resources (PLAN-4) moved to its own session.
