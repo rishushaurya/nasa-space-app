@@ -18,3 +18,16 @@ pipeline/raw
 graphify-out/cache/
 graphify-out/20*/
 graphify-out/.graphify_*
+
+# AI working files: kept on this machine, not published
+.claude/
+.graphifyignore
+AI_RECOVERY.md
+BUILD_LOG.md
+CHANGELOG.md
+CLAUDE.md
+build/MANIFEST.md
+build/chunk-*.md
+docs/CONTEXT.md
+docs/PROJECT_GRAPH.md
+graphify-out/
